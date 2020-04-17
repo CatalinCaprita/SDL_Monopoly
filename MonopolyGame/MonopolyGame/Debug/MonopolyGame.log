@@ -1,6 +1,2 @@
-﻿  Game.cpp
-  main.cpp
-C:\Users\Catalin\Desktop\Monopoly\SDL_Monopoly\MonopolyGame\MonopolyGame\src\main.cpp(25,25): warning C4244: 'argument': conversion from 'float' to 'Uint32', possible loss of data
-  TextureMaker.cpp
-  Generating Code...
+﻿  Player.cpp
   MonopolyGame.vcxproj -> C:\Users\Catalin\Desktop\Monopoly\SDL_Monopoly\MonopolyGame\MonopolyGame\Debug\MonopolyGame.exe
