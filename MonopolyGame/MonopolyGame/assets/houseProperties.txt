@@ -1,7 +1,7 @@
 Meditaranean_Aveanue  60 50 0 2 10 30 90 160 250 
  Baltic_Avenue        60 50 0 4 20 60 180 320 450 
- Oriental_Avenue     100 50 1 6 30 90 270 400 
- Vermont_Avenue      100 50 1 6 30 90 270 400
+ Oriental_Avenue     100 50 1 6 30 90 270 400 450
+ Vermont_Avenue      100 50 1 6 30 90 270 400 450
  Connecticut_Avenue  120 50 1 8 40 100 300 450 600
  St._Charles_Palace  140 100 2 10 50 150 450 625 750
  States_Avenue    140 100 2 10 50 150 450 625 750 

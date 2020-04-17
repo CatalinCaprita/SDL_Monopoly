@@ -5,6 +5,7 @@
 HouseProperty::HouseProperty(std::string name, int buyPrice,int updateCost,std::vector<int>& rents, Groups groupId) :AbstractProperty(name,buyPrice,updateCost,groupId){
 	this->houseNumber = 0;
 	this->hasHotel = false;
+	this->rentStage = 0;
 	//[ NO HOUSE, ONE HOUSE, TWO_HOUSES, THREE_HOUSES, FOUR_HOUSES, HOTEL]
 	for (int i = 0; i < RENT_STAGES; i++) {
 		rentPrices.push_back(rents[i]);
@@ -26,31 +27,34 @@ void HouseProperty::update() {
 	//Enters the function that calls Animator::tileUpdateAnimation()
 	//Waits for user input on " Want to update this Property to X houses? "
 	//if(answer == 1){
-	std::cout << "Do you want to update ? 1/0";
-	int answer;
-	std::cin >> answer;
-	if (answer == 1) {
-		int paid = owner->payMoney(updateCost);
-		if (paid > 0) {
-			if (houseNumber + 1 < MAX_HOUSES) {
-				houseNumber++;
-				std::cout << "Property Updated. " << name << " now has" << houseNumber << " houses." << std::endl;
+	if (rentStage < rentPrices.size() - 1) {
+		std::cout << "Do you want to update ? 1/0 " << rentPrices.size() << std::endl;
+		int answer;
+		std::cin >> answer;
+		if (answer == 1) {
+			int paid = owner->payMoney(updateCost);
+			if (paid > 0) {
+				rentStage++;
+				if (houseNumber < MAX_HOUSES) {
+					houseNumber++;
+					std::cout << "Property Updated. " << name << " now has" << houseNumber << " houses and rets for " << getRentPrice() << std::endl;
+				}
+				else {
+					std::cout << "It appears" << name << " has already maximum number of houses. Update to a Hotel instead ? 1/0";
+					int answer2;
+					std::cin >> answer2;
+					/*TO DO -- CHECK IF A PLAYER OWNS ALL THE COLORED PROPERTIES
+					if (!currentPlayer->ownsAll(groupId)) {
+						std::cout << "Cannot update to a hotel because you do not possess all " << groupId << " properties.";
+						return;
+					}
+					*/
+					std::cout << "Property Updated. " << name << " now has one hotel and rents for " << getRentPrice() << std::endl;
+				}
 			}
 			else {
-				std::cout << "It appears" << name << " has already maximum number of houses. Update to a Hotel instead ? 1/0";
-				int asnwer2;
-				std::cin >> answer;
-				/*TO DO -- CHECK IF A PLAYER OWNS ALL THE COLORED PROPERTIES
-				if (!currentPlayer->ownsAll(groupId)) {
-					std::cout << "Cannot update to a hotel because you do not possess all " << groupId << " properties.";
-					return;
-				}
-				*/
-				std::cout << "Property Updated. " << name << " now has one hotel." << std::endl;
+				std::cout << "Update failed due to bakruptcy" << std::endl;
 			}
-		}
-		else {
-			std::cout << "Update failed due to bakruptcy" << std::endl;
 		}
 	}
 	
@@ -58,7 +62,7 @@ void HouseProperty::update() {
 void HouseProperty::doEffect(Player* currentPlayer) {
 	//calls Animator::tileExpandAnimation()
 	std::cout << currentPlayer->getName() <<" stepped on " << name << std::endl;
-	if (owner == currentPlayer) {
+	if (owner == currentPlayer && rentStage < rentPrices.size() - 1) {
 		update();
 	}
 	else if (owner == NULL) {
@@ -72,7 +76,7 @@ void HouseProperty::doEffect(Player* currentPlayer) {
 			std::cout << currentPlayer->getName() << " bought" << name << std::endl;
 		}
 	}
-	else {
+	else if(currentPlayer != owner){
 			std::cout << currentPlayer->getName() << " needs to pay " << getRentPrice() << " to " << owner->getName() << std::endl;
 		owner->recieveMoney(getRentPrice());
 		currentPlayer->payMoney(getRentPrice());
