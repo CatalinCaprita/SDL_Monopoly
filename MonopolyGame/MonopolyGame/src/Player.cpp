@@ -12,7 +12,7 @@ int coordY[] = { 940, 940, 940, 940, 940, 940, 940, 940, 940, 940, 960,
 				 164, 246, 328, 410, 492, 574, 656, 738, 820, 950
 				};
 
-Player::Player(std::vector<AbstractProperty*>& t, std::string name, const char* filepath, int xpos, int ypos, int height, int width) : totalMoney(10000),id(counter + 1), currentPosition(0), ownedProperties(t), name(name), jailed(false),bankrupt(false){
+Player::Player(std::vector<Tile*>& t, std::string name, const char* filepath, int xpos, int ypos, int height, int width) : totalMoney(10000),id(counter + 1), currentPosition(0), ownedProperties(t), name(name), jailed(false),bankrupt(false){
 	counter++;
 	spriteFrame.x = xpos;
 	spriteFrame.y = ypos;
@@ -50,22 +50,22 @@ int Player::payMoney(int amount) {
 	return amount;
 }
 
-void Player::buyProperty(AbstractProperty* property)
+void Player::buyProperty(Tile* property)
 {
-	if (totalMoney < property.getRentPrice())
+	if (totalMoney < ((AbstractProperty*)property)->getRentPrice()) // needs testing
 		std::cout << "Sorry, you don't have the money!";
 	else {
-		this->payMoney(property.getRentPrice());
+		this->payMoney(((AbstractProperty*)property)->getRentPrice());
 		this->ownedProperties.push_back(property);
 	}
 	return;
 }
-void Player::sellProperty(AbstractProperty* property)
+void Player::sellProperty(Tile* property)
 {
-	for (int i=0;i<ownedProperties.size;i++)
+	for (int i=0;i<ownedProperties.size();i++)
 		if (ownedProperties[i] == property)
 		{
-			property->setOwner(NULL);
+			//property->setOwner(NULL);
 			// remove every layer of
 			ownedProperties.erase(ownedProperties.begin()+i); // erases the element at index i -> needs testing
 
@@ -98,5 +98,5 @@ void Player::render(SDL_Renderer* renderer) {
 void Player::print(){
 	std::cout << "name: " << name << "id: " << id << "balance: " << totalMoney << "owned properties: ";
 	for (auto x : ownedProperties)
-		std::cout << x.getName() + "; ";
+		std::cout << x->getName() + "; ";
 }

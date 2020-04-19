@@ -3,6 +3,7 @@
 #include <iostream>
 #include "SDL.h"
 #include "../headers/Player.h"
+#include "../headers/Tile.h"
 
 class Game {
 public:

@@ -19,15 +19,22 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\AbstractProperty.cpp" />
     <ClCompile Include="src\Game.cpp" />
+    <ClCompile Include="src\HouseProperty.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\Player.cpp" />
     <ClCompile Include="src\TextureMaker.cpp" />
+    <ClCompile Include="src\Tile.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="headers\AbstractProperty.h" />
     <ClInclude Include="headers\Game.h" />
+    <ClInclude Include="headers\Groups.h" />
+    <ClInclude Include="headers\HouseProperty.h" />
     <ClInclude Include="headers\Player.h" />
     <ClInclude Include="headers\TextureMaker.h" />
+    <ClInclude Include="headers\Tile.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>

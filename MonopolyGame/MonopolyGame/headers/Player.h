@@ -2,11 +2,11 @@
 #include "SDL.h"
 #include <vector>
 #include "../headers/TextureMaker.h"
-//#include "../headers/Tile.h"
-class Tile;
+#include "../headers/Tile.h"
+#include "../headers/AbstractProperty.h"
 class Player {
 public:
-	Player(std::vector<AbstractProperty*>& properties, std::string name,const char*, int, int, int, int);
+	Player(std::vector<Tile*>& properties, std::string name,const char*, int, int, int, int);
 	~Player();
 	void move(int = 0);
 	std::string& getName();
@@ -17,8 +17,8 @@ public:
 	bool isBankrupt();
 	int receiveMoney(int = 0);
 	int payMoney(int = 0);
-	void buyProperty(AbstractProperty*);
-	void sellProperty(AbstractProperty*);
+	void buyProperty(Tile*);
+	void sellProperty(Tile*);
 
 private:
 	static int counter;
@@ -28,7 +28,7 @@ private:
 	bool jailed;
 	bool bankrupt;
 	std::string name;
-	std::vector<AbstractProperty*>& ownedProperties;
+	std::vector<Tile*>& ownedProperties;
 	SDL_Rect spriteFrame;
 	SDL_Texture* playerTexture;
 };

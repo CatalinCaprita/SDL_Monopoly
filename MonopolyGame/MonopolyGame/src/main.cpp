@@ -5,7 +5,6 @@
 #define WIN_WIDTH 1000
 #define FPS 120
 
-using namespace std;
 int main(int argc, char *argv[]) {
 	SDL_Init(SDL_INIT_EVERYTHING);
 	Game* instance = new Game("Monopoly", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, WIN_HEIGHT, WIN_WIDTH, false);

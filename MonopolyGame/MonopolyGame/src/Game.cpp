@@ -14,8 +14,10 @@ Game::Game(const char* title, int x_pos, int y_pos, int width, int height, bool 
 		background = TextureMaker::textureFromBMP("assets/background.bmp");
 		if (!background || !playerTexture)
 			isRunning = false;
-		player1 = new Player(new std::vector <Tile*>,"Player1","assets/blue.bmp", 930, 930, 30, 30);
-		player2 = new Player(new std::vector <Tile*>, "Player1","assets/red.bmp", 940, 930, 30, 30);
+		std::vector<Tile*> t1;
+		std::vector<Tile*> t2;
+		player1 = new Player(t1, "Player1", "assets/blue.bmp", 930, 930, 30, 30);
+		player2 = new Player(t2, "Player1", "assets/red.bmp", 940, 930, 30, 30);
 		isRunning = true;
 	}
 	else {
