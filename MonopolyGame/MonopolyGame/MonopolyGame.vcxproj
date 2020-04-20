@@ -20,6 +20,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\AbstractProperty.cpp" />
+    <ClCompile Include="src\Dice.cpp" />
     <ClCompile Include="src\Game.cpp" />
     <ClCompile Include="src\HouseProperty.cpp" />
     <ClCompile Include="src\main.cpp" />
@@ -29,6 +30,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="headers\AbstractProperty.h" />
+    <ClInclude Include="headers\Dice.h" />
     <ClInclude Include="headers\Game.h" />
     <ClInclude Include="headers\Groups.h" />
     <ClInclude Include="headers\HouseProperty.h" />

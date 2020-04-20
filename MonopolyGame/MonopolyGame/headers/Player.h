@@ -6,9 +6,9 @@
 #include "../headers/AbstractProperty.h"
 class Player {
 public:
-	Player(std::vector<Tile*>& properties, std::string name,const char*, int, int, int, int);
+	Player(std::string name,const char*, int, int, int, int);
 	~Player();
-	void move(int = 0);
+	void move();
 	std::string& getName();
 	void render(SDL_Renderer*);
 	void update();
@@ -28,7 +28,7 @@ private:
 	bool jailed;
 	bool bankrupt;
 	std::string name;
-	std::vector<Tile*>& ownedProperties;
+	std::vector<Tile*> ownedProperties;
 	SDL_Rect spriteFrame;
 	SDL_Texture* playerTexture;
 };

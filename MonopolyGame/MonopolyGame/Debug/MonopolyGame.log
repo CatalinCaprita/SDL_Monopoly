@@ -1,12 +1,2 @@
-﻿  AbstractProperty.cpp
-  Game.cpp
-  HouseProperty.cpp
-C:\Users\Alen\Desktop\SDL_Monopoly\MonopolyGame\MonopolyGame\src\HouseProperty.cpp(30,16): warning C4018: '<': signed/unsigned mismatch
-C:\Users\Alen\Desktop\SDL_Monopoly\MonopolyGame\MonopolyGame\src\HouseProperty.cpp(65,42): warning C4018: '<': signed/unsigned mismatch
-  main.cpp
-C:\Users\Alen\Desktop\SDL_Monopoly\MonopolyGame\MonopolyGame\src\main.cpp(22,25): warning C4244: 'argument': conversion from 'float' to 'Uint32', possible loss of data
-  Player.cpp
-C:\Users\Alen\Desktop\SDL_Monopoly\MonopolyGame\MonopolyGame\src\Player.cpp(65,16): warning C4018: '<': signed/unsigned mismatch
-  Tile.cpp
-  Generating Code...
+﻿  Game.cpp
   MonopolyGame.vcxproj -> C:\Users\Alen\Desktop\SDL_Monopoly\MonopolyGame\MonopolyGame\Debug\MonopolyGame.exe

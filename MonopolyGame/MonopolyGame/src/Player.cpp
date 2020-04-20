@@ -1,5 +1,5 @@
 #include "../headers/Player.h"
-#define OFFSET 2
+#define OFFSET 3
 int Player::counter = 0;
 int coordX[] = { 950, 820, 738, 656, 574, 492, 410, 328, 246, 164, 20,
 				 40, 40, 40, 40, 40, 40, 40, 40, 40, 40,
@@ -12,7 +12,8 @@ int coordY[] = { 940, 940, 940, 940, 940, 940, 940, 940, 940, 940, 960,
 				 164, 246, 328, 410, 492, 574, 656, 738, 820, 950
 				};
 
-Player::Player(std::vector<Tile*>& t, std::string name, const char* filepath, int xpos, int ypos, int height, int width) : totalMoney(10000),id(counter + 1), currentPosition(0), ownedProperties(t), name(name), jailed(false),bankrupt(false){
+Player::Player(std::string name, const char* filepath, int xpos, int ypos, int height, int width) : totalMoney(10000),id(counter + 1), currentPosition(0), name(name), jailed(false),bankrupt(false){
+	ownedProperties = *(new std::vector<Tile*>);
 	counter++;
 	spriteFrame.x = xpos;
 	spriteFrame.y = ypos;
@@ -27,13 +28,12 @@ Player::~Player() {
 	*/
 }
 
-void Player::move(int value) {
-	currentPosition += value;
-	currentPosition %= 40;
+void Player::move() {
+		currentPosition++;
+		currentPosition %= 40;
 	/* 
 		call of tiles[position??].doEffect(this);
 	*/
-	SDL_Delay(200);
 }
 
 int Player::receiveMoney(int amount) {
@@ -52,7 +52,7 @@ int Player::payMoney(int amount) {
 
 void Player::buyProperty(Tile* property)
 {
-	if (totalMoney < ((AbstractProperty*)property)->getRentPrice()) // needs testing
+	if (totalMoney < ((AbstractProperty*)property)->getRentPrice())
 		std::cout << "Sorry, you don't have the money!";
 	else {
 		this->payMoney(((AbstractProperty*)property)->getRentPrice());

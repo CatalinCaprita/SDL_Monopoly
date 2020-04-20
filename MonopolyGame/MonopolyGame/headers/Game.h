@@ -4,6 +4,7 @@
 #include "SDL.h"
 #include "../headers/Player.h"
 #include "../headers/Tile.h"
+#include "../headers/Dice.h"
 
 class Game {
 public:
@@ -19,7 +20,10 @@ private:
 	static int count;
 	bool isRunning;
 	Player *player1;
-	Player *player2;
+	Player* player2;
+	Player* player3;
+	Player* player4;
+	Dice* dice;
 	SDL_Window* window;			//window object to be used as the main game frame
 	SDL_Renderer* renderer;		//renderer composite passed as arg to all render functinos. see update() and render()
 	SDL_Rect spriteFrame;		//experimented a little :)) So far just to set the size of a pawn
