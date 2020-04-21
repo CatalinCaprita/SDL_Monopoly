@@ -13,6 +13,8 @@ public:
 	void update();
 	int getFirstDieValue();
 	int getSecondDieValue();
+	SDL_Rect getFirstDieRect();
+	SDL_Rect getSecondDieRect();
 private:
 	int firstDieValue;
 	int secondDieValue;

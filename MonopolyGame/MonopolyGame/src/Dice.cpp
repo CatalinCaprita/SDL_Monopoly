@@ -41,3 +41,13 @@ int Dice::getFirstDieValue() {
 int Dice::getSecondDieValue() {
 	return secondDieValue;
 }
+
+SDL_Rect Dice::getFirstDieRect()
+{
+	return firstDieRect;
+}
+
+SDL_Rect Dice::getSecondDieRect()
+{
+	return secondDieRect;
+}
