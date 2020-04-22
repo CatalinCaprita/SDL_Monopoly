@@ -1,0 +1,4 @@
+﻿  Game.cpp
+C:\Users\Catalin\Desktop\MonopolyDev\SDL_Monopoly\MonopolyGame\MonopolyGame\src\Game.cpp(146,21): warning C4018: '<': signed/unsigned mismatch
+C:\Users\Catalin\Desktop\MonopolyDev\SDL_Monopoly\MonopolyGame\MonopolyGame\src\Game.cpp(149,21): warning C4018: '<': signed/unsigned mismatch
+  SDL_MONOPOLY.vcxproj -> C:\Users\Catalin\Desktop\FINALMonopoly\SDL_MONOPOLY\Debug\SDL_MONOPOLY.exe
