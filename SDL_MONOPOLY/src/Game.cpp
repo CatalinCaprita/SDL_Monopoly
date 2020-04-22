@@ -1,56 +1,22 @@
 #define PAWN_SIZE 25
 #define NUMBER_OF_PLAYERS 4
 #include "../headers/Game.h"
-<<<<<<< HEAD
 
 Game::Game(const char* title, int x_pos, int y_pos, int width, int height, bool full_screen) {
 		dice = new Dice();
 	mousePressed = false;
 	turn = 0;
-=======
-#include "../headers/TextureMaker.h"
-#include <string>
-#include <vector>
-#include <utility>
-#include <fstream>
-#define TILE_NUM 39
-#define PROP_NUM 22
-#define CARD_NUM 6
-#define UTIL_NUM 2
-#define UPPER_RENTS_BOUND 10
-int Game::count = 0;
-
-//Array of indexes for the HouseProperty properties
-// tiles[propIdx[i]] = new HouseProperty();
-int propIdx[] = { 1,3,			// BROWN
-					6,8,9,		//LTBLUE				
-					11,13,14,	//PURPLER
-					16,18,19,	//ORANGE
-					21,23,24,	//RED
-					26,27,29,	//YELLOW
-					31,32,34,	//GREEN
-					37,39 };		//BLUE
-
-//Array of indexes for the Card type
-//tiles[cardIdx[i]] = new Card();
-int cardIdx[] = { 2,7,17,22,33,36 };
-int stationIdx[] = { 5,15,25,35 };
-int utilIdx[] = { 12,28 };
-int lastColor[] = { 3,9,14,19,24,29,34,39 };
-
-Game::Game(const char* title, int x_pos, int y_pos, int width, int height, bool full_screen) :tiles(TILE_NUM){
->>>>>>> bbf50129cc713baef4db09224514aff1f60973a6
 	int new_flag = 0;
 	if (full_screen) {
 		new_flag = SDL_WINDOW_FULLSCREEN;
 	}
+
 	if (SDL_Init(SDL_INIT_EVERYTHING) == 0) {
 		window = SDL_CreateWindow(title, x_pos, y_pos, width, height, new_flag);
 		renderer = SDL_CreateRenderer(window, -1, 0);
 		if (renderer)
 			SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
 		TextureMaker::attach(renderer);
-<<<<<<< HEAD
 		background = TextureMaker::textureFromBMP("assets/background.bmp");
 		spriteFrame.x = 0;
 		spriteFrame.y = 0;
@@ -69,15 +35,7 @@ Game::Game(const char* title, int x_pos, int y_pos, int width, int height, bool 
 		buttons.push_back(new Button("assets/buy_button.bmp", 1050, 590, 225, 80));
 		buttons.push_back(new Button("assets/sell_button.bmp", 1050, 670, 225, 80));
 		buttons.push_back(new Button("assets/end_turn_button.bmp", 1050, 750, 225, 80));
-=======
-		background = TextureMaker::textureFromBMP("assets/board.bmp");
-		playerTexture = TextureMaker::textureFromBMP("assets/pawn.bmp"); 
-		if (!background || !playerTexture)
-			isRunning = false;
->>>>>>> bbf50129cc713baef4db09224514aff1f60973a6
 		isRunning = true;
-		fillTiles("assets/houseProperties.txt");
-		players.push_back(new Player(tiles,"First Player"));
 	}
 	else {
 		isRunning = false;
@@ -164,79 +122,8 @@ Game::~Game() {
 }
 
  void Game::update() {
-<<<<<<< HEAD
 	 for (int i = 0; i < NUMBER_OF_PLAYERS; i++)
 		 players[i]->update();
 	 dice->update();
-=======
-	 players[0]->move();
  }
 
- Groups getGroupId(int i) {
-	 Groups color = RED;
-	 switch (i) {
-	 case 0: color = BROWN;
-		 break;
-	 case 1: color = LTBLUE;
-		 break;
-	 case 2: color = PURPLE;
-		 break;
-	 case 3: color = ORANGE;
-		 break;
-	 case 4: color = RED;
-		 break;
-	 case 5: color = YELLOW;
-		 break;
-	 case 6: color = GREEN;
-		 break;
-	 case 7: color = BLUE;
-		 break;
-	 }
-	 return color;
- }
-
- std::string parse(const std::string & line, const char token) {
-	 std::string result = "";
-	 int pos = line.find(token);
-	 int prev = 0;
-	 while (pos != std::string::npos) {
-		 result += line.substr(prev,pos - prev);
-		 result += " ";
-		 prev = pos + 1;
-		 pos = line.find(token, pos + 1);
-	 }
-	 result += line.substr(prev, pos - prev);
-	 return result;
- }
- void Game::fillTiles(const char *filePath) {
-	 std::ifstream fin(filePath);
-	 if (!fin) {
-		 std::cout << "FILE NOT FOUND";
-		 return;
-	 }
-	 int pid = 0, cid = 0, sid = 0, uid = 0;
-	 int groupID;
-	 std::string name;
-	 int buyPrice, updateCost, rentStages;
-	 std::vector<int>rentPrices(UPPER_RENTS_BOUND);	//dirty technique, but what can you do  `\ (' - ') /`
-	 Groups color;
-	 for (int i = 0; i < TILE_NUM; i++) {
-		 //For HousePropery
-		 if (pid < PROP_NUM  && i == propIdx[pid]) {
-			 fin >> name >> buyPrice >> updateCost >> groupID;
-			 name = parse(name, '_');
-			 color = getGroupId(groupID);
-			 rentStages = 6;
-			 for (int i = 0; i < rentStages; i++)
-				 fin >> rentPrices[i];
-			 tiles[i] = new HouseProperty(name, buyPrice,updateCost,rentPrices,color);
-			 tiles[i]->print();
-			 pid++;
-		 }
-		 //For Station
-	 }
-
->>>>>>> bbf50129cc713baef4db09224514aff1f60973a6
- }
-
- 

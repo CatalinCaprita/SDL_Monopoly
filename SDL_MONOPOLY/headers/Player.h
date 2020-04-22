@@ -1,12 +1,9 @@
-#ifndef PLAYER_H
-#define PLAYER_H
-
+#pragma once
 #include "SDL.h"
 #include <vector>
 #include "../headers/TextureMaker.h"
 #include "../headers/Tile.h"
 #include "../headers/AbstractProperty.h"
-class Tile;
 class Player {
 public:
 	Player(std::string name,const char*, int, int, int, int);
@@ -35,5 +32,3 @@ private:
 	SDL_Rect spriteFrame;
 	SDL_Texture* playerTexture;
 };
-#endif //!PLAYER_H
-

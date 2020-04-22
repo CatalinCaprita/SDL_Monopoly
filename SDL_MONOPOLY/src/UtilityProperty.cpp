@@ -36,7 +36,7 @@ void UtilityProperty::doEffect(Player* currentPlayer) {
 		//TODO SA AVEM O FUNCTIE CARE NE RETURNEAZA SUMA ZARURILOR
 		//sumToPay = multiplier * OCLASA.getSumDice();
 		std::cout << currentPlayer->getName() << " needs to pay " << sumToPay << " to " << owner->getName() << std::endl;
-		owner->recieveMoney(sumToPay);
+		owner->receiveMoney(sumToPay);
 		currentPlayer->payMoney(sumToPay);
 		
 	}

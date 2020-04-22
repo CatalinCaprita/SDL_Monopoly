@@ -1,4 +1,5 @@
 #include "../headers/StationProperty.h"
+int StationProperty::stationNumber = 0;
 StationProperty::StationProperty(std::string name, int buyPrice, int updateCost, std::vector<int>& rents, Groups groupId) :AbstractProperty(name, buyPrice, updateCost, groupId) {
 	this->stationNumber = 0;
 	this->rentStage = 0;
@@ -26,7 +27,7 @@ void StationProperty::doEffect(Player* currentPlayer) {
 		sumToPay = owner.getNumberOfStations() * 25;
 		*/
 		std::cout << currentPlayer->getName() << " needs to pay " << sumToPay << " to " << owner->getName() << std::endl;
-		owner->recieveMoney(sumToPay);
+		owner->receiveMoney(sumToPay);
 		currentPlayer->payMoney(sumToPay);
 
 	}
