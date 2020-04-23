@@ -31,12 +31,15 @@ int stationIdx[] = { 5,15,25,35 };
 int utilIdx[] = { 12,28 };
 int lastColor[] = { 3,9,14,19,24,29,34,39 };
 
-Game::Game(const char* title, int x_pos, int y_pos, int width, int height, bool full_screen) :tiles(TILE_NUM){
-
+Game::Game(const char* title, int x_pos, int y_pos, int width, int height, bool full_screen) {
+		dice = new Dice();
+	mousePressed = false;
+	turn = 0;
 	int new_flag = 0;
 	if (full_screen) {
 		new_flag = SDL_WINDOW_FULLSCREEN;
 	}
+
 	if (SDL_Init(SDL_INIT_EVERYTHING) == 0) {
 		window = SDL_CreateWindow(title, x_pos, y_pos, width, height, new_flag);
 		renderer = SDL_CreateRenderer(window, -1, 0);
@@ -61,11 +64,14 @@ Game::Game(const char* title, int x_pos, int y_pos, int width, int height, bool 
 		buttons.push_back(new Button("assets/buy_button.bmp", 1050, 590, 225, 80));
 		buttons.push_back(new Button("assets/sell_button.bmp", 1050, 670, 225, 80));
 		buttons.push_back(new Button("assets/end_turn_button.bmp", 1050, 750, 225, 80));
+
 		background = TextureMaker::textureFromBMP("assets/background.bmp");
 		if (!background)
 			isRunning = false;
 		isRunning = true;
 		fillTiles("assets/houseProperties.txt");
+
+		isRunning = true;
 	}
 	else {
 		isRunning = false;
@@ -223,4 +229,3 @@ Game::~Game() {
 
  }
 
- 

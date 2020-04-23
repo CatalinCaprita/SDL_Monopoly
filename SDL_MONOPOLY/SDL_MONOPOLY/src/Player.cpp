@@ -100,4 +100,3 @@ void Player::print(){
 	for (auto x : ownedProperties)
 		std::cout << x->getName() + "; ";
 }
-
