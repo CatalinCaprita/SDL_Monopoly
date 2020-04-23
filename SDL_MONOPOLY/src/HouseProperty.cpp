@@ -78,11 +78,7 @@ void HouseProperty::doEffect(Player* currentPlayer) {
 	}
 	else if(currentPlayer != owner){
 			std::cout << currentPlayer->getName() << " needs to pay " << getRentPrice() << " to " << owner->getName() << std::endl;
-<<<<<<< HEAD
 		owner->receiveMoney(getRentPrice());
-=======
-		owner->recieveMoney(getRentPrice());
->>>>>>> bbf50129cc713baef4db09224514aff1f60973a6
 		currentPlayer->payMoney(getRentPrice());
 	}
 }

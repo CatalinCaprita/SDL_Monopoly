@@ -1,5 +1,4 @@
 #include "../headers/Player.h"
-<<<<<<< HEAD
 #define OFFSET 3
 int Player::counter = 0;
 int coordX[] = { 950, 820, 738, 656, 574, 492, 410, 328, 246, 164, 20,
@@ -42,26 +41,6 @@ int Player::receiveMoney(int amount) {
 	return amount;
 }
 
-=======
-#include "../headers/Tile.h"
-#include <string>
-#include <iostream>
-int Player::counter = 0;
-Player::Player(std::vector<Tile*>&t,std::string name) :totalMoney(10000),id(counter + 1),tiles(t),name(name){
-	counter++;
-}
-Player::~Player() {
-
-}
-void Player::move() {
-	tiles[1]->doEffect(this);
-}
-
-int Player::recieveMoney(int amount) {
-	this->totalMoney += amount;
-	return amount;
-}
->>>>>>> bbf50129cc713baef4db09224514aff1f60973a6
 int Player::payMoney(int amount) {
 	if (this->totalMoney < 0) {
 		std::cout << "You are BANKRUPT!";
@@ -70,7 +49,6 @@ int Player::payMoney(int amount) {
 	this->totalMoney -= amount;
 	return amount;
 }
-<<<<<<< HEAD
 
 void Player::buyProperty(Tile* property)
 {
@@ -122,8 +100,3 @@ void Player::print(){
 	for (auto x : ownedProperties)
 		std::cout << x->getName() + "; ";
 }
-=======
-std::string& Player::getName() {
-	return name;
-}
->>>>>>> bbf50129cc713baef4db09224514aff1f60973a6
