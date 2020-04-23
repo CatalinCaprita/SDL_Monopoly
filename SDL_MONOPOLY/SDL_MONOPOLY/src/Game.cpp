@@ -31,7 +31,7 @@ int stationIdx[] = { 5,15,25,35 };
 int utilIdx[] = { 12,28 };
 int lastColor[] = { 3,9,14,19,24,29,34,39 };
 
-Game::Game(const char* title, int x_pos, int y_pos, int width, int height, bool full_screen) {
+Game::Game(const char* title, int x_pos, int y_pos, int width, int height, bool full_screen):tiles(39){
 		dice = new Dice();
 	mousePressed = false;
 	turn = 0;

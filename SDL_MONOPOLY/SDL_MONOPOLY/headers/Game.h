@@ -23,6 +23,7 @@ public:
 	void update();
 	void render();
 	void listen_event();
+	void fillTiles(const char *);
 private:
 	int turn;
 	static int count;
