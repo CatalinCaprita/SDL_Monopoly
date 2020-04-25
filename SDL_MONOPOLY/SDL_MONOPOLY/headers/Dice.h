@@ -15,7 +15,11 @@ public:
 	int getSecondDieValue();
 	SDL_Rect getFirstDieRect();
 	SDL_Rect getSecondDieRect();
+	bool thrownDouble();
+	void setBlocked(bool);
+	bool isBlocked();
 private:
+	bool blocked;
 	int firstDieValue;
 	int secondDieValue;
 	SDL_Rect firstDieRect;

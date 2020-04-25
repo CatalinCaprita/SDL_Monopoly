@@ -14,11 +14,14 @@ public:
 	void update();
 	void print();
 	bool isJailed();
+	void goToJail();
+	void freeFromJail();
 	bool isBankrupt();
 	int receiveMoney(int = 0);
 	int payMoney(int = 0);
 	void buyProperty(Tile*);
 	void sellProperty(Tile*);
+	int getCurrPosition();
 
 private:
 	static int counter;

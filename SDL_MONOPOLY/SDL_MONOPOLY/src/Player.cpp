@@ -72,13 +72,28 @@ void Player::sellProperty(Tile* property)
 		}
 }
 
-std::string& Player::getName() {
-	return name;
+int Player::getCurrPosition()
+{
+	return currentPosition;
 }
 
 bool Player::isJailed()
 {
 	return jailed;
+}
+
+void Player::goToJail()
+{
+	jailed = true;
+}
+
+void Player::freeFromJail()
+{
+	jailed = false;
+}
+
+std::string& Player::getName() {
+	return name;
 }
 
 bool Player::isBankrupt()

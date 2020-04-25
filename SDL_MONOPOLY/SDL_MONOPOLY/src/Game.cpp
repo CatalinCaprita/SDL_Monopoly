@@ -78,6 +78,7 @@ Game::Game(const char* title, int x_pos, int y_pos, int width, int height, bool 
 	}
 
 }
+
 Game::~Game() {
 	SDL_DestroyRenderer(renderer);
 	SDL_DestroyWindow(window);
@@ -94,7 +95,6 @@ Game::~Game() {
 
 	 if (SDL_GetMouseState(&mouseX, &mouseY) & SDL_BUTTON(SDL_BUTTON_LEFT)) { 
 		 if (!mousePressed) {
-
 			 if (mouseX > dice->getFirstDieRect().x&&
 				 mouseX < dice->getSecondDieRect().x + dice->getSecondDieRect().w &&
 				 mouseY > dice->getFirstDieRect().y&&
@@ -103,15 +103,40 @@ Game::~Game() {
 					 // If you press on the dice
 					 /*
 						TO DO
-						Number of rolls + jail + not being able to roll 10 times/same turn
+						POP UP for ending turn without rolling + POP UP for rolling when you didn't roll a double +
+						stay in jail for 3 rounds
 					 */
-					 dice->roll(renderer);
-					 for (int i = 0; i < dice->getFirstDieValue() + dice->getSecondDieValue(); i++) {
-						 players[turn]->move();
-						 players[turn]->update();
-						 Game::render();
-						 SDL_RenderPresent(renderer);
-						 SDL_Delay(500);
+					 int nrDoublesThrown = 0;
+					 if (!dice->isBlocked()) {
+						 dice->roll(renderer);
+						 if (dice->thrownDouble()) {
+							 nrDoublesThrown++;
+						 }
+
+						 if (nrDoublesThrown == 1)
+						 {
+							 players[turn]->goToJail();
+							 int moves = 50 - players[turn]->getCurrPosition();
+							 for (int i = 0; i < moves ; i++) { // 50 - currentPosition => jail field
+								 players[turn]->move();
+								 players[turn]->update();
+								 Game::render();
+								 SDL_RenderPresent(renderer);
+								 SDL_Delay(100);
+							 }
+						 }
+						 else
+							 for (int i = 0; i < dice->getFirstDieValue() + dice->getSecondDieValue(); i++) {
+								 players[turn]->move();
+								 players[turn]->update();
+								 Game::render();
+								 SDL_RenderPresent(renderer);
+								 SDL_Delay(300);
+							 }
+						 if (!dice->thrownDouble()) {
+							 dice->setBlocked(true);
+							 nrDoublesThrown = 0;
+						 }
 					 }
 				 }
 			 else if (buttons[0]->hoverButton(mouseX, mouseY)){ 
@@ -120,7 +145,9 @@ Game::~Game() {
 			 else if (buttons[1]->hoverButton(mouseX, mouseY)){
 				 std::cout << "button1" << std::endl;
 			 }
-			 else if (buttons[2]->hoverButton(mouseX, mouseY)){
+			 else if (buttons[2]->hoverButton(mouseX, mouseY) && dice->isBlocked()){
+				 //has to be broken in 2 ifs
+				 dice->setBlocked(false);
 				 turn++;
 				 turn %= 4;
 				 std::cout << "button2" << std::endl;
@@ -146,6 +173,7 @@ Game::~Game() {
 	 }*/
 	 
  }
+
  void Game::render() {
 	 SDL_RenderClear(renderer);
 	 SDL_RenderCopy(renderer, background, NULL, &spriteFrame);
@@ -199,6 +227,7 @@ Game::~Game() {
 	 result += line.substr(prev, pos - prev);
 	 return result;
  }
+
  void Game::fillTiles(const char *filePath) {
 	 std::ifstream fin(filePath);
 	 if (!fin) {
