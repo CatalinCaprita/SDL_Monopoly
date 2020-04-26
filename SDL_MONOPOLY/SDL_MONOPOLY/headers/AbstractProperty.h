@@ -18,11 +18,10 @@ public:
 	//Let every kind of AbstractProperty have its own size for rentPrices[]
 	AbstractProperty(std::string name, int buyPrice,int updateCost, Groups groupId);
 	virtual void doEffect(Player* currentPlayer) = 0;
-	virtual void setRentPrice(int index, int price) = 0;
-	virtual int getRentPrice() = 0;
+	virtual int getRentPrice() { return 0; };
 	int getBuyPrice();
 	int getGroupId();
-	virtual void update() = 0;
+	virtual void update() {};
 	Player* getOwner();
 	
 };

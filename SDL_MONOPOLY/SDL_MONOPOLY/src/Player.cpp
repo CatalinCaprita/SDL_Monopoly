@@ -1,6 +1,15 @@
 #include "../headers/Player.h"
 #define OFFSET 3
+
 int Player::counter = 0;
+
+//Could convert these into distance from X = 0 to a said X  in GAME UNITS
+// 1 GAME UNIT .... WIDTH / 100 pixels
+// x GAME UNITS ..... DISTANCE IN PIXELS FROM 0 TO SAID POSITIOn
+//-> x = DISTANCE IN PIXELS / WIDTH * 100 GAME UNITS
+//Could do measurements for one scalin in game units and then convert from there
+//Then from 
+// distance in pixels related to screen width = 
 int coordX[] = { 950, 820, 738, 656, 574, 492, 410, 328, 246, 164, 20,
 				 40, 40, 40, 40, 40, 40, 40, 40, 40, 40,
 				 164, 246, 328, 410, 492, 574, 656, 738, 820, 950,			// first substraction: 130;		every substraction after: 82;
@@ -12,30 +21,45 @@ int coordY[] = { 940, 940, 940, 940, 940, 940, 940, 940, 940, 940, 960,
 				 164, 246, 328, 410, 492, 574, 656, 738, 820, 950
 				};
 
-Player::Player(std::string name, const char* filepath, int xpos, int ypos, int height, int width) : totalMoney(10000),id(counter + 1), currentPosition(0), name(name), jailed(false),bankrupt(false){
+//W, H, X, Y  will be in GAME_UNITS now, see Game.cpp and Sprite.h
+Player::Player(std::string name, const char* filepath, int unitX, int unitY, int unitH, int unitW) : totalMoney(10000),id(counter + 1), currentPosition(0), name(name), jailed(false),bankrupt(false){
 	ownedProperties = *(new std::vector<Tile*>);
 	counter++;
-	spriteFrame.x = xpos;
-	spriteFrame.y = ypos;
-	spriteFrame.h = height;
-	spriteFrame.w = width;
-	playerTexture = TextureMaker::textureFromBMP(filepath);
+	sprite = new Sprite(filepath,unitW,unitH,unitX,unitY);
+	remainingSteps = 0;
+	finishMoving = false;
+	renderDelay = 300;
+	lastRender = 0;
 }
 
 Player::~Player() {
-	/*
-		TO DO
-	*/
+	delete sprite;
+}
+/*
+Once finnished moving the player reaches a certain currentPosition
+*/
+
+//Every Drawable object will have its sizes in game units for scalablity. 1 game unit = screenSzie / 100;
+void Player::setSpriteScale(int screenW, int screenH) {
+	sprite->setScale(screenW,screenH);
+}
+/**
+@params remainingSteps , firstDieValue + secondDieValue, how many steps the player has to move, i.e. how many times to update the sprite
+
+*/
+void Player::setRemainingSteps(int remainingSteps) {
+	this->remainingSteps = remainingSteps;
+}
+Sprite* Player::getSprite() {
+	return sprite;
 }
 
-void Player::move() {
-		currentPosition++;
-		currentPosition %= 40;
-	/* 
-		call of tiles[position??].doEffect(this);
-	*/
+/**
+@returns true if the player has moved since rolling the dice, i.e. moving animation should no longer be expected
+*/
+bool Player::finishedMoving() {
+	return finishMoving;
 }
-
 int Player::receiveMoney(int amount) {
 	this->totalMoney += amount;
 	return amount;
@@ -49,7 +73,12 @@ int Player::payMoney(int amount) {
 	this->totalMoney -= amount;
 	return amount;
 }
-
+/**
+@returns currentPosition where the player lands if it has finished moving, stepsRemaining  = 0
+*/
+int Player::getCurrentPosition() {
+	return currentPosition;
+}
 void Player::buyProperty(Tile* property)
 {
 	if (totalMoney < ((AbstractProperty*)property)->getRentPrice())
@@ -76,16 +105,16 @@ int Player::getCurrPosition()
 {
 	return currentPosition;
 }
-
+//Should also bee currentPosition = 10
+void Player::getJailed() {
+	currentPosition = 10;
+	jailed = true;
+}
 bool Player::isJailed()
 {
 	return jailed;
 }
 
-void Player::goToJail()
-{
-	jailed = true;
-}
 
 void Player::freeFromJail()
 {
@@ -101,13 +130,36 @@ bool Player::isBankrupt()
 	return bankrupt;
 }
 
+/*
+Player's Sprite Position will be updated only agter a delay, set by renderDelay
+and only if it has more than 0 steps to move. 
+Otherwise player's sprite keeps its position
+*/
 void Player::update() {
-	spriteFrame.x = coordX[currentPosition] + (id - OFFSET) * 10;
-	spriteFrame.y = coordY[currentPosition];
+	if (SDL_GetTicks() - lastRender >= renderDelay) {
+		if (!jailed && remainingSteps > 0) {
+			currentPosition++;
+			currentPosition %= 40;
+			//sprite->update(coordX[currentPosition] + (id - OFFSET) * 10, coordY[currentPosition]);
+			sprite->update(-1, -1);
+			remainingSteps--;
+			if (remainingSteps == 0)
+				finishMoving = true;
+			lastRender = SDL_GetTicks();
+			std::cout << "player " << name << " has to move " << remainingSteps << " steps \n ";
+		}
+		else {
+			sprite->update(0, 0);
+			finishMoving = false;
+		}
+	}
 }
-
-void Player::render(SDL_Renderer* renderer) {
-	SDL_RenderCopy(renderer, playerTexture, NULL, &spriteFrame);
+/**
+See sprite->render();
+*/
+void Player::render() {
+	sprite->render();
+	
 }
 
 void Player::print(){
