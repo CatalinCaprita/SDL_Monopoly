@@ -1,12 +1,8 @@
 #include "../headers/StationProperty.h"
-#include "../headers/UserAnimator.h"
-#define RENT_STAGES 4 
 int StationProperty::stationNumber = 0;
-StationProperty::StationProperty(std::string name, int buyPrice, int updateCost,Groups groupId,int fileId):AbstractProperty(name, buyPrice, updateCost, groupId) {
+StationProperty::StationProperty(std::string name, int buyPrice, int updateCost, std::vector<int>& rents, Groups groupId) :AbstractProperty(name, buyPrice, updateCost, groupId) {
 	this->stationNumber = 0;
 	this->rentStage = 0;
-	this->texturePath = this->texturePath = "assets/station_properties/" + std::to_string(fileId) + ".bmp";
-	rentPrices.push_back(25);
 }
 StationProperty::~StationProperty() {
 
@@ -14,7 +10,6 @@ StationProperty::~StationProperty() {
 
 void StationProperty::doEffect(Player* currentPlayer) {
 	if (owner == nullptr) {
-		UserAnimator::popPropertyCard(this);
 		std::cout << "This property is not owned by anyone. Do you wish to buy it? 1/0.\n";
 		int answer;
 		std::cin >> answer;
@@ -30,19 +25,10 @@ void StationProperty::doEffect(Player* currentPlayer) {
 		//TODO functions that returns number of owned stations by the owner
 		/*
 		sumToPay = owner.getNumberOfStations() * 25;
-		rentPrices[0] = sumToPay;
-
 		*/
 		std::cout << currentPlayer->getName() << " needs to pay " << sumToPay << " to " << owner->getName() << std::endl;
 		owner->receiveMoney(sumToPay);
 		currentPlayer->payMoney(sumToPay);
 
 	}
-}
-int StationProperty::getRentPrice() {
-	return  rentPrices[0];
-}
-
-void StationProperty::print() {
-	std::cout << name << " Buys for: " << buyPrice << " Rents for: " << getRentPrice() << std::endl;
 }

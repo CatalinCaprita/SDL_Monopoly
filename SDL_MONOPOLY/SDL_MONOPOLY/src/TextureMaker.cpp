@@ -28,6 +28,3 @@ SDL_Texture* TextureMaker::getWindowTexture(SDL_Window* win) {
 	return SDL_CreateTextureFromSurface(link,temp);
 
 }
-void TextureMaker::render(SDL_Texture* texture, SDL_Rect* srcRect, SDL_Rect* destRect) {
-	SDL_RenderCopy(link, texture, srcRect, destRect);
-}

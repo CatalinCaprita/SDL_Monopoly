@@ -1,13 +1,11 @@
 #include "../headers/HouseProperty.h"
 #include "../headers/Player.h"
-#include "../headers/UserAnimator.h"
 #define MAX_HOUSES 4
 #define RENT_STAGES 6
-HouseProperty::HouseProperty(std::string name, int buyPrice,int updateCost,std::vector<int>& rents, Groups groupId,int rectId) :AbstractProperty(name,buyPrice,updateCost,groupId){
+HouseProperty::HouseProperty(std::string name, int buyPrice,int updateCost,std::vector<int>& rents, Groups groupId) :AbstractProperty(name,buyPrice,updateCost,groupId){
 	this->houseNumber = 0;
 	this->hasHotel = false;
 	this->rentStage = 0;
-	this->texturePath = "assets/house_properties/" + std::to_string(rectId)+ ".bmp";
 	//[ NO HOUSE, ONE HOUSE, TWO_HOUSES, THREE_HOUSES, FOUR_HOUSES, HOTEL]
 	for (int i = 0; i < RENT_STAGES; i++) {
 		rentPrices.push_back(rents[i]);
@@ -15,6 +13,14 @@ HouseProperty::HouseProperty(std::string name, int buyPrice,int updateCost,std::
 }
 HouseProperty::~HouseProperty() {
 
+}
+
+void HouseProperty::setRentPrice(int index, int price) {
+	if (index >= RENT_STAGES) {
+		std::cerr << "Invalid index to set rentPrice to ";
+		return;
+	}
+	rentPrices[index] = price;
 }
 void HouseProperty::update() {
 	//TO DO -- int answer = UserDialog::tileUpdateDialog()
@@ -61,7 +67,7 @@ void HouseProperty::doEffect(Player* currentPlayer) {
 	}
 	else if (owner == NULL) {
 		// int answer = UserDialog::purchasePropertyDialog()
-		UserAnimator::popPropertyCard(this);
+		//if(anwer == 1){
 		std::cout << "This property is not owned by anyone. Do you wish to buy it? 1/0.\n";
 		int answer;
 		std::cin >> answer;
@@ -69,11 +75,9 @@ void HouseProperty::doEffect(Player* currentPlayer) {
 			owner = currentPlayer;
 			std::cout << currentPlayer->getName() << " bought" << name << std::endl;
 		}
-		UserAnimator::fadePropertyCard(this);
 	}
 	else if(currentPlayer != owner){
 			std::cout << currentPlayer->getName() << " needs to pay " << getRentPrice() << " to " << owner->getName() << std::endl;
-			UserAnimator::playerPaysPlayer(currentPlayer, owner);
 		owner->receiveMoney(getRentPrice());
 		currentPlayer->payMoney(getRentPrice());
 	}

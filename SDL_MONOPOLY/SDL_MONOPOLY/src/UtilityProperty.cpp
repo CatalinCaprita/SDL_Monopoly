@@ -1,9 +1,7 @@
 #include "../headers/UtilityProperty.h"
 #include  "../headers/Player.h"
-#include "../headers/UserAnimator.h"
-UtilityProperty::UtilityProperty(std::string name, int buyPrice, int updateCost,Groups groupId,int fileId) :AbstractProperty(name, buyPrice, updateCost, groupId) {
+UtilityProperty::UtilityProperty(std::string name, int buyPrice, int updateCost, std::vector<int>& rents, Groups groupId) :AbstractProperty(name, buyPrice, updateCost, groupId) {
 	this->rentStage = 0;
-	this->texturePath = "assets/utility_properties/" + std::to_string(fileId)+ ".bmp";
 }
 UtilityProperty::~UtilityProperty() {
 
@@ -11,7 +9,6 @@ UtilityProperty::~UtilityProperty() {
 
 void UtilityProperty::doEffect(Player* currentPlayer) {
 	if (owner == nullptr) {
-		UserAnimator::popPropertyCard(this);
 		std::cout << "This property is not owned by anyone. Do you wish to buy it? 1/0.\n";
 		int answer;
 		std::cin >> answer;
@@ -35,7 +32,7 @@ void UtilityProperty::doEffect(Player* currentPlayer) {
 			break;
 		}
 		*/
-		int sumToPay = getRentPrice();
+		int sumToPay = 0;
 		//TODO SA AVEM O FUNCTIE CARE NE RETURNEAZA SUMA ZARURILOR
 		//sumToPay = multiplier * OCLASA.getSumDice();
 		std::cout << currentPlayer->getName() << " needs to pay " << sumToPay << " to " << owner->getName() << std::endl;
@@ -43,13 +40,4 @@ void UtilityProperty::doEffect(Player* currentPlayer) {
 		currentPlayer->payMoney(sumToPay);
 		
 	}
-}
-void UtilityProperty::print() {
-	std::cout << name << " Buys for: " << buyPrice << " Rents for: " << getRentPrice() << std::endl;
-}
-
-int UtilityProperty::getRentPrice() {
-	//TO DO Could Attach a Dice* and return firstDieValue and SecondDieValue;
-	//Returns as Above;
-	return 0;
 }

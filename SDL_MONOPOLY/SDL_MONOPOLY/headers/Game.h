@@ -8,8 +8,9 @@
 #include "../headers/Button.h"
 #include <vector>
 #include "../headers/Player.h"
-#include "../headers/Properties.h"
-#include "../headers/Sprite.h"
+#include "../headers/Tile.h"
+#include "../headers/HouseProperty.h"
+#include "../headers/Groups.h"
 
 class Game {
 public:
@@ -23,14 +24,8 @@ public:
 	void render();
 	void listen_event();
 	void fillTiles(const char *);
-	int getScreenW();
-	int getScreenH();
-	SDL_Renderer* getRenderer();
-	SDL_Window* getWindow();
-	
 private:
 	int turn;
-	int screenWidth, screenHeight;
 	static int count;
 	bool isRunning;
 	bool mousePressed;
@@ -39,7 +34,9 @@ private:
 	Dice* dice;
 	SDL_Window* window;			//window object to be used as the main game frame
 	SDL_Renderer* renderer;		//renderer composite passed as arg to all render functinos. see update() and render()
-	Sprite* background;
+	SDL_Rect spriteFrame;		//experimented a little :)) So far just to set the size of a pawn
+	SDL_Texture* playerTexture;		//Texture that representes a player's Pawn. Soon to be integrated in the Player - related Class
+	SDL_Texture* background;		//Texture to fill the window frame
 	std::vector<Tile*> tiles;
 
 };

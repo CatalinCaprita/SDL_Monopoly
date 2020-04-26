@@ -6,7 +6,7 @@
 #include <vector>
 class HouseProperty  : public AbstractProperty{
 public :
-	HouseProperty(std::string name, int buyPrice,int updateCost,std::vector<int> &rentPrices,Groups groupId,int rectId);
+	HouseProperty(std::string name, int buyPrice,int updateCost,std::vector<int> &rentPrices,Groups groupId);
 	~HouseProperty();
 	void update();
 	void doEffect(Player* currentPlayer);

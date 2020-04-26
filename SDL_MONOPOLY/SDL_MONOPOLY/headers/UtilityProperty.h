@@ -6,11 +6,9 @@
 #include <vector>
 class UtilityProperty : public AbstractProperty {
 public:
-	UtilityProperty(std::string name, int buyPrice, int updateCost, Groups groupId,int fileId);
+	UtilityProperty(std::string name, int buyPrice, int updateCost, std::vector<int>& rentPrices, Groups groupId);
 	~UtilityProperty();
 	void doEffect(Player* currentPlayer);
-	void print();
-	int getRentPrice();
 private:
 	
 };
