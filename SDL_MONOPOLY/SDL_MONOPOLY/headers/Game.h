@@ -29,6 +29,7 @@ private:
 	static int count;
 	bool isRunning;
 	bool mousePressed;
+	static int nrDoublesThrown;
 	std::vector<Player*> players;
 	std::vector<Button*> buttons;
 	Dice* dice;

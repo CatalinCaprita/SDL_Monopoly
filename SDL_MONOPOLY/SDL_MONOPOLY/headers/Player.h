@@ -16,6 +16,8 @@ public:
 	bool isJailed();
 	void goToJail();
 	void freeFromJail();
+	void setJailTurnsLeft(int);
+	int getJailTurnsLeft();
 	bool isBankrupt();
 	int receiveMoney(int = 0);
 	int payMoney(int = 0);
@@ -28,7 +30,7 @@ private:
 	const int id;
 	int totalMoney;
 	int currentPosition;
-	bool jailed;
+	int jailTurnsLeft;
 	bool bankrupt;
 	std::string name;
 	std::vector<Tile*> ownedProperties;

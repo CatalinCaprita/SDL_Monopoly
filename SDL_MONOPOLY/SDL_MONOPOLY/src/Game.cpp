@@ -12,6 +12,7 @@
 #define UTIL_NUM 2
 #define UPPER_RENTS_BOUND 10
 int Game::count = 0;
+int Game::nrDoublesThrown = 0;
 
 //Array of indexes for the HouseProperty properties
 // tiles[propIdx[i]] = new HouseProperty();
@@ -32,7 +33,8 @@ int utilIdx[] = { 12,28 };
 int lastColor[] = { 3,9,14,19,24,29,34,39 };
 
 Game::Game(const char* title, int x_pos, int y_pos, int width, int height, bool full_screen):tiles(39){
-		dice = new Dice();
+
+	dice = new Dice();
 	mousePressed = false;
 	turn = 0;
 	int new_flag = 0;
@@ -70,8 +72,6 @@ Game::Game(const char* title, int x_pos, int y_pos, int width, int height, bool 
 			isRunning = false;
 		isRunning = true;
 		fillTiles("assets/houseProperties.txt");
-
-		isRunning = true;
 	}
 	else {
 		isRunning = false;
@@ -106,61 +106,78 @@ Game::~Game() {
 						POP UP for ending turn without rolling + POP UP for rolling when you didn't roll a double +
 						stay in jail for 3 rounds
 					 */
-					 int nrDoublesThrown = 0;
 					 if (!dice->isBlocked()) {
 						 dice->roll(renderer);
-						 if (dice->thrownDouble()) {
-							 nrDoublesThrown++;
-						 }
-
-						 if (nrDoublesThrown == 1)
-						 {
-							 players[turn]->goToJail();
-							 int moves = 50 - players[turn]->getCurrPosition();
-							 for (int i = 0; i < moves ; i++) { // 50 - currentPosition => jail field
-								 players[turn]->move();
-								 players[turn]->update();
-								 Game::render();
-								 SDL_RenderPresent(renderer);
-								 SDL_Delay(100);
+						 std::cout << "Ai dat " << dice->getFirstDieValue() + dice->getSecondDieValue() << std::endl;
+						 if (players[turn]->isJailed()) {
+							 if (dice->thrownDouble()) {
+								 players[turn]->freeFromJail();
 							 }
-						 }
-						 else
-							 for (int i = 0; i < dice->getFirstDieValue() + dice->getSecondDieValue(); i++) {
-								 players[turn]->move();
-								 players[turn]->update();
-								 Game::render();
-								 SDL_RenderPresent(renderer);
-								 SDL_Delay(300);
+							 else {
+								 int turns = players[turn]->getJailTurnsLeft();
+								 players[turn]->setJailTurnsLeft(turns - 1); // decrement jail turn left for players at current turn
 							 }
-						 if (!dice->thrownDouble()) {
 							 dice->setBlocked(true);
-							 nrDoublesThrown = 0;
+							 Game::nrDoublesThrown = 0;
+						 }
+						 else {
+							 if (dice->thrownDouble()) {
+								 Game::nrDoublesThrown++;
+							 }
+
+							 if (Game::nrDoublesThrown == 3)
+							 {
+								 players[turn]->goToJail();
+								 int moves = 50 - players[turn]->getCurrPosition();
+								 for (int i = 0; i < moves ; i++) { // 50 - currentPosition => jail field
+									 players[turn]->move();
+									 players[turn]->update();
+									 Game::render();
+									 SDL_RenderPresent(renderer);
+									 SDL_Delay(100);
+								 }
+							 }
+							 else
+								 for (int i = 0; i < dice->getFirstDieValue() + dice->getSecondDieValue(); i++) {
+									 players[turn]->move();
+									 players[turn]->update();
+									 Game::render();
+									 SDL_RenderPresent(renderer);
+									 SDL_Delay(300);
+								 }
+							 if (!dice->thrownDouble()) {
+								 dice->setBlocked(true);
+								 Game::nrDoublesThrown = 0;
+							 }
 						 }
 					 }
 				 }
-			 else if (buttons[0]->hoverButton(mouseX, mouseY)){ 
-				 std::cout << "button0" << std::endl;
-			 }
-			 else if (buttons[1]->hoverButton(mouseX, mouseY)){
-				 std::cout << "button1" << std::endl;
-			 }
-			 else if (buttons[2]->hoverButton(mouseX, mouseY) && dice->isBlocked()){
-				 //has to be broken in 2 ifs
-				 dice->setBlocked(false);
-				 turn++;
-				 turn %= 4;
-				 std::cout << "button2" << std::endl;
-			 }
+				 else if (buttons[0]->hoverButton(mouseX, mouseY)){ 
+					 std::cout << "button0" << std::endl;
+				 }
+				 else if (buttons[1]->hoverButton(mouseX, mouseY)){
+					 std::cout << "button1" << std::endl;
+				 }
+				 else if (buttons[2]->hoverButton(mouseX, mouseY)){
+					 if (!dice->isBlocked()){
+						 std::cout << "N-ai dat cu zarul" << std::endl;
+						 }
+					 else{
+						 dice->setBlocked(false);
+						 turn++;
+						 turn %= 4;
+						 std::cout << "button2" << std::endl;
+					 }
+				 }
 		 }
 		 mousePressed = true;
 	 }
 	 else
 		 mousePressed = false;
-
-	 /*const Uint8* state = SDL_GetKeyboardState(NULL);
+	 /*
+	 const Uint8* state = SDL_GetKeyboardState(NULL);
 	 if (state[SDL_SCANCODE_Q]) {
-		 players[0]->move();
+		 players[turn]->goToJail();
 	 }
 	 if (state[SDL_SCANCODE_W]) {
 		 players[1]->move();

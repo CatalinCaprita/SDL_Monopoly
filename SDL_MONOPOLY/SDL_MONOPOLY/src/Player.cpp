@@ -12,7 +12,7 @@ int coordY[] = { 940, 940, 940, 940, 940, 940, 940, 940, 940, 940, 960,
 				 164, 246, 328, 410, 492, 574, 656, 738, 820, 950
 				};
 
-Player::Player(std::string name, const char* filepath, int xpos, int ypos, int height, int width) : totalMoney(10000),id(counter + 1), currentPosition(0), name(name), jailed(false),bankrupt(false){
+Player::Player(std::string name, const char* filepath, int xpos, int ypos, int height, int width) : totalMoney(10000),id(counter + 1), currentPosition(0), name(name),jailTurnsLeft(0),bankrupt(false){
 	ownedProperties = *(new std::vector<Tile*>);
 	counter++;
 	spriteFrame.x = xpos;
@@ -30,6 +30,11 @@ Player::~Player() {
 
 void Player::move() {
 		currentPosition++;
+		if (currentPosition != currentPosition % 40)
+		{
+			std::cout << "Ai trecut de GO! Primesti 200 de BISTARI!" << std::endl;
+			this->totalMoney += 200;
+		}
 		currentPosition %= 40;
 	/* 
 		call of tiles[position??].doEffect(this);
@@ -79,17 +84,28 @@ int Player::getCurrPosition()
 
 bool Player::isJailed()
 {
-	return jailed;
+	return !(jailTurnsLeft == 0);
 }
 
 void Player::goToJail()
 {
-	jailed = true;
+	currentPosition = 10;
+	jailTurnsLeft = 3;
 }
 
 void Player::freeFromJail()
 {
-	jailed = false;
+	jailTurnsLeft = 0;
+}
+
+void Player::setJailTurnsLeft(int turns)
+{
+	jailTurnsLeft = turns;
+}
+
+int Player::getJailTurnsLeft()
+{
+	return jailTurnsLeft;
 }
 
 std::string& Player::getName() {
@@ -102,8 +118,14 @@ bool Player::isBankrupt()
 }
 
 void Player::update() {
-	spriteFrame.x = coordX[currentPosition] + (id - OFFSET) * 10;
-	spriteFrame.y = coordY[currentPosition];
+	if (this->isJailed()) {
+		spriteFrame.x = coordX[10] + (id - OFFSET) * 10 + 60;
+		spriteFrame.y = coordY[10] - 55;
+	}
+	else {
+		spriteFrame.x = coordX[currentPosition] + (id - OFFSET) * 10;
+		spriteFrame.y = coordY[currentPosition];
+	}
 }
 
 void Player::render(SDL_Renderer* renderer) {
