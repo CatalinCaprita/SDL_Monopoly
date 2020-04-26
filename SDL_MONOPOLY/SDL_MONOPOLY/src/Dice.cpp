@@ -4,9 +4,9 @@ Dice::Dice() {
 	secondDieValue = 1;
 	firstDieTexture = TextureMaker::textureFromBMP("assets/zar1.bmp");
 	secondDieTexture = TextureMaker::textureFromBMP("assets/zar1.bmp");
-	firstDieRect.x = 1050; secondDieRect.x = 1175;
-	firstDieRect.y = secondDieRect.y = 850;
-	firstDieRect.w = secondDieRect.w = firstDieRect.h = secondDieRect.h = 100;
+	firstDieRect.x = 300; secondDieRect.x = 360;
+	firstDieRect.y = secondDieRect.y = 300;
+	firstDieRect.w = secondDieRect.w = firstDieRect.h = secondDieRect.h = 50;
 	srand(time(NULL));
 }
 Dice::~Dice() {

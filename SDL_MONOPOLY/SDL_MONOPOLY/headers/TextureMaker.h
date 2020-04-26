@@ -13,7 +13,7 @@ public:
 	//Changes the Renderer object pointed to by _link
 	//To be used whenever you need to load an Image. Use with the game's inner renderer field 
 	static void attach(SDL_Renderer* ren);
-
+	static void render(SDL_Texture* texture, SDL_Rect* srcRect, SDL_Rect *destRect);
 	TextureMaker* factory() {
 		if (self == NULL)
 			self = new TextureMaker();

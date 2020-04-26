@@ -7,9 +7,12 @@
 class StationProperty :public AbstractProperty{
 
 public:
-	StationProperty(std::string name, int buyPrice, int updateCost, std::vector<int>& rentPrices, Groups groupId);
+	StationProperty(std::string name, int buyPrice, int updateCost,Groups groupId,int fileId);
 	~StationProperty();
 	void doEffect(Player* currentPlayer);
+	void update(){}
+	int getRentPrice();
+	void print();
 private:
 	static int stationNumber;
 };
