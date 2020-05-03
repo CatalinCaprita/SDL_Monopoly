@@ -1,7 +1,9 @@
-#define PAWN_SIZE 25
-#define NUMBER_OF_PLAYERS 4
+#pragma warning( disable : 4244 ) 
+#pragma warning( disable : 4018 ) 
 #include "../headers/Game.h"
 #include "../headers/TextureMaker.h"
+#include "../headers/UserAnimator.h"
+#include "../headers/Properties.h"
 #include <string>
 #include <vector>
 #include <utility>
@@ -10,7 +12,10 @@
 #define PROP_NUM 22
 #define CARD_NUM 6
 #define UTIL_NUM 2
+#define STATION_NUM 4
 #define UPPER_RENTS_BOUND 10
+#define PAWN_SIZE 10
+#define NUMBER_OF_PLAYERS 4
 int Game::count = 0;
 int Game::nrDoublesThrown = 0;
 
@@ -31,11 +36,9 @@ int propIdx[] = { 1,3,			// BROWN
 int cardIdx[] = { 2,7,17,22,33,36 };
 int stationIdx[] = { 5,15,25,35 };
 int utilIdx[] = { 12,28 };
-int lastColor[] = { 3,9,14,19,24,29,34,39 };
-
-Game::Game(const char* title, int x_pos, int y_pos, int width, int height, bool full_screen):tiles(39){
-
-	dice = new Dice();
+int Game::nrDoublesThrown = 0;
+Game::Game(const char* title, int x_pos, int y_pos, int width, int height, bool full_screen):tiles(40){
+		dice = new Dice();
 	mousePressed = false;
 	turn = 0;
 	int new_flag = 0;
@@ -49,30 +52,25 @@ Game::Game(const char* title, int x_pos, int y_pos, int width, int height, bool 
 		if (renderer)
 			SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
 		TextureMaker::attach(renderer);
-		background = TextureMaker::textureFromBMP("assets/background.bmp");
-		spriteFrame.x = 0;
-		spriteFrame.y = 0;
-		spriteFrame.w = 1000;
-		spriteFrame.h = 1000;
-
-		if (!background || !playerTexture)
+		UserAnimator::attach(this);
+		background = new Sprite("assets/board.bmp", width, height, 0, 0);
+		if (!background)
 			isRunning = false;
-
 		dice = new Dice();
 		players.push_back(new Player("Player 1", "assets/blue.bmp", 930, 930, PAWN_SIZE, PAWN_SIZE));
 		players.push_back(new Player("Player 2", "assets/red.bmp", 940, 930, PAWN_SIZE, PAWN_SIZE));
+		/**
 		players.push_back(new Player("Player 3", "assets/purple.bmp", 950, 930, PAWN_SIZE, PAWN_SIZE));
 		players.push_back(new Player("Player 4", "assets/black.bmp", 960, 930, PAWN_SIZE, PAWN_SIZE));
-
-		buttons.push_back(new Button("assets/buy_button.bmp", 1050, 590, 225, 80));
-		buttons.push_back(new Button("assets/sell_button.bmp", 1050, 670, 225, 80));
-		buttons.push_back(new Button("assets/end_turn_button.bmp", 1050, 750, 225, 80));
-
-		background = TextureMaker::textureFromBMP("assets/background.bmp");
-		if (!background)
-			isRunning = false;
+		*/
+		buttons.push_back(new Button("assets/buy_button.bmp", 300, 390, 225, 80));
+		buttons.push_back(new Button("assets/sell_button.bmp", 300, 470, 225, 80));
+		buttons.push_back(new Button("assets/end_turn_button.bmp", 300, 550, 225, 80));
 		isRunning = true;
 		fillTiles("assets/houseProperties.txt");
+		for (int i = 0; i < tiles.size(); i++) {
+			tiles[i]->print();
+		}
 	}
 	else {
 		isRunning = false;
@@ -99,53 +97,46 @@ Game::~Game() {
 			 if (mouseX > dice->getFirstDieRect().x&&
 				 mouseX < dice->getSecondDieRect().x + dice->getSecondDieRect().w &&
 				 mouseY > dice->getFirstDieRect().y&&
-				 mouseY < dice->getFirstDieRect().y + dice->getFirstDieRect().h)
-				 {
-					 // If you press on the dice
-					 /*
-						TO DO
-						POP UP for ending turn without rolling + POP UP for rolling when you didn't roll a double +
-						stay in jail for 3 rounds
-					 */
-					 if (!dice->isBlocked()) {
-						 dice->roll(renderer);
-						 std::cout << "Ai dat " << dice->getFirstDieValue() + dice->getSecondDieValue() << std::endl;
-						 if (players[turn]->isJailed()) {
-							 if (dice->thrownDouble()) {
-								 players[turn]->freeFromJail();
-							 }
-							 else {
-								 int turns = players[turn]->getJailTurnsLeft();
-								 players[turn]->setJailTurnsLeft(turns - 1); // decrement jail turn left for players at current turn
-							 }
-							 dice->setBlocked(true);
-							 Game::nrDoublesThrown = 0;
+				 mouseY < dice->getFirstDieRect().y + dice->getFirstDieRect().h) {
+				 if (!dice->isBlocked()) {
+					 dice->roll(renderer);
+					 std::cout << "Ai dat " << dice->getFirstDieValue() + dice->getSecondDieValue() << std::endl;
+					 if (players[turn]->isJailed()) {
+						 if (dice->thrownDouble()) {
+							 players[turn]->freeFromJail();
 						 }
 						 else {
-							 if (dice->thrownDouble()) {
-								 Game::nrDoublesThrown++;
-							 }
+							 int turns = players[turn]->getJailTurnsLeft();
+							 players[turn]->setJailTurnsLeft(turns - 1); // decrement jail turn left for players at current turn
+						 }
+						 dice->setBlocked(true);
+						 Game::nrDoublesThrown = 0;
+					 }
+					 else {
+						 if (dice->thrownDouble()) {
+							 Game::nrDoublesThrown++;
+						 }
 
-							 if (Game::nrDoublesThrown == 3)
-							 {
-								 players[turn]->goToJail();
-								 int moves = 50 - players[turn]->getCurrPosition();
-								 for (int i = 0; i < moves ; i++) { // 50 - currentPosition => jail field
-									 players[turn]->move();
-									 players[turn]->update();
-									 Game::render();
-									 SDL_RenderPresent(renderer);
-									 SDL_Delay(100);
-								 }
+						 if (Game::nrDoublesThrown == 3) {
+							 players[turn]->setRemainingSteps(50 - players[turn]->getCurrentPosition());
+							 players[turn]->setJailFlag(); //Player is now in moving, once it will finish, it will go direcly to jail
+							 dice->setBlocked(true); //Set the dice block so while the current player is moving nobody can run the dice;
+						 }
+						 else {
+							 /*
+							 for (int i = 0; i < dice->getFirstDieValue() + dice->getSecondDieValue(); i++) {
+								 players[turn]->move();
+								 players[turn]->update();
+								 Game::render();
+								 SDL_RenderPresent(renderer);
+								 SDL_Delay(300);
+								
 							 }
-							 else
-								 for (int i = 0; i < dice->getFirstDieValue() + dice->getSecondDieValue(); i++) {
-									 players[turn]->move();
-									 players[turn]->update();
-									 Game::render();
-									 SDL_RenderPresent(renderer);
-									 SDL_Delay(300);
-								 }
+							 Ca sa va faceti o idee, faceti paralela cu ceea ce e in Player::update(). Se intmapla acelasi lucru ca la voi, 
+							 Doar ca o sa am nevoie doar de o update() si o sa ma misc la fiecare Game::render, in loc sa redesenez totul doar in for 
+							 */
+							 players[turn]->setRemainingSteps(dice->getFirstDieValue() + dice->getSecondDieValue()); 
+							 dice->setBlocked(true);
 							 if (!dice->thrownDouble()) {
 								 dice->setBlocked(true);
 								 Game::nrDoublesThrown = 0;
@@ -153,43 +144,25 @@ Game::~Game() {
 						 }
 					 }
 				 }
-				 else if (buttons[0]->hoverButton(mouseX, mouseY)){ 
-					 std::cout << "button0" << std::endl;
-				 }
-				 else if (buttons[1]->hoverButton(mouseX, mouseY)){
-					 std::cout << "button1" << std::endl;
-				 }
-				 else if (buttons[2]->hoverButton(mouseX, mouseY)){
-					 if (!dice->isBlocked()){
-						 std::cout << "N-ai dat cu zarul" << std::endl;
-						 }
-					 else{
-						 dice->setBlocked(false);
-						 turn++;
-						 turn %= 4;
-						 std::cout << "button2" << std::endl;
-					 }
-				 }
+			 }
+			 else if (buttons[0]->hoverButton(mouseX, mouseY)) {
+				 std::cout << "button0" << std::endl;
+			 }
+			 else if (buttons[1]->hoverButton(mouseX, mouseY)) {
+				 std::cout << "button1" << std::endl;
+			 }
+			 else if (buttons[2]->hoverButton(mouseX, mouseY)) {
+				 turn++;
+				 turn %= 2;
+				 dice->setBlocked(false);
+				 std::cout << "button2" << std::endl;
+			 }
 		 }
 		 mousePressed = true;
 	 }
 	 else
 		 mousePressed = false;
-	 /*
-	 const Uint8* state = SDL_GetKeyboardState(NULL);
-	 if (state[SDL_SCANCODE_Q]) {
-		 players[turn]->goToJail();
-	 }
-	 if (state[SDL_SCANCODE_W]) {
-		 players[1]->move();
-	 }
-	 if (state[SDL_SCANCODE_E]) {
-		 players[2]->move();
-	 }
-	 if (state[SDL_SCANCODE_R]) {
-		 dice->roll(renderer);
-	 }*/
-	 
+
  }
 
  void Game::render() {
@@ -206,6 +179,13 @@ Game::~Game() {
  void Game::update() {
 	 for (int i = 0; i < NUMBER_OF_PLAYERS; i++)
 		 players[i]->update();
+		 /*
+		 Daca la iteratia curenta a Game::update() playerul a carui tura e a terminat sa de mutat ,i.e. remainingSteps == 0,
+		 se intampla interactiunea cu tile-ul
+		 */
+		 if (players[turn]->finishedMoving()) {
+			tiles[players[turn]->getCurrentPosition()]->doEffect(players[turn]);
+		 }
 	 dice->update();
  }
 
@@ -255,11 +235,14 @@ Game::~Game() {
 	 int pid = 0, cid = 0, sid = 0, uid = 0;
 	 int groupID;
 	 std::string name;
+	 std::string command;
 	 int buyPrice, updateCost, rentStages;
 	 std::vector<int>rentPrices(UPPER_RENTS_BOUND);	//dirty technique, but what can you do  `\ (' - ') /`
 	 Groups color;
-	 for (int i = 0; i < TILE_NUM; i++) {
-		 //For HousePropery
+	 tiles[4] = new CommandTile("Income Tax");
+	 tiles[38] = new CommandTile("Luxury Tax");
+	 for (int i = 0; i < tiles.size(); i++) {
+		 //For HouseProperty
 		 if (pid < PROP_NUM  && i == propIdx[pid]) {
 			 fin >> name >> buyPrice >> updateCost >> groupID;
 			 name = parse(name, '_');
@@ -267,11 +250,41 @@ Game::~Game() {
 			 rentStages = 6;
 			 for (int i = 0; i < rentStages; i++)
 				 fin >> rentPrices[i];
-			 tiles[i] = new HouseProperty(name, buyPrice,updateCost,rentPrices,color);
-			 tiles[i]->print();
+			 tiles[i] = new HouseProperty(name, buyPrice,updateCost,rentPrices,color,i);
 			 pid++;
 		 }
-		 //For Station
+		 //For StationProperty
+		 else if (sid < STATION_NUM && i == stationIdx[sid]) {
+			 fin >> name;
+			 name = parse(name, '_');
+			 tiles[i] = new StationProperty(name,200,0,STATION,i);
+		
+			 sid++;
+		 }
+		 //For UtilityProperty
+		 else if (uid < UTIL_NUM && i == utilIdx[uid]) {
+			 fin >> name;
+			 name = parse(name, '_');
+			 tiles[i] = new UtilityProperty(name, 150, 0, UTIL, i);
+		
+			 uid++;
+		 }
+		 //For Corners
+		 else if (i % 10 == 0) {
+			 fin >> name >> command;
+			 name = parse(name, '_');
+			 command = parse(command, '_');
+			 tiles[i / 10 * 10 ] = new Corner(name,command,i / 10);
+
+		 }
+		 //For Chance, Community Chest, Income Tax and Luxury Tax
+		 else if (cid < CARD_NUM && i == cardIdx[cid]) {
+			 if (cid % 2 == 0)
+				 tiles[i] = new CommandTile("Community Chest");
+			 else
+				 tiles[i] = new CommandTile("Chance");
+			 cid++;
+		 }
 	 }
 
  }

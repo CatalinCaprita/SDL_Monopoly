@@ -27,6 +27,7 @@ public:
 private:
 	int turn;
 	static int count;
+	static int nrDoublesThrown;
 	bool isRunning;
 	bool mousePressed;
 	static int nrDoublesThrown;

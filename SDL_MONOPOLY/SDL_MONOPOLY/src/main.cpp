@@ -1,9 +1,15 @@
 #include <iostream>
 #include <vector>
 #include "../headers/Game.h"
+<<<<<<< HEAD
 #define WIN_HEIGHT 1000
 #define WIN_WIDTH 1300
 #define FPS 120
+=======
+#define WIN_HEIGHT 800
+#define WIN_WIDTH  1000
+#define FPS 65
+>>>>>>> alone_dev
 
 int main(int argc, char *argv[]) {
 	SDL_Init(SDL_INIT_EVERYTHING);
