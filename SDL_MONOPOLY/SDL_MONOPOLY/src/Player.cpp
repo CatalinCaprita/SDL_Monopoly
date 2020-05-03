@@ -39,6 +39,18 @@ Player::~Player() {
 Once finnished moving the player reaches a certain currentPosition
 */
 
+void Player::move() {
+	currentPosition++;
+	if (currentPosition != currentPosition % 40)
+	{
+		std::cout << "Ai trecut de GO! Primesti 200 de BISTARI!" << std::endl;
+		this->totalMoney += 200;
+	}
+	currentPosition %= 40;
+	/*
+		call of tiles[position??].doEffect(this);
+	*/
+}
 //Every Drawable object will have its sizes in game units for scalablity. 1 game unit = screenSzie / 100;
 void Player::setSpriteScale(int screenW, int screenH) {
 	sprite->setScale(screenW,screenH);
@@ -105,7 +117,7 @@ std::string& Player::getName() {
 	return name;
 }
 
-void Player::getJailed() {
+void Player::gotToJail() {
 	currentPosition = 10;
 	jailed = true;
 }
@@ -129,6 +141,11 @@ void Player::update() {
 	if (SDL_GetTicks() - lastRender >= renderDelay) {
 		if (!jailed && remainingSteps > 0) {
 			currentPosition++;
+			if (currentPosition != currentPosition % 40)
+			{
+				std::cout << "Ai trecut de GO! Primesti 200 de BISTARI!" << std::endl;
+				this->totalMoney += 200;
+			}
 			currentPosition %= 40;
 			//sprite->update(coordX[currentPosition] + (id - OFFSET) * 10, coordY[currentPosition]);
 			sprite->update(-1, -1);

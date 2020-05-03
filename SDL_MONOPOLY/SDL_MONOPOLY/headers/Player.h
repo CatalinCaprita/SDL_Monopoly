@@ -20,7 +20,7 @@ public:
 	int receiveMoney(int = 0);
 	int payMoney(int = 0);
 	int getCurrentPosition();
-	void getJailed();
+	void gotToJail();
 	void buyProperty(Tile*);
 	void sellProperty(Tile*);
 	void setRemainingSteps(int);

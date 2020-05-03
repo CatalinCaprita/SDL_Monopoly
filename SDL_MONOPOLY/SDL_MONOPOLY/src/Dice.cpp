@@ -1,5 +1,6 @@
 #include "../headers/Dice.h"
 Dice::Dice() {
+	blocked = false;
 	firstDieValue = 1;
 	secondDieValue = 1;
 	firstDieTexture = TextureMaker::textureFromBMP("assets/zar1.bmp");
@@ -50,4 +51,17 @@ SDL_Rect Dice::getFirstDieRect()
 SDL_Rect Dice::getSecondDieRect()
 {
 	return secondDieRect;
+}
+
+bool Dice::thrownDouble()
+{
+	return firstDieValue == secondDieValue;
+}
+
+void Dice::setBlocked(bool blocked) {
+	this->blocked = blocked;
+}
+
+bool Dice::isBlocked() {
+	return blocked;
 }

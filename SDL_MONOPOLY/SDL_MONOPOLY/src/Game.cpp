@@ -113,19 +113,53 @@ SDL_Window* Game::getWindow() {
 				 mouseY > dice->getFirstDieRect().y&&
 				 mouseY < dice->getFirstDieRect().y + dice->getFirstDieRect().h)
 				 {
+				 if (!dice->isBlocked()) {
 					 dice->roll(renderer);
-					 players[turn]->setRemainingSteps(dice->getFirstDieValue() + dice->getSecondDieValue());
-					 //Now the player will move with the same delay, but in Game->render();
-					 /*
-					 for (int i = 0; i < dice->getFirstDieValue() + dice->getSecondDieValue(); i++) {
-						 players[turn]->update();
-						 render();
-						 SDL_Delay(200); // ->Will be transcribed into renderDelay;
+					 std::cout << "Ai dat " << dice->getFirstDieValue() + dice->getSecondDieValue() << std::endl;
+					 if (players[turn]->isJailed()) {
+						 if (dice->thrownDouble()) {
+							 players[turn]->freeFromJail();
+						 }
+						 else {
+							 int turns = players[turn]->getJailTurnsLeft();
+							 players[turn]->setJailTurnsLeft(turns - 1); // decrement jail turn left for players at current turn
+						 }
+						 dice->setBlocked(true);
+						 Game::nrDoublesThrown = 0;
 					 }
-					 std::cout << players[turn]->getName() << " reached " << players[turn]->getEndPosition() << std::endl;
-					 tiles[3]->doEffect(players[0]);
-					 //tiles[3]->doEffect(players[1]);
-					 */
+					 else {
+						 if (dice->thrownDouble()) {
+							 Game::nrDoublesThrown++;
+						 }
+
+						 if (Game::nrDoublesThrown == 3)
+						 {
+							 players[turn]->goToJail();
+							 int moves = 50 - players[turn]->getCurrPosition();
+							 for (int i = 0; i < moves; i++) { // 50 - currentPosition => jail field
+								 players[turn]->move();
+								 players[turn]->update();
+								 Game::render();
+								 SDL_RenderPresent(renderer);
+								 SDL_Delay(100);
+							 }
+						 }
+						 else
+							 for (int i = 0; i < dice->getFirstDieValue() + dice->getSecondDieValue(); i++) {
+								 players[turn]->move();
+								 players[turn]->update();
+								 Game::render();
+								 SDL_RenderPresent(renderer);
+								 SDL_Delay(300);
+							 }
+						 if (!dice->thrownDouble()) {
+							 dice->setBlocked(true);
+							 Game::nrDoublesThrown = 0;
+						 }
+					 }
+				 }
+			 }
+					
 				 }
 			 else if (buttons[0]->hoverButton(mouseX, mouseY)){ 
 				 std::cout << "button0" << std::endl;
