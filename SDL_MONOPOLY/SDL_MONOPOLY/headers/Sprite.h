@@ -1,4 +1,6 @@
 #pragma once
+#pragma warning( disable : 4244 ) 
+#pragma warning( disable : 4018 ) 
 #include "TextureMaker.h"
 #include "SDL.h"
 //1 worldUnit = screenWith / 1000 pixels;
@@ -40,7 +42,11 @@ public :
 		destRect.x  += xUnits * wRatio;
 		destRect.y  += yUnits * hRatio;
 	}
+	void updateTo(int xCoordUnits,int yCoordUnits) {
+		destRect.x = xCoordUnits * wRatio;
+		destRect.y = yCoordUnits * hRatio;
 
+	}
 	void render() {
 		TextureMaker::render(texture, NULL, &destRect);
 	}

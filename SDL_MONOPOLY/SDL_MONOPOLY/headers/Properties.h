@@ -6,3 +6,4 @@
 #include "StationProperty.h"
 #include "UtilityProperty.h"
 #include "Corner.h"
+#include "CommandTile.h"

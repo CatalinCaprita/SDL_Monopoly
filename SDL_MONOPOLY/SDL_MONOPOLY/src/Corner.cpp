@@ -20,7 +20,7 @@ void Corner::doEffect(Player * currentPlayer) {
 		break;
 	case 3:
 		std::cout << "Bad Luck! " << currentPlayer->getName() << " will go to jail";
-		currentPlayer->getJailed();
+		currentPlayer->gotToJail();
 		break;
 		
 	}

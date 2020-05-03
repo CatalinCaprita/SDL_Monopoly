@@ -4,6 +4,7 @@
 #include "SDL.h"
 #include "Game.h"
 #include "Sprite.h"
+#include "Properties.h"
 class Tile;
 class Player;
 class UserAnimator {
@@ -11,6 +12,8 @@ public:
 	static void popPropertyCard(Tile*);
 	static void playerPaysPlayer(Player*, Player*);
 	static void fadePropertyCard(Tile*);
+	static void popCommandCardBack(CommandTile* card);
+
 	static void attach(Game *instance) {
 		game = instance;
 	}

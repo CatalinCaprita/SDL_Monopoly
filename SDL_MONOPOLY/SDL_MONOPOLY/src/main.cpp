@@ -2,7 +2,7 @@
 #include <vector>
 #include "../headers/Game.h"
 #define WIN_HEIGHT 800
-#define WIN_WIDTH  1200
+#define WIN_WIDTH  1000
 #define FPS 65
 
 int main(int argc, char *argv[]) {

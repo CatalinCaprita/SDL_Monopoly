@@ -32,6 +32,7 @@ private:
 	int turn;
 	int screenWidth, screenHeight;
 	static int count;
+	static int nrDoublesThrown;
 	bool isRunning;
 	bool mousePressed;
 	std::vector<Player*> players;

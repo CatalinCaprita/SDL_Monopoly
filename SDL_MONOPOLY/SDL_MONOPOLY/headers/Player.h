@@ -17,10 +17,15 @@ public:
 	bool isJailed();
 	bool isBankrupt();
 	bool finishedMoving();
+	
 	int receiveMoney(int = 0);
 	int payMoney(int = 0);
 	int getCurrentPosition();
+	void setJailFlag();
 	void gotToJail();
+	void freeFromJail();
+	void setJailTurnsLeft(int);
+	int getJailTurnsLeft();
 	void buyProperty(Tile*);
 	void sellProperty(Tile*);
 	void setRemainingSteps(int);
@@ -33,12 +38,13 @@ private:
 	const int id;
 	int totalMoney;
 	int currentPosition;
-	bool jailed;
+	bool mustBeJailed;
 	bool bankrupt;
 	bool finishMoving;
 	int remainingSteps;
 	int renderDelay = 250;
 	int lastRender;
+	int jailTurnsLeft;
 	std::string name;
 	std::vector<Tile*> ownedProperties;
 	SDL_Rect spriteFrame;

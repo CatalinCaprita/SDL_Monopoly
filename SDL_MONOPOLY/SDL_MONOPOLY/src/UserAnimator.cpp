@@ -86,5 +86,3 @@ void UserAnimator::fadePropertyCard(Tile * target) {
 	delete sprite;
 }
 
-
-
