@@ -14,18 +14,23 @@ public:
 	void update();
 	void print();
 	bool isJailed();
+	void goToJail();
+	void freeFromJail();
+	void setJailTurnsLeft(int);
+	int getJailTurnsLeft();
 	bool isBankrupt();
 	int receiveMoney(int = 0);
 	int payMoney(int = 0);
 	void buyProperty(Tile*);
 	void sellProperty(Tile*);
+	int getCurrPosition();
 
 private:
 	static int counter;
 	const int id;
 	int totalMoney;
 	int currentPosition;
-	bool jailed;
+	int jailTurnsLeft;
 	bool bankrupt;
 	std::string name;
 	std::vector<Tile*> ownedProperties;
