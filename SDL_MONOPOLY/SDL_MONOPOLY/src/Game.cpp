@@ -14,6 +14,7 @@
 int Game::count = 0;
 int Game::nrDoublesThrown = 0;
 
+
 //Array of indexes for the HouseProperty properties
 // tiles[propIdx[i]] = new HouseProperty();
 int propIdx[] = { 1,3,			// BROWN
