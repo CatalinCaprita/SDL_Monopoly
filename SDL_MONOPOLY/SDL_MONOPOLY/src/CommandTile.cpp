@@ -34,7 +34,7 @@ CommandTile::CommandTile(const std::string& name) : Tile(name) {
 	else 
 		if(name == "Community Chest"){
 		backTexturePath = "assets/commands/communityChestBack.bmp";
-		texturePath = "assets/commands/";
+		texturePath = "assets/commands/communityChestBack.bmp";
 		destX = 29;
 		destY = 17;
 		groupId = CHEST;
@@ -72,15 +72,16 @@ void CommandTile::doEffect(Player *currentPlayer) {
 		SDL_Delay(500);
 		return;
 	}
-	int randomExtraction = rand() % COMMANDS_SIZE;
+	int randomExtraction = 0;// rand() % COMMANDS_SIZE;
 	frontTexturePath = texturePath + std::to_string(randomExtraction) + ".bmp";
 	//TO DO : ANIMATION FOR THE COMMAND TILE WITH ITS BACK
-	//UserAnimator::popPropertyCard(this);
+	UserAnimator::popPropertyCard(this);
 	std::cout << allCommands[randomExtraction];
 	switch (randomExtraction) {
 	
 	case 0:
-		currentPlayer->setRemainingSteps(40 - currentPlayer->getCurrentPosition()); //Player must advance to start;
+		currentPlayer->setRemainingSteps(3);
+		currentPlayer->setCommandFlag();//Player must advance to start;
 		break;
 	
 	}

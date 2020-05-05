@@ -1,5 +1,8 @@
 #include "../headers/Player.h"
 #define OFFSET 3
+#define DICE_MOVE 0
+#define MUST_BE_JAILED 1
+#define EXEC_COMMAND 2
 
 int Player::counter = 0;
 
@@ -31,7 +34,7 @@ Player::Player(std::string name, const char* filepath, int unitX, int unitY, int
 	finishMoving = false;
 	renderDelay = 300;
 	lastRender = 0;
-	mustBeJailed = false;
+	flagType = DICE_MOVE;
 }
 
 Player::~Player() {
@@ -129,11 +132,9 @@ Asta se intampla doar cand playerul trebuie sa ajunga la Jail. O sa aibe cum ati
 remainingSteps == 0, atunci se initiaza goToJail
 Totusi, in iteratiile Game::update() si Game::render() el figureaza ca mai are de mutat, deci il las sa mute. Flag-ul e pentru cand termina de mutat
 */
-void Player::setJailFlag() {
-	mustBeJailed = true;
-	std::cout << name << "Will be JAILED!\n";
-}
+
 void Player::gotToJail() {
+	std::cout << name << " will GO TO JAIL !\n";
 		currentPosition = 10;
 		jailTurnsLeft = 3;
 }
@@ -145,7 +146,7 @@ bool Player::isJailed()
 void Player::freeFromJail()
 {
 	jailTurnsLeft = 0;
-	mustBeJailed = false;
+	flagType = DICE_MOVE;
 }
 
 void Player::setJailTurnsLeft(int turns)
@@ -163,6 +164,24 @@ int Player::getJailTurnsLeft()
 bool Player::isBankrupt()
 {
 	return bankrupt;
+}
+
+/*
+Flag Setting Area
+*/
+
+int Player::getFlag() {
+	return flagType;
+}
+void Player::setDiceFlag() {
+	flagType = DICE_MOVE;
+}
+void Player::setJailFlag() {
+	flagType = MUST_BE_JAILED;
+}
+
+void Player::setCommandFlag() {
+	flagType = EXEC_COMMAND;
 }
 
 /*
@@ -193,20 +212,7 @@ void Player::update() {
 			lastRender = SDL_GetTicks();
 			std::cout << "player " << name << " has to move " << remainingSteps << " steps \n ";
 		}
-		/*
-		Ori e in Jail deja, ori dupa ce muta trebuie sa ramana in Jail
-		Aici ajung doar daca :
-		- a terminat de mutat, remaningSteps == 0 , deci verificam daca dupa ce termina de mutat trebuia sa ajunga in Jail
-		- e jailed, caz in care mustBeJailed e fals, ca deja e in Jail, deci o sa stea pe loc, adica update(0,0)
-		finishMoving ramane fals, ca sa nu interactioneze cu tile[currentPosition]
-		*/
-		else {
-
-			if (mustBeJailed)
-				gotToJail();
-			sprite->update(0, 0);
-			finishMoving = false;
-		}
+		
 	}
 }
 /**

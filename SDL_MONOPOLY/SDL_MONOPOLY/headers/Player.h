@@ -17,11 +17,9 @@ public:
 	bool isJailed();
 	bool isBankrupt();
 	bool finishedMoving();
-	
 	int receiveMoney(int = 0);
 	int payMoney(int = 0);
 	int getCurrentPosition();
-	void setJailFlag();
 	void gotToJail();
 	void freeFromJail();
 	void setJailTurnsLeft(int);
@@ -31,14 +29,27 @@ public:
 	void setRemainingSteps(int);
 	void setSpriteScale(int, int);
 
+	//CommandTriggers
+	int getFlag();
+	void setJailFlag();
+	void setCommandFlag();
+	void setDiceFlag();
+
 	Sprite* getSprite();
 
 private:
+	
 	static int counter;
+	/*
+	flagType - used to decide which action is going to happend after the player finishes moving
+	 - 0 finished a normal movement via Dice Roll
+	 - 1 must be jailed
+	 - 2 finished moving from a Chance or Community Chest Command 
+	*/
+	int  flagType;
 	const int id;
 	int totalMoney;
 	int currentPosition;
-	bool mustBeJailed;
 	bool bankrupt;
 	bool finishMoving;
 	int remainingSteps;

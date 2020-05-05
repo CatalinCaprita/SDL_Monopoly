@@ -65,14 +65,13 @@ void UserAnimator::playerPaysPlayer(Player* src, Player* dest) {
 }
 void UserAnimator::fadePropertyCard(Tile * target) {
 	std::string dest = target->getTexturePath();
-	sprite = new Sprite(dest.c_str(),20,40,CARD_START_POS_X,CARD_START_POS_Y, game->getScreenW(), game->getScreenH());
-	renderDelay = 80;
+	sprite = new Sprite(dest.c_str(),20,40,CARD_START_POS_X,CARD_START_POS_Y - 20 , game->getScreenW(), game->getScreenH());
+	renderDelay = 100;
 	lastRender = SDL_GetTicks();
 	int iterations = 0;
 	int targetIterations = 20;
 	while (iterations < targetIterations) {
 		if ((SDL_GetTicks() - lastRender) >= renderDelay) {
-			std::cout << "Render Time  :" << SDL_GetTicks() - lastRender<< std::endl;
 			sprite->updateUnitHeigth(-2);
 			sprite->updateUnitWidth(-1);
 			sprite->update(1,1);

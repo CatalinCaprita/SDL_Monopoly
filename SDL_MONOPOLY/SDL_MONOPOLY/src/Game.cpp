@@ -18,6 +18,11 @@
 #define NUMBER_OF_PLAYERS 4
 #define START_X 88
 #define START_Y 89
+
+#define DICE_MOVE 0
+#define MUST_BE_JAILED 1
+#define EXEC_COMMAND 2
+
 int Game::count = 0;
 
 
@@ -155,7 +160,7 @@ SDL_Window* Game::getWindow() {
 							 Doar ca o sa am nevoie doar de o update() si o sa ma misc la fiecare Game::render, in loc sa redesenez totul doar in for 
 							 */
 
-							 players[turn]->setRemainingSteps(dice->getFirstDieValue() + dice->getSecondDieValue()); 
+							 players[turn]->setRemainingSteps(dice->getFirstDieValue() + dice->getSecondDieValue());
 							 dice->setBlocked(true);
 							 if (!dice->thrownDouble()) {
 								 dice->setBlocked(true);
@@ -199,11 +204,24 @@ SDL_Window* Game::getWindow() {
 	 for (int i = 0; i < players.size(); i++) {
 		 players[i]->update();
 		 /*
-		 Daca la iteratia curenta a Game::update() playerul a carui tura e a terminat sa de mutat ,i.e. remainingSteps == 0,
-		 se intampla interactiunea cu tile-ul
+		 Daca la iteratia curenta a Game::update() playerul a carui de la tura curent terminat sa de mutat ,i.e. remainingSteps == 0,
+		 Vedem in functie de flagType ul pe care il avea setat ce se intampla cu el
 		 */
 		 if (players[turn]->finishedMoving()) {
-			tiles[players[turn]->getCurrentPosition()]->doEffect(players[turn]);
+			 switch (players[turn]->getFlag()) {
+			 case DICE_MOVE:
+				 //tiles[players[turn]->getCurrentPosition()]->doEffect(players[turn]);
+				 tiles[2]->doEffect(players[turn]);
+				 break;
+			 case MUST_BE_JAILED:
+				 players[turn]->gotToJail();
+				 break;
+			 case EXEC_COMMAND:
+				 std::cout << players[turn]->getName() << " finished the command." << std::endl;
+				 /*Dupa ce termina command, reintra in starea de "Sunt gata sa mut dupa cum zice zarul"*/
+				 players[turn]->setDiceFlag();
+			 }
+			 
 		 }
 	 }
 	 dice->update();
