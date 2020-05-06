@@ -43,10 +43,9 @@ int cardIdx[] = { 2,7,17,22,33,36 };
 int stationIdx[] = { 5,15,25,35 };
 int utilIdx[] = { 12,28 };
 int Game::nrDoublesThrown = 0;
-Dice* Game::dice = new Dice();
-
+Dice* Game::dice = nullptr;
+SDL_Renderer* Game::renderer = nullptr;
 Game::Game(const char* title, int x_pos, int y_pos, int width, int height, bool full_screen):tiles(40){
-		dice = new Dice();
 	mousePressed = false;
 	turn = 0;
 	int new_flag = 0;
@@ -59,7 +58,6 @@ Game::Game(const char* title, int x_pos, int y_pos, int width, int height, bool 
 		renderer = SDL_CreateRenderer(window, -1, 0);
 		if (renderer)
 			SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
-		TextureMaker::attach(renderer);
 		UserAnimator::attach(this);
 		background = new Sprite("assets/board.bmp", width, height, 0, 0);
 		if (!background)
@@ -67,22 +65,24 @@ Game::Game(const char* title, int x_pos, int y_pos, int width, int height, bool 
 		background->setScale(100, 100);	
 		this->screenWidth = width;
 		this->screenHeight = height;
-		players.push_back(new Player("Player 1", "assets/blue.bmp",START_X,START_Y,2,4));
+		dice = new Dice();
+		dice->getFirstDieSprite()->setScale(width, height);
+		dice->getSecondDieSprite()->setScale(width, height);
+		players.push_back(new Player("Player 1", "assets/blue.bmp",START_X,START_Y,3,3));
 		players[0]->setSpriteScale(width, height);
 		players.push_back(new Player("Player 2", "assets/red.bmp", START_X + 1, START_Y -1 , PAWN_SIZE, PAWN_SIZE));
 		players[1]->setSpriteScale(width, height);
 		/*
 		players.push_back(new Player("Player 3", "assets/purple.bmp", 950, 930, PAWN_SIZE, PAWN_SIZE));
-		players.push_back(new Player("Player 4", "assets/black.bmp", 960, 930, PAWN_SIZE, PAWN_SIZE));
+		players.push_back(new Player("Player 4", "assets/black.bmp", 960, 930, PAWN_SIZE, PAWN_SIZE));59
 		*/
-		buttons.push_back(new Button("assets/buy_button.bmp", 300, 390, 225, 80));
-		buttons.push_back(new Button("assets/sell_button.bmp", 300, 470, 225, 80));
-		buttons.push_back(new Button("assets/end_turn_button.bmp", 300, 550, 225, 80));
+		buttons.push_back(new Button("assets/buy_button.bmp", 37, 39, 22,10));
+		buttons.push_back(new Button("assets/sell_button.bmp", 37, 49, 22, 10));
+		buttons.push_back(new Button("assets/end_turn_button.bmp", 37, 59, 22, 10));
+		for (int i = 0; i < buttons.size(); i++)
+			buttons[i]->getSprite()->setScale(width, height);
 		isRunning = true;
 		fillTiles("assets/houseProperties.txt");
-		for (int i = 0; i < tiles.size(); i++) {
-			tiles[i]->print();
-		}
 	}
 	else {
 		isRunning = false;
@@ -111,6 +111,7 @@ SDL_Window* Game::getWindow() {
 Dice* Game::getDice() {
 	return dice;
 }
+
  void Game::listen_event() {
 	 SDL_Event e;
 	 int mouseX, mouseY;
@@ -123,10 +124,10 @@ Dice* Game::getDice() {
 	 if (SDL_GetMouseState(&mouseX, &mouseY) & SDL_BUTTON(SDL_BUTTON_LEFT)) { 
 		 if (!mousePressed) {
 
-			 if (mouseX > dice->getFirstDieRect().x&&
-				 mouseX < dice->getSecondDieRect().x + dice->getSecondDieRect().w &&
-				 mouseY > dice->getFirstDieRect().y&&
-				 mouseY < dice->getFirstDieRect().y + dice->getFirstDieRect().h) {
+			 if (mouseX > dice->getFirstDieSprite()->pixelX() &&
+				 mouseX < dice->getSecondDieSprite()->pixelX() + dice->getSecondDieSprite()->pixelW() &&
+				 mouseY > dice->getFirstDieSprite()->pixelY() &&
+				 mouseY < dice->getFirstDieSprite()->pixelY() + dice->getFirstDieSprite()->pixelH()) {
 				 if (!dice->isBlocked()) {
 					 dice->roll(renderer);
 					 std::cout << "Ai dat " << dice->getFirstDieValue() + dice->getSecondDieValue() << std::endl;
@@ -203,9 +204,10 @@ Dice* Game::getDice() {
 	 background->render();
 	 for (int i = 0; i < players.size(); i++)
 		 players[i]->render();
-	 Game::dice->render(renderer);
+	
 	 for (int i = 0; i < buttons.size(); i++)
-		 buttons[i]->render(renderer);
+		 buttons[i]->render();
+	 dice->render();
 	 SDL_RenderPresent(renderer);
 }
 

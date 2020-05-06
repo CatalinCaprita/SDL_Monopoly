@@ -31,14 +31,13 @@ std::queue< int>CommandTile::communityQ;
 bool CommandTile::initialized = false;
 
 void CommandTile::shuffle(std::queue<int>&whichQ) {
-	std::cout << "INITIALIZING QUEUE : \n";
+	std::cout << "Suffling Community Chest and Chance decks\n";
 	int indexes[COMMANDS_SIZE];
 	for (int i = 0; i < COMMANDS_SIZE; i++) {
 		indexes[i] = i;
 	}
 	std::random_shuffle(indexes, indexes + COMMANDS_SIZE);
 	for (int i = 0; i < COMMANDS_SIZE; i++) {
-		std::cout << indexes[i]<<" "<< allCommands[indexes[i]] << std::endl;
 		whichQ.push(indexes[i]);
 	}
 }

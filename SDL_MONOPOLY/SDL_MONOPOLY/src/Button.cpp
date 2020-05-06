@@ -1,35 +1,24 @@
 #include "../headers/Button.h"
-
-Button::Button(const char* filepath, int x, int y, int w, int h) {
-	buttonFrame.x = x;
-	buttonFrame.y = y;
-	buttonFrame.w = w;
-	buttonFrame.h = h;
-	buttonTexture = TextureMaker::textureFromBMP(filepath);
+#include "../headers/TextureMaker.h"
+Button::Button(const char* filepath, int unitX, int unitY, int unitW, int unitH) {
+	sprite = new Sprite(filepath, unitW, unitH, unitX, unitY);
 }
 Button::~Button() {
 
 }
-void Button::render(SDL_Renderer* renderer) {
-	SDL_RenderCopy(renderer, buttonTexture, NULL, &buttonFrame);
+Sprite* Button::getSprite() {
+	return sprite;
 }
-
-SDL_Rect Button::getButtonFrame()
-{
-	return buttonFrame;
-}
-
-SDL_Texture* Button::getButtonTexture()
-{
-	return buttonTexture;
+void Button::render() {
+	sprite->render();
 }
 
 bool Button::hoverButton(int mouseX, int mouseY)
 {
-	if (mouseX > this->getButtonFrame().x &&
-		mouseX < this->getButtonFrame().x + this->getButtonFrame().w &&
-		mouseY > this->getButtonFrame().y &&
-		mouseY < this->getButtonFrame().y + this->getButtonFrame().h)
+	if (mouseX > sprite->pixelX() &&
+		mouseX < sprite->pixelX() + sprite->pixelW() &&
+		mouseY > sprite->pixelY()&&
+		mouseY < sprite->pixelY() + sprite->pixelH())
 			return true;
 	return false;
 }

@@ -3,11 +3,13 @@ Dice::Dice() {
 	blocked = false;
 	firstDieValue = 1;
 	secondDieValue = 1;
-	firstDieTexture = TextureMaker::textureFromBMP("assets/zar1.bmp");
-	secondDieTexture = TextureMaker::textureFromBMP("assets/zar1.bmp");
+	firstDieSprite = new Sprite("assets/zar2.bmp", 6, 6, 30, 23);
+	secondDieSprite = new Sprite("assets/zar2.bmp", 6, 6, 38, 23);
+	/**
 	firstDieRect.x = 300; secondDieRect.x = 360;
 	firstDieRect.y = secondDieRect.y = 300;
 	firstDieRect.w = secondDieRect.w = firstDieRect.h = secondDieRect.h = 50;
+	*/
 	srand(time(NULL));
 }
 Dice::~Dice() {
@@ -21,18 +23,18 @@ void Dice::roll(SDL_Renderer* renderer) {
 		secondDieValue = rand() % 6 + 1;
 		filepath1 = filepath1 + "assets/zar" + (char)('0' + firstDieValue) + ".bmp";
 		filepath2 = filepath2 + "assets/zar" + (char)('0' + secondDieValue) + ".bmp";
-		firstDieTexture = TextureMaker::textureFromBMP(filepath1.c_str());
-		secondDieTexture = TextureMaker::textureFromBMP(filepath2.c_str());
-		render(renderer);
+		firstDieSprite->setPath(filepath1.c_str());
+		secondDieSprite->setPath(filepath2.c_str());
+		render();
 		SDL_RenderPresent(renderer);
 		filepath1 = "";
 		filepath2 = "";
 		SDL_Delay(300);
 	}
 }
-void Dice::render(SDL_Renderer* renderer) {
-	TextureMaker::render(firstDieTexture, NULL, &firstDieRect);
-	TextureMaker::render(secondDieTexture, NULL, &secondDieRect);
+void Dice::render() {
+	firstDieSprite->render();
+	secondDieSprite->render();
 }
 void Dice::update() {
 }
@@ -43,14 +45,14 @@ int Dice::getSecondDieValue() {
 	return secondDieValue;
 }
 
-SDL_Rect Dice::getFirstDieRect()
+Sprite* Dice::getFirstDieSprite()
 {
-	return firstDieRect;
+	return firstDieSprite;
 }
 
-SDL_Rect Dice::getSecondDieRect()
+Sprite* Dice::getSecondDieSprite()
 {
-	return secondDieRect;
+	return secondDieSprite;
 }
 
 bool Dice::thrownDouble()

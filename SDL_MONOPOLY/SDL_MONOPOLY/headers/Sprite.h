@@ -16,7 +16,7 @@ public :
 	Sprite(const char* path, int unitW, int unitH,int unitX = 0,int unitY = 0,int screenW = -1, int screenH = -1){
 		texture = TextureMaker::textureFromBMP(path);
 		if (texture == NULL) {
-			std::cout << "FAILED TO LOAD IMAGE";
+			std::cout << "FAILED TO LOAD IMAGE AT " <<path <<std::endl;
 		}
 		this->width = unitW; //number of units
 		this->height = unitH; // number of units
@@ -37,6 +37,9 @@ public :
 		width = copy->width;
 		height = copy->height;
 		texture = copy->texture;
+	}
+	void setPath(const char* newPath) {
+		texture = TextureMaker::textureFromBMP(newPath);
 	}
 	void update(int xUnits, int yUnits) {
 		destRect.x  += xUnits * wRatio;
@@ -80,5 +83,17 @@ public :
 	}
 	int unitY() {
 		return destRect.y / hRatio;
+	}
+	int pixelX() {
+		return destRect.x ;
+	}
+	int pixelY() {
+		return destRect.y ;
+	}
+	int pixelW() {
+		return destRect.w;
+	}
+	int pixelH() {
+		return destRect.h;
 	}
 };

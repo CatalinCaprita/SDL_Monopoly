@@ -1,5 +1,6 @@
 #include "SDL.h"
 #include "../headers/TextureMaker.h"
+#include "../headers/Sprite.h"
 #include <stdlib.h>
 #include <time.h>
 
@@ -9,12 +10,12 @@ public:
 	Dice();
 	~Dice();
 	void roll(SDL_Renderer* renderer);
-	void render(SDL_Renderer* renderer);
+	void render();
 	void update();
 	int getFirstDieValue();
 	int getSecondDieValue();
-	SDL_Rect getFirstDieRect();
-	SDL_Rect getSecondDieRect();
+	Sprite* getFirstDieSprite();
+	Sprite* getSecondDieSprite();
 	bool thrownDouble();
 	void setBlocked(bool);
 	bool isBlocked();
@@ -22,8 +23,6 @@ private:
 	bool blocked;
 	int firstDieValue;
 	int secondDieValue;
-	SDL_Rect firstDieRect;
-	SDL_Rect secondDieRect;
-	SDL_Texture* firstDieTexture;
-	SDL_Texture* secondDieTexture;
+	Sprite* firstDieSprite;
+	Sprite* secondDieSprite;
 };
