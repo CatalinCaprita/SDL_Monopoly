@@ -23,10 +23,12 @@ public:
 	void render();
 	void listen_event();
 	void fillTiles(const char *);
+
 	int getScreenW();
 	int getScreenH();
 	SDL_Renderer* getRenderer();
 	SDL_Window* getWindow();
+	static Dice* getDice();
 	
 private:
 	int turn;
@@ -37,7 +39,7 @@ private:
 	bool mousePressed;
 	std::vector<Player*> players;
 	std::vector<Button*> buttons;
-	Dice* dice;
+	static Dice* dice;
 	SDL_Window* window;			//window object to be used as the main game frame
 	SDL_Renderer* renderer;		//renderer composite passed as arg to all render functinos. see update() and render()
 	Sprite* background;

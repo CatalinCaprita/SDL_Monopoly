@@ -5,8 +5,10 @@
 #include "../headers/Tile.h"
 #include "../headers/AbstractProperty.h"
 #include "../headers/Sprite.h"
+#include <unordered_map>
 class Player {
 public:
+	//Internals:
 	Player(std::string name,const char*, int, int, int, int);
 	~Player();
 	void move();
@@ -14,22 +16,29 @@ public:
 	void render();
 	void update();
 	void print();
-	bool isJailed();
-	bool isBankrupt();
 	bool finishedMoving();
-	int receiveMoney(int = 0);
-	int payMoney(int = 0);
+	void setRemainingSteps(int steps = 0, int direction = 1);
+	void setSpriteScale(int, int);
 	int getCurrentPosition();
-	void gotToJail();
+
+	//Jail Functions
+	bool isJailed();
+	void goToJail();
 	void freeFromJail();
 	void setJailTurnsLeft(int);
 	int getJailTurnsLeft();
-	void buyProperty(Tile*);
+	
+	//Money And Property Management
+	bool isBankrupt();
+	int getMoney();
+	int receiveMoney(int = 0);
+	int payMoney(int = 0);
+	void buyProperty(Tile*,const std::string& type);
 	void sellProperty(Tile*);
-	void setRemainingSteps(int);
-	void setSpriteScale(int, int);
+	int getOwnedStations();
+	int getOwnedUtils();
 
-	//CommandTriggers
+	//Flag Setters
 	int getFlag();
 	void setJailFlag();
 	void setCommandFlag();
@@ -47,6 +56,7 @@ private:
 	 - 2 finished moving from a Chance or Community Chest Command 
 	*/
 	int  flagType;
+	int direction;
 	const int id;
 	int totalMoney;
 	int currentPosition;
@@ -57,9 +67,8 @@ private:
 	int lastRender;
 	int jailTurnsLeft;
 	std::string name;
-	std::vector<Tile*> ownedProperties;
+	std::unordered_map<std::string,std::vector<Tile*> > ownedProperties;
 	SDL_Rect spriteFrame;
 	SDL_Texture* playerTexture;
 	Sprite* sprite;
-	int x, y;
 };

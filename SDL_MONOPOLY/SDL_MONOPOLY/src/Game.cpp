@@ -43,6 +43,8 @@ int cardIdx[] = { 2,7,17,22,33,36 };
 int stationIdx[] = { 5,15,25,35 };
 int utilIdx[] = { 12,28 };
 int Game::nrDoublesThrown = 0;
+Dice* Game::dice = new Dice();
+
 Game::Game(const char* title, int x_pos, int y_pos, int width, int height, bool full_screen):tiles(40){
 		dice = new Dice();
 	mousePressed = false;
@@ -53,7 +55,7 @@ Game::Game(const char* title, int x_pos, int y_pos, int width, int height, bool 
 	}
 
 	if (SDL_Init(SDL_INIT_EVERYTHING) == 0) {
-		window = SDL_CreateWindow(title, x_pos, y_pos, width, height, new_flag);
+		window = SDL_CreateWindow(title, x_pos, y_pos, width, height, SDL_WINDOW_OPENGL);
 		renderer = SDL_CreateRenderer(window, -1, 0);
 		if (renderer)
 			SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
@@ -65,7 +67,6 @@ Game::Game(const char* title, int x_pos, int y_pos, int width, int height, bool 
 		background->setScale(100, 100);	
 		this->screenWidth = width;
 		this->screenHeight = height;
-		dice = new Dice();
 		players.push_back(new Player("Player 1", "assets/blue.bmp",START_X,START_Y,2,4));
 		players[0]->setSpriteScale(width, height);
 		players.push_back(new Player("Player 2", "assets/red.bmp", START_X + 1, START_Y -1 , PAWN_SIZE, PAWN_SIZE));
@@ -106,6 +107,10 @@ int Game::getScreenH() {
 SDL_Window* Game::getWindow() {
 	return window;
 }
+
+Dice* Game::getDice() {
+	return dice;
+}
  void Game::listen_event() {
 	 SDL_Event e;
 	 int mouseX, mouseY;
@@ -132,6 +137,8 @@ SDL_Window* Game::getWindow() {
 						 else {
 							 int turns = players[turn]->getJailTurnsLeft();
 							 players[turn]->setJailTurnsLeft(turns - 1); // decrement jail turn left for players at current turn
+							if(!players[turn]->isJailed())
+								players[turn]->freeFromJail();
 						 }
 						 dice->setBlocked(true);
 						 Game::nrDoublesThrown = 0;
@@ -143,6 +150,8 @@ SDL_Window* Game::getWindow() {
 
 						 if (Game::nrDoublesThrown == 3) {
 							 players[turn]->setRemainingSteps(50 - players[turn]->getCurrentPosition());
+							 //players[turn]->setRemainingSteps(players[turn]->getCurrentPosition() - 10);
+							 
 							 players[turn]->setJailFlag(); //Player is now in moving, once it will finish, it will go direcly to jail
 							 dice->setBlocked(true); //Set the dice block so while the current player is moving nobody can run the dice;
 						 }
@@ -194,7 +203,7 @@ SDL_Window* Game::getWindow() {
 	 background->render();
 	 for (int i = 0; i < players.size(); i++)
 		 players[i]->render();
-	 dice->render(renderer);
+	 Game::dice->render(renderer);
 	 for (int i = 0; i < buttons.size(); i++)
 		 buttons[i]->render(renderer);
 	 SDL_RenderPresent(renderer);
@@ -210,15 +219,26 @@ SDL_Window* Game::getWindow() {
 		 if (players[turn]->finishedMoving()) {
 			 switch (players[turn]->getFlag()) {
 			 case DICE_MOVE:
-				 //tiles[players[turn]->getCurrentPosition()]->doEffect(players[turn]);
-				 tiles[2]->doEffect(players[turn]);
+				 tiles[players[turn]->getCurrentPosition()]->doEffect(players[turn]);
 				 break;
 			 case MUST_BE_JAILED:
-				 players[turn]->gotToJail();
+				 players[turn]->goToJail();
 				 break;
 			 case EXEC_COMMAND:
 				 std::cout << players[turn]->getName() << " finished the command." << std::endl;
 				 /*Dupa ce termina command, reintra in starea de "Sunt gata sa mut dupa cum zice zarul"*/
+				 if (players[turn]->getCurrentPosition() == 28 || players[turn]->getCurrentPosition() == 12) {
+					 if (dynamic_cast<UtilityProperty*>(tiles[players[turn]->getCurrentPosition()])->getOwner() != NULL
+						 && !players[turn]->isBankrupt()) {
+						 std::cout << players[turn]->getName() << " has to pay something\n";
+						 dynamic_cast<UtilityProperty*>(tiles[players[turn]->getCurrentPosition()])->getOwner()->receiveMoney(dice->getFirstDieValue() + dice->getSecondDieValue() * 10);
+						 players[turn]->payMoney(dice->getFirstDieValue() + dice->getSecondDieValue() * 10);
+					 }
+					 else
+						 tiles[players[turn]->getCurrentPosition()]->doEffect(players[turn]);
+				 }
+				 else
+					tiles[players[turn]->getCurrentPosition()]->doEffect(players[turn]);
 				 players[turn]->setDiceFlag();
 			 }
 			 

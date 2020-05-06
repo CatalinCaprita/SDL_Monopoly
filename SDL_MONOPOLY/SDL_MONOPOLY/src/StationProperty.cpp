@@ -19,24 +19,30 @@ void StationProperty::doEffect(Player* currentPlayer) {
 		int answer;
 		std::cin >> answer;
 		if (answer == 1) {
-			///TODO PAY THE PRICE
-			owner = currentPlayer;
-			std::cout << currentPlayer->getName() << " bought" << name << std::endl;
+			if (currentPlayer->getMoney() < buyPrice) {
+				std::cout << " Aquisition failed. Lack of funds `\( `-`)/` ";
+			}
+			else {
+				owner = currentPlayer;
+				currentPlayer->buyProperty(this, "station");
+			}
 		}
 		return;
 	}
 	if (owner != currentPlayer) {
 		int sumToPay = 0;
-		//TODO functions that returns number of owned stations by the owner
-		/*
-		sumToPay = owner.getNumberOfStations() * 25;
+		sumToPay = owner->getOwnedStations() * 25;
 		rentPrices[0] = sumToPay;
-
-		*/
-		std::cout << currentPlayer->getName() << " needs to pay " << sumToPay << " to " << owner->getName() << std::endl;
-		owner->receiveMoney(sumToPay);
-		currentPlayer->payMoney(sumToPay);
-
+		if (currentPlayer->getFlag() == 2) {
+			std::cout << currentPlayer->getName() << " needs to pay TWICE  the  sum :" << sumToPay << " to " << owner->getName() << std::endl;
+			owner->receiveMoney(2 * sumToPay);
+			currentPlayer->payMoney( 2 * sumToPay);
+		}
+		else {
+			std::cout << currentPlayer->getName() << " needs to pay " << sumToPay << " to " << owner->getName() << std::endl;
+			owner->receiveMoney(sumToPay);
+			currentPlayer->payMoney(sumToPay);
+		}
 	}
 }
 int StationProperty::getRentPrice() {

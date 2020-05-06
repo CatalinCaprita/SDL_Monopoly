@@ -27,7 +27,6 @@ int coordY[] = { 91, 91, 91, 91, 91,  91, 91, 91, 91, 91,
 
 //W, H, X, Y  will be in GAME_UNITS now, see Game.cpp and Sprite.h
 Player::Player(std::string name, const char* filepath, int unitX, int unitY, int unitH, int unitW) : totalMoney(10000),id(counter + 1), currentPosition(0), name(name),bankrupt(false){
-	ownedProperties = *(new std::vector<Tile*>);
 	counter++;
 	sprite = new Sprite(filepath,unitW,unitH,unitX,unitY);
 	remainingSteps = 0;
@@ -64,24 +63,23 @@ void Player::setSpriteScale(int screenW, int screenH) {
 @params remainingSteps , firstDieValue + secondDieValue, how many steps the player has to move, i.e. how many times to update the sprite
 
 */
-void Player::setRemainingSteps(int remainingSteps) {
+void Player::setRemainingSteps(int remainingSteps,int direction) {
 	this->remainingSteps = remainingSteps;
+	this->direction = direction;
 }
 Sprite* Player::getSprite() {
 	return sprite;
 }
+std::string& Player::getName() {
+	return name;
+}
 
-/**
-@returns true if the player has moved since rolling the dice, i.e. moving animation should no longer be expected
-Daca finishMoving e true, inseamna ca tot in aceeasi tura, in update trebuie sa se intample interactiunea cu Tile[currentPosition]
-deci o sa intoarca true, dar seteaza imediat pe false
+
+/*
+Money and Property Interactions :
 */
-bool Player::finishedMoving() {
-	if (finishMoving) {
-		finishMoving = false;
-		return true;
-	}
-	return false;
+int Player::getMoney() {
+	return totalMoney;
 }
 int Player::receiveMoney(int amount) {
 	this->totalMoney += amount;
@@ -96,44 +94,53 @@ int Player::payMoney(int amount) {
 	this->totalMoney -= amount;
 	return amount;
 }
-/**
-@returns currentPosition where the player lands if it has finished moving, stepsRemaining  = 0
-*/
-int Player::getCurrentPosition() {
-	return currentPosition;
-}
-void Player::buyProperty(Tile* property)
+
+void Player::buyProperty(Tile* property, const std::string& type)
 {
-	if (totalMoney < ((AbstractProperty*)property)->getRentPrice())
+	int buyPrice = dynamic_cast<AbstractProperty*>(property)->getBuyPrice();
+	if (totalMoney < buyPrice)
 		std::cout << "Sorry, you don't have the money!";
 	else {
-		this->payMoney(((AbstractProperty*)property)->getRentPrice());
-		this->ownedProperties.push_back(property);
+		this->payMoney(buyPrice);
+		std::cout << name << " bought" << property->getName() << std::endl;
+		auto it = ownedProperties.find(type);
+		if (it == ownedProperties.end()) {
+			std::vector<Tile*> item;
+			ownedProperties.insert({ type, item });
+		}
+		ownedProperties[type].push_back(property);
 	}
 	return;
 }
 void Player::sellProperty(Tile* property)
 {
-	for (int i=0;i<ownedProperties.size();i++)
-		if (ownedProperties[i] == property)
-		{
-			//property->setOwner(NULL);
-			// remove every layer of
-			ownedProperties.erase(ownedProperties.begin()+i); // erases the element at index i -> needs testing
-
-		}
+	
 }
 
-std::string& Player::getName() {
-	return name;
+int Player::getOwnedStations() {
+	auto it = ownedProperties.find("station");
+	if(it != ownedProperties.end())
+		return ownedProperties["station"].size();
+	return 0;
 }
+
+int Player::getOwnedUtils() {
+	auto it = ownedProperties.find("util");
+	if (it != ownedProperties.end())
+		return ownedProperties["util"].size();
+	return 0;
+}
+
 /*
 Asta se intampla doar cand playerul trebuie sa ajunga la Jail. O sa aibe cum ati zis voi 50 - currentPosition pozitii de mutat, iar cand termina de mutat,
 remainingSteps == 0, atunci se initiaza goToJail
 Totusi, in iteratiile Game::update() si Game::render() el figureaza ca mai are de mutat, deci il las sa mute. Flag-ul e pentru cand termina de mutat
 */
 
-void Player::gotToJail() {
+/*
+Jail Functions
+*/
+void Player::goToJail() {
 	std::cout << name << " will GO TO JAIL !\n";
 		currentPosition = 10;
 		jailTurnsLeft = 3;
@@ -147,6 +154,7 @@ void Player::freeFromJail()
 {
 	jailTurnsLeft = 0;
 	flagType = DICE_MOVE;
+	std::cout << name << " is now FREE \n";
 }
 
 void Player::setJailTurnsLeft(int turns)
@@ -159,8 +167,6 @@ int Player::getJailTurnsLeft()
 {
 	return jailTurnsLeft;
 }
-
-
 bool Player::isBankrupt()
 {
 	return bankrupt;
@@ -184,10 +190,31 @@ void Player::setCommandFlag() {
 	flagType = EXEC_COMMAND;
 }
 
+/*INTERNALS
+
+/**
+@returns currentPosition where the player lands if it has finished moving, stepsRemaining  = 0
+*/
+int Player::getCurrentPosition() {
+	return currentPosition;
+}
+/**
+@returns true if the player has moved since rolling the dice, i.e. moving animation should no longer be expected
+Daca finishMoving e true, inseamna ca tot in aceeasi tura, in update trebuie sa se intample interactiunea cu Tile[currentPosition]
+deci o sa intoarca true, dar seteaza imediat pe false
+*/
+bool Player::finishedMoving() {
+	if (finishMoving) {
+		finishMoving = false;
+		return true;
+	}
+	return false;
+}
 /*
 Player's Sprite Position will be updated only agter a delay, set by renderDelay
-and only if it has more than 0 steps to move. 
+and only if it has more than 0 steps to move.
 Otherwise player's sprite keeps its position
+int direction - 1 forward, -1 backward
 */
 void Player::update() {
 	if (SDL_GetTicks() - lastRender >= renderDelay) {
@@ -195,9 +222,8 @@ void Player::update() {
 		Daca NU e Jailed, i.e. e deja in tile-ul jail SI mai are pasi de facut, atunci pozitia lui se updateaza
 		*/
 		if (!isJailed() && remainingSteps > 0) {
-			currentPosition++;
-			if (currentPosition != currentPosition % 40)
-			{
+			currentPosition += direction ;
+			if (currentPosition != currentPosition % 40){
 				std::cout << "Ai trecut de GO! Primesti 200 de BISTARI!" << std::endl;
 				this->totalMoney += 200;
 			}
@@ -215,6 +241,7 @@ void Player::update() {
 		
 	}
 }
+
 /**
 See sprite->render();
 */
@@ -224,7 +251,12 @@ void Player::render() {
 }
 
 void Player::print(){
-	std::cout << "name: " << name << "id: " << id << "balance: " << totalMoney << "owned properties: ";
-	for (auto x : ownedProperties)
-		std::cout << x->getName() + "; ";
+	std::cout << "name: " << name << "id: " << id << "balance: " << totalMoney << " owned properties: "<< std::endl;
+	for (auto& type : ownedProperties) {
+		std::cout << "All the " << type.first << " properties: \n";
+		for (int i = 0; i < type.second.size(); i++) {
+			type.second[i]->print();
+			std::cout << std::endl;
+		}
+	}
 }

@@ -31,8 +31,8 @@ void Dice::roll(SDL_Renderer* renderer) {
 	}
 }
 void Dice::render(SDL_Renderer* renderer) {
-	SDL_RenderCopy(renderer, firstDieTexture, NULL, &firstDieRect);
-	SDL_RenderCopy(renderer, secondDieTexture, NULL, &secondDieRect);
+	TextureMaker::render(firstDieTexture, NULL, &firstDieRect);
+	TextureMaker::render(secondDieTexture, NULL, &secondDieRect);
 }
 void Dice::update() {
 }

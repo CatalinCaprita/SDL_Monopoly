@@ -66,8 +66,13 @@ void HouseProperty::doEffect(Player* currentPlayer) {
 		int answer;
 		std::cin >> answer;
 		if (answer == 1) {
-			owner = currentPlayer;
-			std::cout << currentPlayer->getName() << " bought" << name << std::endl;
+			if (currentPlayer->getMoney() < buyPrice) {
+				std::cout << " Aquisition failed. Lack of funds `\( `-`)/` ";
+			}
+			else {
+				owner = currentPlayer;
+				currentPlayer->buyProperty(this, "house");
+			}
 		}
 		UserAnimator::fadePropertyCard(this);
 	}

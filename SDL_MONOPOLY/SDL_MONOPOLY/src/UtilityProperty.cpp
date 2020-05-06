@@ -1,6 +1,7 @@
 #include "../headers/UtilityProperty.h"
 #include  "../headers/Player.h"
 #include "../headers/UserAnimator.h"
+#include "../headers/Game.h"
 UtilityProperty::UtilityProperty(std::string name, int buyPrice, int updateCost,Groups groupId,int fileId) :AbstractProperty(name, buyPrice, updateCost, groupId) {
 	this->rentStage = 0;
 	this->texturePath = "assets/utility_properties/" + std::to_string(fileId)+ ".bmp";
@@ -16,17 +17,19 @@ void UtilityProperty::doEffect(Player* currentPlayer) {
 		int answer;
 		std::cin >> answer;
 		if (answer == 1) {
-			///TODO PAY THE PRICE
-			owner = currentPlayer;
-			std::cout << currentPlayer->getName() << " bought" << name << std::endl;
+			if (currentPlayer->getMoney() < buyPrice) {
+				std::cout << " Aquisition failed. Lack of funds `\( `-`)/` ";
+			}
+			else {
+				owner = currentPlayer;
+				currentPlayer->buyProperty(this, "utility");
+			}
 		}
 		return;
 	}
 	if (owner != currentPlayer) {
 		int multiplier = 4;
-		//TODO check if player has both utilities or just one
-		/*int numberOfUtilities = owner.getNumberOfUtilities();
-		switch (numberOfUtilities) {
+		switch (owner->getOwnedUtils()) {
 		case(1):
 			multiplier = 4;
 			break;
@@ -34,13 +37,15 @@ void UtilityProperty::doEffect(Player* currentPlayer) {
 			multiplier = 10;
 			break;
 		}
-		*/
-		int sumToPay = getRentPrice();
-		//TODO SA AVEM O FUNCTIE CARE NE RETURNEAZA SUMA ZARURILOR
-		//sumToPay = multiplier * OCLASA.getSumDice();
-		std::cout << currentPlayer->getName() << " needs to pay " << sumToPay << " to " << owner->getName() << std::endl;
-		owner->receiveMoney(sumToPay);
-		currentPlayer->payMoney(sumToPay);
+		int sumToPay = multiplier * getRentPrice();
+		if (currentPlayer->getMoney() >= sumToPay) {
+			std::cout << currentPlayer->getName() << " needs to pay " << sumToPay << " to " << owner->getName() << std::endl;
+			owner->receiveMoney(sumToPay);
+			currentPlayer->payMoney(sumToPay);
+		}
+		else {
+			std::cout << currentPlayer->getName() << " cannot pay the rent.";
+		}
 		
 	}
 }
@@ -49,7 +54,6 @@ void UtilityProperty::print() {
 }
 
 int UtilityProperty::getRentPrice() {
-	//TO DO Could Attach a Dice* and return firstDieValue and SecondDieValue;
-	//Returns as Above;
-	return 0;
+	
+	return Game::getDice()->getFirstDieValue() + Game::getDice()->getSecondDieValue();
 }
