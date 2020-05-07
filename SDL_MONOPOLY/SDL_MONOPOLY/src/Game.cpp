@@ -157,21 +157,7 @@ Dice* Game::getDice() {
 							 dice->setBlocked(true); //Set the dice block so while the current player is moving nobody can run the dice;
 						 }
 						 else {
-							 /*
-							 for (int i = 0; i < dice->getFirstDieValue() + dice->getSecondDieValue(); i++) {
-								 players[turn]->move();
-								 players[turn]->update();
-								 Game::render();
-								 SDL_RenderPresent(renderer);
-								 SDL_Delay(300);
-								
-							 }
-							 Ca sa va faceti o idee, faceti paralela cu ceea ce e in Player::update(). Se intmapla acelasi lucru ca la voi, 
-							 Doar ca o sa am nevoie doar de o update() si o sa ma misc la fiecare Game::render, in loc sa redesenez totul doar in for 
-							 */
-
 							 players[turn]->setRemainingSteps(dice->getFirstDieValue() + dice->getSecondDieValue());
-							 dice->setBlocked(true);
 							 if (!dice->thrownDouble()) {
 								 dice->setBlocked(true);
 								 Game::nrDoublesThrown = 0;
