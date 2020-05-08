@@ -10,6 +10,9 @@
 #include "../headers/Player.h"
 #include "../headers/Properties.h"
 #include "../headers/Sprite.h"
+#include "../headers/Menu.h"
+
+class Menu;
 
 class Game {
 public:
@@ -24,6 +27,8 @@ public:
 	void listen_event();
 	void fillTiles(const char *);
 
+	Menu* getMenu();
+	bool getMousePressed();
 	int getScreenW();
 	int getScreenH();
 	SDL_Window* getWindow();
@@ -45,6 +50,7 @@ private:
 	static SDL_Renderer* renderer;		//renderer composite passed as arg to all render functinos. see update() and render()
 	Sprite* background;
 	std::vector<Tile*> tiles;
+	Menu* menu;
 
 };
 #endif // !GAME_H

@@ -23,6 +23,7 @@
 #define MUST_BE_JAILED 1
 #define EXEC_COMMAND 2
 
+
 int Game::count = 0;
 
 
@@ -52,9 +53,9 @@ Game::Game(const char* title, int x_pos, int y_pos, int width, int height, bool 
 	if (full_screen) {
 		new_flag = SDL_WINDOW_FULLSCREEN;
 	}
-
 	if (SDL_Init(SDL_INIT_EVERYTHING) == 0) {
-		window = SDL_CreateWindow(title, x_pos, y_pos, width, height, SDL_WINDOW_OPENGL);
+// width + menu_width
+		window = SDL_CreateWindow(title, x_pos, y_pos, width + 300, height, SDL_WINDOW_OPENGL);
 		renderer = SDL_CreateRenderer(window, -1, 0);
 		if (renderer)
 			SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
@@ -68,9 +69,9 @@ Game::Game(const char* title, int x_pos, int y_pos, int width, int height, bool 
 		dice = new Dice();
 		dice->getFirstDieSprite()->setScale(width, height);
 		dice->getSecondDieSprite()->setScale(width, height);
-		players.push_back(new Player("Player 1", "assets/blue.bmp",START_X,START_Y,3,3));
+		players.push_back(new Player("Player 1", "assets/blue.bmp", START_X, START_Y, PAWN_SIZE, PAWN_SIZE));
 		players[0]->setSpriteScale(width, height);
-		players.push_back(new Player("Player 2", "assets/red.bmp", START_X + 1, START_Y -1 , PAWN_SIZE, PAWN_SIZE));
+		players.push_back(new Player("Player 2", "assets/red.bmp", START_X + 1, START_Y -1, PAWN_SIZE, PAWN_SIZE));
 		players[1]->setSpriteScale(width, height);
 		/*
 		players.push_back(new Player("Player 3", "assets/purple.bmp", 950, 930, PAWN_SIZE, PAWN_SIZE));
@@ -83,6 +84,7 @@ Game::Game(const char* title, int x_pos, int y_pos, int width, int height, bool 
 			buttons[i]->getSprite()->setScale(width, height);
 		isRunning = true;
 		fillTiles("assets/houseProperties.txt");
+		menu = new Menu(this);
 	}
 	else {
 		isRunning = false;
@@ -113,6 +115,7 @@ Dice* Game::getDice() {
 }
 
  void Game::listen_event() {
+	 menu->listen_event();
 	 SDL_Event e;
 	 int mouseX, mouseY;
 	 SDL_PollEvent(&e);
@@ -157,6 +160,19 @@ Dice* Game::getDice() {
 							 dice->setBlocked(true); //Set the dice block so while the current player is moving nobody can run the dice;
 						 }
 						 else {
+							 /*
+							 for (int i = 0; i < dice->getFirstDieValue() + dice->getSecondDieValue(); i++) {
+								 players[turn]->move();
+								 players[turn]->update();
+								 Game::render();
+								 SDL_RenderPresent(renderer);
+								 SDL_Delay(300);
+								
+							 }
+							 Ca sa va faceti o idee, faceti paralela cu ceea ce e in Player::update(). Se intmapla acelasi lucru ca la voi, 
+							 Doar ca o sa am nevoie doar de o update() si o sa ma misc la fiecare Game::render, in loc sa redesenez totul doar in for 
+							 */
+
 							 players[turn]->setRemainingSteps(dice->getFirstDieValue() + dice->getSecondDieValue());
 							 if (!dice->thrownDouble()) {
 								 dice->setBlocked(true);
@@ -191,13 +207,17 @@ Dice* Game::getDice() {
 	 for (int i = 0; i < players.size(); i++)
 		 players[i]->render();
 	
-	 for (int i = 0; i < buttons.size(); i++)
+	 /*for (int i = 0; i < buttons.size(); i++)
 		 buttons[i]->render();
-	 dice->render();
+	 dice->render();*/
+	 menu->render();
 	 SDL_RenderPresent(renderer);
 }
 
  void Game::update() {
+	 //
+	 std::cout << menu->getCurrentPage() << std::endl;
+	 //
 	 for (int i = 0; i < players.size(); i++) {
 		 players[i]->update();
 		 /*
@@ -337,3 +357,10 @@ Dice* Game::getDice() {
 
  }
 
+ Menu* Game::getMenu() {
+	 return menu;
+ }
+ 
+ bool Game::getMousePressed() {
+	 return mousePressed;
+ }
