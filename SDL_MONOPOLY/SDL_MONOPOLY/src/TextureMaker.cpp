@@ -10,11 +10,16 @@ TextureMaker::~TextureMaker() {
 void TextureMaker::attach(SDL_Renderer* ren) {
 	link = ren;
 }
-SDL_Texture* TextureMaker::textureFromBMP(const char* path) {
+SDL_Texture* TextureMaker::textureFromBMP(const char* path,bool ignoreBg) {
 	temp = SDL_LoadBMP(path);
 	if (temp == NULL) {
 		std::cout << "Could not load Image: " << SDL_GetError() << std::endl;
 		return NULL;
+	}
+	if (ignoreBg) {
+		std::cout << "IGNORES BACKGROUND";
+		Uint32 colorkey = SDL_MapRGB(temp->format, 0, 0, 0);
+		SDL_SetColorKey(temp, SDL_TRUE, colorkey);
 	}
 	return SDL_CreateTextureFromSurface(Game::getRenderer(),temp);
 }

@@ -13,8 +13,8 @@ private:
 	float hRatio = 1.0f;
 public :
 	int width, height;
-	Sprite(const char* path, int unitW, int unitH,int unitX = 0,int unitY = 0,int screenW = -1, int screenH = -1){
-		texture = TextureMaker::textureFromBMP(path);
+	Sprite(const char* path, int unitW, int unitH,int unitX = 0,int unitY = 0,int screenW = -1, int screenH = -1,bool ignoresBG = false){
+		texture = TextureMaker::textureFromBMP(path,ignoresBG);
 		if (texture == NULL) {
 			std::cout << "FAILED TO LOAD IMAGE AT " <<path <<std::endl;
 		}

@@ -28,7 +28,7 @@ int coordY[] = { 91, 91, 91, 91, 91,  91, 91, 91, 91, 91,
 //W, H, X, Y  will be in GAME_UNITS now, see Game.cpp and Sprite.h
 Player::Player(std::string name, const char* filepath, int unitX, int unitY, int unitH, int unitW) : totalMoney(10000),id(counter + 1), currentPosition(0), name(name),bankrupt(false){
 	counter++;
-	sprite = new Sprite(filepath,unitW,unitH,unitX,unitY);
+	sprite = new Sprite(filepath,unitW,unitH,unitX,unitY,-1,-1,true);
 	remainingSteps = 0;
 	finishMoving = false;
 	renderDelay = 300;

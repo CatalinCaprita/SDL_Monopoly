@@ -68,7 +68,7 @@ Game::Game(const char* title, int x_pos, int y_pos, int width, int height, bool 
 		dice = new Dice();
 		dice->getFirstDieSprite()->setScale(width, height);
 		dice->getSecondDieSprite()->setScale(width, height);
-		players.push_back(new Player("Player 1", "assets/blue.bmp",START_X,START_Y,3,3));
+		players.push_back(new Player("Player 1", "assets/house_properties/house.bmp",START_X,START_Y,5,5));
 		players[0]->setSpriteScale(width, height);
 		players.push_back(new Player("Player 2", "assets/red.bmp", START_X + 1, START_Y -1 , PAWN_SIZE, PAWN_SIZE));
 		players[1]->setSpriteScale(width, height);

@@ -7,7 +7,7 @@ class TextureMaker{
 public:
 	//returns SDL_texture from bmp style image
 	//params : the file path of the immage, preferabliy set in ../assets
-	static SDL_Texture *textureFromBMP(const char* path);
+	static SDL_Texture *textureFromBMP(const char* path,bool ignoreBg = false);
 	static SDL_Texture* getWindowTexture(SDL_Window * win);
 
 	//Changes the Renderer object pointed to by _link

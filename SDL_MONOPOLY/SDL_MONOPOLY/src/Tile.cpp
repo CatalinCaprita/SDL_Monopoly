@@ -2,8 +2,9 @@
 #include "../headers/Player.h"
 #include <string>
 
-Tile::Tile(std::string name1) {
-	name = name1;
+Tile::Tile(std::string name,Groups groupId) {
+	this->name = name;
+	this->groupId = groupId;
 }
 
 std::string Tile ::getName() {

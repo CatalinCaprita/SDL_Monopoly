@@ -16,7 +16,6 @@ private:
 	std::string backTexturePath;
 	std::string frontTexturePath;
 	static std::queue<int> chanceQ, communityQ;
-	Groups groupId;
 	int destX, destY;
 	static bool initialized;
 };

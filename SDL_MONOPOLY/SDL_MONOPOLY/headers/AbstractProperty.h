@@ -11,7 +11,6 @@ protected:
 	int updateCost;
 	int rentStage; //pointer for rentPrices
 	std::vector<int> rentPrices;
-	Groups groupId;
 	Player *owner;
 	
 public:
@@ -20,7 +19,6 @@ public:
 	virtual void doEffect(Player* currentPlayer) = 0;
 	virtual int getRentPrice() { return 0; };
 	int getBuyPrice();
-	int getGroupId();
 	virtual void update() {};
 	Player* getOwner();
 	
