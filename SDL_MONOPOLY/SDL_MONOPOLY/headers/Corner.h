@@ -4,6 +4,7 @@
 #include "Properties.h"
 #include "Tile.h"
 #include "Player.h"
+#include "Groups.h"
 class Tile;
 class Corner : public Tile {
 public :

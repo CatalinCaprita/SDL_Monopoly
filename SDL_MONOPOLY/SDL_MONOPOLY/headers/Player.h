@@ -2,9 +2,9 @@
 #include "SDL.h"
 #include <vector>
 #include "../headers/TextureMaker.h"
-#include "../headers/Tile.h"
-#include "../headers/AbstractProperty.h"
 #include "../headers/Sprite.h"
+#include "Tile.h"
+#include "AbstractProperty.h"
 #include <unordered_map>
 class Player {
 public:
@@ -37,6 +37,9 @@ public:
 	void sellProperty(Tile*);
 	int getOwnedStations();
 	int getOwnedUtils();
+	bool ownsAllOfColor(Groups color);
+	void destroyHousesFromColor(Groups color);
+	void payPerBuildings();
 
 	//Flag Setters
 	int getFlag();

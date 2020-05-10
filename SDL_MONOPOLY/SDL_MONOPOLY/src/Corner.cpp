@@ -4,6 +4,7 @@
 Corner::Corner(std::string& name, std::string& command,int cornerNo):Tile(name){
 	this->command = command;
 	this->cornerNo = cornerNo;
+	this->groupId = CORNER;
 }
 
 Corner::~Corner() {

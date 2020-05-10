@@ -34,9 +34,15 @@ public :
 	Sprite(Sprite* copy){
 		wRatio = copy->wRatio;
 		hRatio = copy->hRatio;
-		width = copy->width;
-		height = copy->height;
+		destRect.w = copy->destRect.w;
+		destRect.h = copy->destRect.h;
 		texture = copy->texture;
+	}
+	void copyScale(Sprite* otherSprite) {
+		wRatio = otherSprite->wRatio;
+		hRatio = otherSprite->hRatio;
+		destRect.w = (int)width * wRatio;
+		destRect.h = (int)height * hRatio;
 	}
 	void setPath(const char* newPath) {
 		texture = TextureMaker::textureFromBMP(newPath);

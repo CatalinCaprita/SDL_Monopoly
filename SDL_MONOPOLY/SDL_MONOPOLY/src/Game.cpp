@@ -46,6 +46,8 @@ int utilIdx[] = { 12,28 };
 int Game::nrDoublesThrown = 0;
 Dice* Game::dice = nullptr;
 SDL_Renderer* Game::renderer = nullptr;
+
+int last = 0;
 Game::Game(const char* title, int x_pos, int y_pos, int width, int height, bool full_screen):tiles(40){
 	mousePressed = false;
 	turn = 0;
@@ -84,7 +86,7 @@ Game::Game(const char* title, int x_pos, int y_pos, int width, int height, bool 
 			buttons[i]->getSprite()->setScale(width, height);
 		isRunning = true;
 		fillTiles("assets/houseProperties.txt");
-		menu = new Menu(this);
+		//menu = new Menu(this);
 	}
 	else {
 		isRunning = false;
@@ -115,7 +117,7 @@ Dice* Game::getDice() {
 }
 
  void Game::listen_event() {
-	 menu->listen_event();
+	 //menu->listen_event();
 	 SDL_Event e;
 	 int mouseX, mouseY;
 	 SDL_PollEvent(&e);
@@ -160,20 +162,8 @@ Dice* Game::getDice() {
 							 dice->setBlocked(true); //Set the dice block so while the current player is moving nobody can run the dice;
 						 }
 						 else {
-							 /*
-							 for (int i = 0; i < dice->getFirstDieValue() + dice->getSecondDieValue(); i++) {
-								 players[turn]->move();
-								 players[turn]->update();
-								 Game::render();
-								 SDL_RenderPresent(renderer);
-								 SDL_Delay(300);
-								
-							 }
-							 Ca sa va faceti o idee, faceti paralela cu ceea ce e in Player::update(). Se intmapla acelasi lucru ca la voi, 
-							 Doar ca o sa am nevoie doar de o update() si o sa ma misc la fiecare Game::render, in loc sa redesenez totul doar in for 
-							 */
-
 							 players[turn]->setRemainingSteps(dice->getFirstDieValue() + dice->getSecondDieValue());
+							 players[turn]->setRemainingSteps(1);
 							 if (!dice->thrownDouble()) {
 								 dice->setBlocked(true);
 								 Game::nrDoublesThrown = 0;
@@ -189,7 +179,7 @@ Dice* Game::getDice() {
 				 std::cout << "button1" << std::endl;
 			 }
 			 else if (buttons[2]->hoverButton(mouseX, mouseY)) {
-				 turn++;
+				turn++;
 				 turn %= 2;
 				 dice->setBlocked(false);
 				 std::cout << "button2" << std::endl;
@@ -204,19 +194,22 @@ Dice* Game::getDice() {
  void Game::render() {
 	 SDL_RenderClear(renderer);
 	 background->render();
+	 for (int i = 0; i < PROP_NUM; i++) {
+		 tiles[propIdx[i]]->render();
+	 }
 	 for (int i = 0; i < players.size(); i++)
 		 players[i]->render();
 	
-	 /*for (int i = 0; i < buttons.size(); i++)
+	 for (int i = 0; i < buttons.size(); i++)
 		 buttons[i]->render();
-	 dice->render();*/
-	 menu->render();
+	 dice->render();
+	 //menu->render();
 	 SDL_RenderPresent(renderer);
 }
 
  void Game::update() {
 	 //
-	 std::cout << menu->getCurrentPage() << std::endl;
+	 //std::cout << menu->getCurrentPage() << std::endl;
 	 //
 	 for (int i = 0; i < players.size(); i++) {
 		 players[i]->update();
@@ -227,7 +220,9 @@ Dice* Game::getDice() {
 		 if (players[turn]->finishedMoving()) {
 			 switch (players[turn]->getFlag()) {
 			 case DICE_MOVE:
-				 tiles[players[turn]->getCurrentPosition()]->doEffect(players[turn]);
+				 //tiles[players[turn]->getCurrentPosition()]->doEffect(players[turn]);
+				 tiles[stationIdx[last]]->doEffect(players[turn]);
+				 //last = (last + 1) % 4;
 				 break;
 			 case MUST_BE_JAILED:
 				 players[turn]->goToJail();
@@ -303,7 +298,7 @@ Dice* Game::getDice() {
 	 int groupID;
 	 std::string name;
 	 std::string command;
-	 int buyPrice, updateCost, rentStages;
+	 int buyPrice, updateCost, rentStages,mortgage;
 	 std::vector<int>rentPrices(UPPER_RENTS_BOUND);	//dirty technique, but what can you do  `\ (' - ') /`
 	 Groups color;
 	 tiles[4] = new CommandTile("Income Tax");
@@ -311,13 +306,13 @@ Dice* Game::getDice() {
 	 for (int i = 0; i < tiles.size(); i++) {
 		 //For HouseProperty
 		 if (pid < PROP_NUM  && i == propIdx[pid]) {
-			 fin >> name >> buyPrice >> updateCost >> groupID;
+			 fin >> name >> buyPrice >> updateCost >> mortgage >> groupID;
 			 name = parse(name, '_');
 			 color = getGroupId(groupID);
 			 rentStages = 6;
 			 for (int i = 0; i < rentStages; i++)
 				 fin >> rentPrices[i];
-			 tiles[i] = new HouseProperty(name, buyPrice,updateCost,rentPrices,color,i);
+			 tiles[i] = new HouseProperty(name, buyPrice,updateCost,mortgage,rentPrices,color,i);
 		
 			 pid++;
 		 }

@@ -15,6 +15,10 @@ public:
 	std::string getName();
 	virtual void doEffect(Player* currentPlayer) = 0;
 	virtual void print() = 0;
+	virtual void render(){}
+	virtual bool isRenderable() {
+		return false;
+	}
 	std::string& getTexturePath() {
 		return texturePath;
 	}

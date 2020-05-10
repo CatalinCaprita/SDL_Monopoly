@@ -1,4 +1,5 @@
 #include "../headers/Player.h"
+#include "../headers/HouseProperty.h"
 #define OFFSET 3
 #define DICE_MOVE 0
 #define MUST_BE_JAILED 1
@@ -29,7 +30,7 @@ int coordY[] = { 91, 91, 91, 91, 91,  91, 91, 91, 91, 91,
 Player::Player(std::string name, const char* filepath, int unitX, int unitY, int unitH, int unitW) : totalMoney(10000),id(counter + 1), currentPosition(0), name(name),bankrupt(false){
 	counter++;
 	sprite = new Sprite(filepath,unitW,unitH,unitX,unitY,-1,-1,true);
-	remainingSteps = 0;
+	remainingSteps = -2;
 	finishMoving = false;
 	renderDelay = 300;
 	lastRender = 0;
@@ -83,6 +84,7 @@ int Player::getMoney() {
 }
 int Player::receiveMoney(int amount) {
 	this->totalMoney += amount;
+	std::cout << name << " received " << amount << " money \n";
 	return amount;
 }
 
@@ -131,6 +133,38 @@ int Player::getOwnedUtils() {
 	return 0;
 }
 
+bool Player::ownsAllOfColor(Groups color) {
+	auto pos = ownedProperties.find("house");
+	if (pos == ownedProperties.end())
+		return false;
+	int counter = 0;
+	for (int i = 0; i < ownedProperties["house"].size(); i++) {
+		if (color == ownedProperties["house"][i]->getGroupId())
+			counter++;
+	}
+	if (color == BROWN || color == BLUE)
+		return counter == 2;
+	return counter == 3;
+}
+
+void Player::destroyHousesFromColor(Groups color) {
+	auto pos = ownedProperties.find("house");
+	if (pos != ownedProperties.end())
+	for (int i = 0; i < ownedProperties["house"].size(); i++) {
+		if (color == ownedProperties["house"][i]->getGroupId()) {
+			dynamic_cast<HouseProperty*>(ownedProperties["house"][i])->destroyHouses();
+		}
+	}
+
+}
+void Player::payPerBuildings() {
+	auto pos = ownedProperties.find("house");
+	if (pos != ownedProperties.end())
+		for (int i = 0; i < ownedProperties["house"].size(); i++) {
+				dynamic_cast<HouseProperty*>(ownedProperties["house"][i])->destroyHouses();
+			}
+	
+}
 /*
 Asta se intampla doar cand playerul trebuie sa ajunga la Jail. O sa aibe cum ati zis voi 50 - currentPosition pozitii de mutat, iar cand termina de mutat,
 remainingSteps == 0, atunci se initiaza goToJail
@@ -221,7 +255,7 @@ void Player::update() {
 		/*
 		Daca NU e Jailed, i.e. e deja in tile-ul jail SI mai are pasi de facut, atunci pozitia lui se updateaza
 		*/
-		if (!isJailed() && remainingSteps > 0) {
+		if (!isJailed() && remainingSteps >= 0) {
 			currentPosition += direction ;
 			if (currentPosition != currentPosition % 40){
 				std::cout << "Ai trecut de GO! Primesti 200 de BISTARI!" << std::endl;
@@ -233,7 +267,7 @@ void Player::update() {
 			/*
 			Cand nu mai are pasi de mutat, atunci, tot in Game::update() o sa arate ca urmeaza interactiunea cu tile[currentPositon]
 			*/
-			if (remainingSteps == 0)
+			if (remainingSteps == -1 )
 				finishMoving = true;
 			lastRender = SDL_GetTicks();
 			std::cout << "player " << name << " has to move " << remainingSteps << " steps \n ";

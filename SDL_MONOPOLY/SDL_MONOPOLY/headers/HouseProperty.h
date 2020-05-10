@@ -2,22 +2,32 @@
 #define HOUSEPROPERTY_H
 #include <string>
 #include <iostream>
-#include "AbstractProperty.h"
 #include <vector>
+#include "AbstractProperty.h"
 class HouseProperty  : public AbstractProperty{
 public :
-	HouseProperty(std::string name, int buyPrice,int updateCost,std::vector<int> &rentPrices,Groups groupId,int rectId);
+	HouseProperty(std::string name, int buyPrice,int updateCost,int mortgageVal,std::vector<int> &rentPrices,Groups groupId,int rectId);
 	~HouseProperty();
 	void update();
+	void mortgage();
 	void doEffect(Player* currentPlayer);
 	void print();
 	void setRentPrice(int idx, int price);
+	void render() override;
+	void destroyHouses();
 	int getRentPrice() {
 		return rentPrices[rentStage];
 	}
+	bool isRenderable() override;
 private:
 	int houseNumber;
 	bool hasHotel;
+	bool renderable;
+	bool mortgaged;
+	int houseOrientation;
+	int mortgageVal;
+
+	Sprite* houses[4];
 
 
 };
