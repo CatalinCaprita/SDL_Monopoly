@@ -1,5 +1,4 @@
 #include "../headers/Page.h"
-
 Page::Page(Game* game, int xpos, int ypos) {
 	this->game = game;
 	test = new Button("assets/buy_button.bmp", xpos, ypos, 22, 10);

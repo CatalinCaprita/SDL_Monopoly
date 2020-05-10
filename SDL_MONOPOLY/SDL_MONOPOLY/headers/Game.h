@@ -10,7 +10,7 @@
 #include "../headers/Player.h"
 #include "../headers/Properties.h"
 #include "../headers/Sprite.h"
-//#include "../headers/Menu.h"
+#include "../headers/Menu.h"
 
 class Menu;
 

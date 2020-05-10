@@ -26,7 +26,6 @@
 
 int Game::count = 0;
 
-
 //Array of indexes for the HouseProperty properties
 // tiles[propIdx[i]] = new HouseProperty();
 int propIdx[] = { 1,3,			// BROWN
@@ -86,7 +85,7 @@ Game::Game(const char* title, int x_pos, int y_pos, int width, int height, bool 
 			buttons[i]->getSprite()->setScale(width, height);
 		isRunning = true;
 		fillTiles("assets/houseProperties.txt");
-		//menu = new Menu(this);
+		menu = new Menu(this);
 	}
 	else {
 		isRunning = false;
@@ -117,7 +116,7 @@ Dice* Game::getDice() {
 }
 
  void Game::listen_event() {
-	 //menu->listen_event();
+	 menu->listen_event();
 	 SDL_Event e;
 	 int mouseX, mouseY;
 	 SDL_PollEvent(&e);
@@ -203,7 +202,7 @@ Dice* Game::getDice() {
 	 for (int i = 0; i < buttons.size(); i++)
 		 buttons[i]->render();
 	 dice->render();
-	 //menu->render();
+	 menu->render();
 	 SDL_RenderPresent(renderer);
 }
 
