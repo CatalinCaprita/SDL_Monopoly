@@ -14,42 +14,46 @@ StationProperty::~StationProperty() {
 
 }
 
-void StationProperty::mortgage() {
-	if (!mortgaged) {
-		std::cout << "Do you wish to mortgage the property for " << mortgageVal << " ? (1/0)\n";
-		int answer;
-		std::cin >> answer;
-		if (answer == 1) {
-			/*If it is an improved property, The player must destroy all the houses and hotels form the same colored tiles
-			*/
-			mortgaged = true;
-			owner->receiveMoney(mortgageVal);
+void StationProperty::mortgage(Player* currentPlayer) {
+	if (owner == currentPlayer) {	
+		if (!mortgaged) {
+		
+			if (Game::isMortgagePressed()) {
+				/*If it is an improved property, The player must destroy all the houses and hotels form the same colored tiles
+				*/
+				mortgaged = true;
+				owner->receiveMoney(mortgageVal);
+				Game::setMortgagePressed(false);
+			}
+		}
+		else {
+			std::cout << "It appears you have already mortgaged this property. Lifting the mortgage would mean paying " <<
+				"The mortgage Value of the property + 10 % of its value for a total of  " << mortgageVal * 1.1 << ". Proceed? (1/0).";
+			int answer;
+			std::cin >> answer;
+			if (answer == 1) {
+				if (owner->getMoney() < buyPrice * 1.1) {
+					std::cout << " Insufficient Founds to cpmlete action.\n";
+					return;
+				}
+				owner->payMoney(mortgageVal * 1.1);
+				std::cout << "Mortgage lifted for " << name << "\n";
+				mortgaged = false;
+
+			}
 		}
 	}
 	else {
-		std::cout << "It appears you have already mortgaged this property. Lifting the mortgage would mean paying " <<
-			"The mortgage Value of the property + 10 % of its value for a total of  " << mortgageVal * 1.1 << ". Proceed? (1/0).";
-		int answer;
-		std::cin >> answer;
-		if (answer == 1) {
-			if (owner->getMoney() < buyPrice * 1.1) {
-				std::cout << " Insufficient Founds to cpmlete action.\n";
-				return;
-			}
-			owner->payMoney(mortgageVal * 1.1);
-			std::cout << "Mortgage lifted for " << name << "\n";
-			mortgaged = false;
-
-		}
+		std::cout << "You do not own this property\n";
 	}
 }
-void StationProperty::doEffect(Player* currentPlayer) {
+//Function that will be called as a listener if the button "Buy" is pressed in game
+void StationProperty::getMeAnOwner(Player* currentPlayer) {
 	if (owner == nullptr) {
-		UserAnimator::popPropertyCard(this);
-		std::cout << "This property is not owned by anyone. Do you wish to buy it? 1/0.\n";
-		int answer;
-		std::cin >> answer;
-		if (answer == 1) {
+		std::cout << "Im almost in\n";
+		//Checks if the player pressed the buy button 
+		if (Game::isBuyPressed()) {
+			std::cout << "Im in\n";
 			if (currentPlayer->getMoney() < buyPrice) {
 				std::cout << " Aquisition failed. Lack of funds `\( `-`)/` ";
 			}
@@ -57,11 +61,22 @@ void StationProperty::doEffect(Player* currentPlayer) {
 				owner = currentPlayer;
 				currentPlayer->buyProperty(this, "station");
 			}
+			Game::setBuyPressed(false);
 		}
+	}
+	else {
+		std::cout << "This station already has an owner\n";
+	}
+}
+void StationProperty::doEffect(Player* currentPlayer) {
+	if (owner == nullptr) {
+		UserAnimator::popPropertyCard(this);
+		
+		getMeAnOwner(currentPlayer);
 		return;
 	}
 	if (owner == currentPlayer) {
-		mortgage();
+		mortgage(currentPlayer);
 	}
 	if (owner != currentPlayer) {
 		int sumToPay = 0;

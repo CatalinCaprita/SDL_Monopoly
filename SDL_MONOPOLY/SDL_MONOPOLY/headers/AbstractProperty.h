@@ -18,6 +18,7 @@ public:
 	AbstractProperty(std::string name, int buyPrice,int updateCost, Groups groupId);
 	virtual void doEffect(Player* currentPlayer) = 0;
 	virtual int getRentPrice() { return 0; };
+	virtual void getMeAnOwner(Player* currentPlayer) = 0;
 	int getBuyPrice();
 	virtual void update() {};
 	Player* getOwner();

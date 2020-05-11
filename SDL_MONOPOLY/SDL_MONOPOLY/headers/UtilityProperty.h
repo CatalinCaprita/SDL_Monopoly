@@ -11,6 +11,7 @@ public:
 	void doEffect(Player* currentPlayer);
 	void print();
 	int getRentPrice();
+	virtual void getMeAnOwner(Player* currentPlayer);
 private:
 	
 };

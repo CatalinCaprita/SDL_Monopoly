@@ -24,10 +24,8 @@ void HouseProperty::update() {
 	//TO DO -- int answer = UserDialog::tileUpdateDialog()
 
 	if (rentStage < rentPrices.size() - 1) {
-		std::cout << "Do you want to update ? 1/0 " << rentPrices.size() << std::endl;
-		int answer;
-		std::cin >> answer;
-		if (answer == 1) {
+		
+		if (Game::isBuyPressed()) {
 			if(owner->getMoney() >= updateCost){
 				owner->payMoney(updateCost);
 				if (houseNumber < MAX_HOUSES) {
@@ -84,7 +82,7 @@ void HouseProperty::update() {
 					std::cout << "It appears" << name << " has already maximum number of houses. Update to a Hotel instead ? 1/0";
 					int answer2;
 					std::cin >> answer2;
-					if (answer == 1 && owner->getMoney() >= updateCost) {
+					if (Game::isBuyPressed() == 1 && owner->getMoney() >= updateCost) {
 						if (owner->ownsAllOfColor(groupId)) {
 							owner->payMoney(updateCost);
 							Sprite* hotel = new Sprite(("assets/house_properties/hotel_" + std::to_string(houseOrientation) + ".bmp").c_str(), 3, 4, 0, 0, -1, -1, true);
@@ -107,41 +105,47 @@ void HouseProperty::update() {
 			else {
 				std::cout << "Update failed due to bakruptcy" << std::endl;
 			}
+			Game::setBuyPressed(false);
 		}
 	}
 	
 }
-void HouseProperty::mortgage() {
-	if (!mortgaged) {
-		std::cout << "Do you wish to mortgage the property for " << mortgageVal << " ? (1/0)\n";
-		int answer;
-		std::cin >> answer;
-		if (answer == 1) {
-			/*If it is an improved property, The player must destroy all the houses and hotels form the same colored tiles
-			*/
-			if (houseNumber > 0) {
-				owner->destroyHousesFromColor(groupId);
+void HouseProperty::mortgage(Player* currentPlayer) {
+	if (currentPlayer == owner) {
+		if (!mortgaged) {
+
+			if (Game::isMortgagePressed()) {
+				/*If it is an improved property, The player must destroy all the houses and hotels form the same colored tiles
+				*/
+				if (houseNumber > 0) {
+					owner->destroyHousesFromColor(groupId);
+				}
+				mortgaged = true;
+				owner->receiveMoney(mortgageVal);
+				Game::setMortgagePressed(false);
 			}
-			mortgaged = true;
-			owner->receiveMoney(mortgageVal);
+		}
+		else {
+			std::cout << "It appears you have already mortgaged this property. Lifting the mortgage would mean paying " <<
+				"The mortgage Value of the property + 10 % of its value for a total of  " << mortgageVal * 1.1 << ". Proceed? (1/0).";
+			int answer;
+			std::cin >> answer;
+			if (answer == 1) {
+				if (owner->getMoney() < buyPrice * 1.1) {
+					std::cout << " Insufficient Founds to cpmlete action.\n";
+					return;
+				}
+				owner->payMoney(mortgageVal * 1.1);
+				std::cout << "Mortgage lifted for " << name << "\n";
+				mortgaged = false;
+
+			}
 		}
 	}
 	else {
-		std::cout << "It appears you have already mortgaged this property. Lifting the mortgage would mean paying " <<
-			"The mortgage Value of the property + 10 % of its value for a total of  " << mortgageVal * 1.1 << ". Proceed? (1/0).";
-		int answer;
-		std::cin >> answer;
-		if (answer == 1) {
-			if (owner->getMoney() < buyPrice * 1.1) {
-				std::cout << " Insufficient Founds to cpmlete action.\n";
-				return;
-			}
-			owner->payMoney(mortgageVal * 1.1);
-			std::cout << "Mortgage lifted for " << name << "\n";
-			mortgaged = false;
-
-		}
+		std::cout << "You do not own this property\n";
 	}
+	
 }
 
 void HouseProperty::destroyHouses() {
@@ -151,21 +155,11 @@ void HouseProperty::destroyHouses() {
 	}
 	houseNumber = 0;
 }
-void HouseProperty::doEffect(Player* currentPlayer) {
-	//calls Animator::tileExpandAnimation()
-	std::cout << currentPlayer->getName() <<" stepped on " << name << std::endl;
-	if (owner == currentPlayer) {
-		if(rentStage < rentPrices.size() - 1)
-			update();
-		mortgage();
-	}
-	else if (owner == NULL) {
-		// int answer = UserDialog::purchasePropertyDialog()
-		UserAnimator::popPropertyCard(this);
-		std::cout << "This property is not owned by anyone. Do you wish to buy it? 1/0.\n";
-		int answer;
-		std::cin >> answer;
-		if (answer == 1) {
+//Function that will be called as a listener if the button "Buy" is pressed in game
+void HouseProperty::getMeAnOwner(Player* currentPlayer) {
+	if (owner == NULL) {
+		//Checks if the player pressed the buy button 
+		if (Game::isBuyPressed()) {
 			if (currentPlayer->getMoney() < buyPrice) {
 				std::cout << " Aquisition failed. Lack of funds `\( `-`)/` ";
 			}
@@ -173,7 +167,26 @@ void HouseProperty::doEffect(Player* currentPlayer) {
 				owner = currentPlayer;
 				currentPlayer->buyProperty(this, "house");
 			}
+			Game::setBuyPressed(false);
 		}
+	}
+	else {
+		std::cout << "Property already owned\n";
+	}
+}
+
+void HouseProperty::doEffect(Player* currentPlayer) {
+	//calls Animator::tileExpandAnimation()
+	std::cout << currentPlayer->getName() <<" stepped on " << name << std::endl;
+	if (owner == currentPlayer) {
+		if(rentStage < rentPrices.size() - 1)
+			update();
+		mortgage(currentPlayer);
+	}
+	else if (owner == NULL) {
+		// int answer = UserDialog::purchasePropertyDialog()
+		UserAnimator::popPropertyCard(this);
+		getMeAnOwner(currentPlayer);		
 		UserAnimator::fadePropertyCard(this);
 	}
 	else if(currentPlayer != owner){

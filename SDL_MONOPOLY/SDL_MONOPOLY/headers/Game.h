@@ -35,12 +35,18 @@ public:
 	static Dice* getDice();
 	static SDL_Renderer* getRenderer();
 	static void createRenderer();
+	static bool isBuyPressed() { return buyPressed; }
+	static void setBuyPressed(bool buyPressed) { Game::buyPressed = buyPressed; }
+	static bool isMortgagePressed() { return mortgagePressed; }
+	static void setMortgagePressed(bool mortgagePressed) { Game::mortgagePressed = mortgagePressed; }
 	
 private:
 	int turn;
 	int screenWidth, screenHeight;
 	static int count;
 	static int nrDoublesThrown;
+	static bool buyPressed;
+	static bool mortgagePressed;
 	bool isRunning;
 	bool mousePressed;
 	std::vector<Player*> players;

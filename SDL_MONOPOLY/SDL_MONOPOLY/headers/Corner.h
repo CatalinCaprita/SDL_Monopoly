@@ -14,6 +14,7 @@ public :
 		return name;
 	}
 	void doEffect(Player* currentPlayer);
+	void getMeAnOwner(Player* currentPlayer);
 	void print() {
 		std::cout << command << std::endl;
 	}
