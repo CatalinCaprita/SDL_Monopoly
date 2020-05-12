@@ -4,6 +4,8 @@
 #define DICE_MOVE 0
 #define MUST_BE_JAILED 1
 #define EXEC_COMMAND 2
+#define OWNER_TRADE 3
+#define BUYER_TRADE 4
 
 int Player::counter = 0;
 
@@ -159,11 +161,37 @@ void Player::destroyHousesFromColor(Groups color) {
 }
 void Player::payPerBuildings() {
 	auto pos = ownedProperties.find("house");
+	int sumToPay = 0;
 	if (pos != ownedProperties.end())
 		for (int i = 0; i < ownedProperties["house"].size(); i++) {
-				dynamic_cast<HouseProperty*>(ownedProperties["house"][i])->destroyHouses();
+				sumToPay += dynamic_cast<HouseProperty*>(ownedProperties["house"][i])->getHousesPrice();
 			}
-	
+	std::cout << "Has to pay " << sumToPay<<std::endl;
+	if (getMoney() < sumToPay) {
+		std::cout << "Insufficient founds";
+		return;
+	}
+	payMoney(sumToPay);
+}
+
+void Player::startTrade(Player* otherPlayer) {
+	//The player that wants to buy the property will start the trade, namely it will set the flag of the property owner to buyer_trade
+	setBuyerTradeFlag();
+	otherPlayer->setOwnerTradeFlag();
+	ownerToTrade = otherPlayer;
+
+}
+bool Player::proposeSum() {
+	std::cout << "What sum do you propose to " << ownerToTrade->getName();
+	int answer;
+	std::cin >> answer;
+}
+
+bool Player::listenSum(int amount) {
+	std::cout << "Do you feel like " << amount << " is the right price? (1/0)";
+	int answer;
+	std::cin >> answer;
+	return answer > 0 ;
 }
 /*
 Asta se intampla doar cand playerul trebuie sa ajunga la Jail. O sa aibe cum ati zis voi 50 - currentPosition pozitii de mutat, iar cand termina de mutat,
@@ -224,6 +252,14 @@ void Player::setCommandFlag() {
 	flagType = EXEC_COMMAND;
 }
 
+void Player::setBuyerTradeFlag() {
+	flagType = BUYER_TRADE;
+}
+
+void Player::setOwnerTradeFlag() {
+	flagType = OWNER_TRADE;
+}
+
 /*INTERNALS
 
 /**
@@ -255,22 +291,30 @@ void Player::update() {
 		/*
 		Daca NU e Jailed, i.e. e deja in tile-ul jail SI mai are pasi de facut, atunci pozitia lui se updateaza
 		*/
-		if (!isJailed() && remainingSteps >= 0) {
-			currentPosition += direction ;
-			if (currentPosition != currentPosition % 40){
-				std::cout << "Ai trecut de GO! Primesti 200 de BISTARI!" << std::endl;
-				this->totalMoney += 200;
+		if (!(flagType == BUYER_TRADE || flagType == OWNER_TRADE)) {
+			if (!isJailed() && remainingSteps >= 0) {
+				currentPosition += direction;
+				if (currentPosition != currentPosition % 40) {
+					std::cout << "Ai trecut de GO! Primesti 200 de BISTARI!" << std::endl;
+					this->totalMoney += 200;
+				}
+				currentPosition %= 40;
+				sprite->updateTo(coordX[currentPosition], coordY[currentPosition]);
+				remainingSteps--;
+				/*
+				Cand nu mai are pasi de mutat, atunci, tot in Game::update() o sa arate ca urmeaza interactiunea cu tile[currentPositon]
+				*/
+				if (remainingSteps == -1)
+					finishMoving = true;
+				lastRender = SDL_GetTicks();
+				std::cout << "player " << name << " has to move " << remainingSteps << " steps \n ";
 			}
-			currentPosition %= 40;
-			sprite->updateTo(coordX[currentPosition],coordY[currentPosition]);
-			remainingSteps--;
-			/*
-			Cand nu mai are pasi de mutat, atunci, tot in Game::update() o sa arate ca urmeaza interactiunea cu tile[currentPositon]
-			*/
-			if (remainingSteps == -1 )
-				finishMoving = true;
-			lastRender = SDL_GetTicks();
-			std::cout << "player " << name << " has to move " << remainingSteps << " steps \n ";
+		}
+		else {
+			if (flagType == BUYER_TRADE) {
+				std::cout << "What sum do you want to propose ? ";
+				int sum = 
+			}
 		}
 		
 	}

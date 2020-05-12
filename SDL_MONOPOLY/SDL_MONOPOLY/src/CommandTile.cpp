@@ -161,8 +161,9 @@ void CommandTile::doEffect(Player *currentPlayer) {
 			currentPlayer->setRemainingSteps(10 - currentPlayer->getCurrentPosition());
 		currentPlayer->setJailFlag();//Player will remain to Jail;
 		break;
-	//TO DO PAY 25 per OWNED HOUSE and 100 per OWNED HOTEL
 	case 9:
+		currentPlayer->payPerBuildings();
+		currentPlayer->setCommandFlag();//Player must advance to start
 		break;
 	case 10:
 		if (!currentPlayer->isBankrupt())

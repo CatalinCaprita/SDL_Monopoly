@@ -22,7 +22,8 @@
 #define DICE_MOVE 0
 #define MUST_BE_JAILED 1
 #define EXEC_COMMAND 2
-
+#define OWNER_TRADE 3
+#define BUYER_TRADE 4
 
 int Game::count = 0;
 
@@ -46,7 +47,7 @@ int Game::nrDoublesThrown = 0;
 Dice* Game::dice = nullptr;
 SDL_Renderer* Game::renderer = nullptr;
 
-int last = 0;
+int globalSum = 0;
 Game::Game(const char* title, int x_pos, int y_pos, int width, int height, bool full_screen):tiles(40){
 	mousePressed = false;
 	turn = 0;
@@ -242,7 +243,16 @@ Dice* Game::getDice() {
 				 else
 					tiles[players[turn]->getCurrentPosition()]->doEffect(players[turn]);
 				 players[turn]->setDiceFlag();
+				 break;
+			 case BUYER_TRADE:
+				 globalSum = players[turn]->proposeSum();
+				 break;
+			 case OWNER_TRADE:
+				 players[turn]->listenSum();
+				 break;
 			 }
+			
+
 			 
 		 }
 	 }

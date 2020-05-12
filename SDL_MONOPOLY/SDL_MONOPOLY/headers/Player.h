@@ -40,13 +40,17 @@ public:
 	bool ownsAllOfColor(Groups color);
 	void destroyHousesFromColor(Groups color);
 	void payPerBuildings();
+	void startTrade(Player* otherTrader);
+	bool proposeSum();
+	bool listenSum(int amount);
 
 	//Flag Setters
 	int getFlag();
 	void setJailFlag();
 	void setCommandFlag();
 	void setDiceFlag();
-
+	void setOwnerTradeFlag();
+	void setBuyerTradeFlag();
 	Sprite* getSprite();
 
 private:
@@ -62,6 +66,7 @@ private:
 	int direction;
 	const int id;
 	int totalMoney;
+	Player* ownerToTrade;
 	int currentPosition;
 	bool bankrupt;
 	bool finishMoving;

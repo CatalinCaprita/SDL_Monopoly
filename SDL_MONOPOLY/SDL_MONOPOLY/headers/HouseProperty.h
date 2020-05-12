@@ -18,6 +18,7 @@ public :
 	int getRentPrice() {
 		return rentPrices[rentStage];
 	}
+	int getHousesPrice();
 	bool isRenderable() override;
 private:
 	int houseNumber;

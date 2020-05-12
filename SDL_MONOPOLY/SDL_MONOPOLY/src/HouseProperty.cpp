@@ -93,6 +93,7 @@ void HouseProperty::update() {
 
 							houseNumber = 0;
 							houses[houseNumber++] = hotel;
+							hasHotel = true;
 							std::cout << "Property Updated. " << name << " now has one hotel and rents for " << getRentPrice() << std::endl;
 						}
 						else {
@@ -143,7 +144,11 @@ void HouseProperty::mortgage() {
 		}
 	}
 }
-
+int HouseProperty::getHousesPrice() {
+	if (hasHotel)
+		return 100;
+	return houseNumber * 25;
+}
 void HouseProperty::destroyHouses() {
 	std::cout << " Removing " << houseNumber << " houses from " << name << std::endl;
 	for (int i = 0; i < houseNumber; i++) {
@@ -184,7 +189,12 @@ void HouseProperty::doEffect(Player* currentPlayer) {
 			currentPlayer->payMoney(getRentPrice());
 		}
 		else {
-			std::cout << owner->getName() << " chose to mortgage this property, thus the is no rent to pay \n";
+			std::cout << owner->getName() << " chose to mortgage this property, thus the is no rent to pay. Do want to start trading for the property?(1/0).\n";
+			int answer;
+			std::cin >> answer;
+			if (answer == 1) {
+				currentPlayer->startTrade(owner);
+			}
 		}
 	}
 }
