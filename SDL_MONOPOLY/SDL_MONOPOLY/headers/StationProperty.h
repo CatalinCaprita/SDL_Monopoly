@@ -11,9 +11,10 @@ public:
 	~StationProperty();
 	void doEffect(Player* currentPlayer);
 	void update(){}
-	void mortgage();
+	void mortgage(Player* currentPlayer);
 	int getRentPrice();
 	void print();
+	void getMeAnOwner(Player* currentPlayer);
 private:
 	static int stationNumber;
 	bool mortgaged;

@@ -42,7 +42,9 @@ void CommandTile::shuffle(std::queue<int>&whichQ) {
 	}
 }
 
-
+void CommandTile::getMeAnOwner(Player* currentPlayer) {
+	return;
+}
 CommandTile::CommandTile(const std::string& name) : Tile(name) {
 	if (!initialized) {
 		shuffle(communityQ);

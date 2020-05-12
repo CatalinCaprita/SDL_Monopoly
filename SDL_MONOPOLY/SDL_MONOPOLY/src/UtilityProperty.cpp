@@ -9,14 +9,11 @@ UtilityProperty::UtilityProperty(std::string name, int buyPrice, int updateCost,
 UtilityProperty::~UtilityProperty() {
 
 }
-
-void UtilityProperty::doEffect(Player* currentPlayer) {
+//Function that will be called as a listener if the button "Buy" is pressed in game
+void UtilityProperty::getMeAnOwner(Player* currentPlayer) {
 	if (owner == nullptr) {
-		UserAnimator::popPropertyCard(this);
-		std::cout << "This property is not owned by anyone. Do you wish to buy it? 1/0.\n";
-		int answer;
-		std::cin >> answer;
-		if (answer == 1) {
+		//Checks if the player pressed the buy button 
+		if (Game::isBuyPressed()) {
 			if (currentPlayer->getMoney() < buyPrice) {
 				std::cout << " Aquisition failed. Lack of funds `\( `-`)/` ";
 			}
@@ -24,7 +21,18 @@ void UtilityProperty::doEffect(Player* currentPlayer) {
 				owner = currentPlayer;
 				currentPlayer->buyProperty(this, "utility");
 			}
+			Game::setBuyPressed(false);
 		}
+	}
+	else {
+		std::cout << "This utility already has an owner\n";
+	}
+}
+
+void UtilityProperty::doEffect(Player* currentPlayer) {
+	if (owner == nullptr) {
+		UserAnimator::popPropertyCard(this);
+		getMeAnOwner(currentPlayer);
 		return;
 	}
 	if (owner != currentPlayer) {

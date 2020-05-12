@@ -26,6 +26,8 @@
 #define BUYER_TRADE 4
 
 int Game::count = 0;
+bool Game::buyPressed = false;
+bool Game::mortgagePressed = false;
 
 //Array of indexes for the HouseProperty properties
 // tiles[propIdx[i]] = new HouseProperty();
@@ -117,7 +119,7 @@ Dice* Game::getDice() {
 }
 
  void Game::listen_event() {
-	 menu->listen_event();
+	 //menu->listen_event();
 	 SDL_Event e;
 	 int mouseX, mouseY;
 	 SDL_PollEvent(&e);
@@ -173,15 +175,24 @@ Dice* Game::getDice() {
 				 }
 			 }
 			 else if (buttons[0]->hoverButton(mouseX, mouseY)) {
+				 
 				 std::cout << "button0" << std::endl;
+				 this->setBuyPressed(true);
+				 //tiles[players[turn]->getCurrentPosition()]->getMeAnOwner(players[turn]);
+				 tiles[5]->getMeAnOwner(players[turn]);
+				 
 			 }
 			 else if (buttons[1]->hoverButton(mouseX, mouseY)) {
+				 this->setMortgagePressed(true);
 				 std::cout << "button1" << std::endl;
+				 dynamic_cast<StationProperty*>(tiles[5])->mortgage(players[turn]);
 			 }
 			 else if (buttons[2]->hoverButton(mouseX, mouseY)) {
 				turn++;
 				 turn %= 2;
 				 dice->setBlocked(false);
+				 this->setBuyPressed(false);
+				 this->setMortgagePressed(false);
 				 std::cout << "button2" << std::endl;
 			 }
 		 }
@@ -203,7 +214,7 @@ Dice* Game::getDice() {
 	 for (int i = 0; i < buttons.size(); i++)
 		 buttons[i]->render();
 	 dice->render();
-	 menu->render();
+	 //menu->render();
 	 SDL_RenderPresent(renderer);
 }
 

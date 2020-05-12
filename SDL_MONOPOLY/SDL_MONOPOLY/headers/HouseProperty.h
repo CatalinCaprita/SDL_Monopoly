@@ -9,7 +9,7 @@ public :
 	HouseProperty(std::string name, int buyPrice,int updateCost,int mortgageVal,std::vector<int> &rentPrices,Groups groupId,int rectId);
 	~HouseProperty();
 	void update();
-	void mortgage();
+	void mortgage(Player* currentPlayer);
 	void doEffect(Player* currentPlayer);
 	void print();
 	void setRentPrice(int idx, int price);
@@ -20,6 +20,7 @@ public :
 	}
 	int getHousesPrice();
 	bool isRenderable() override;
+	void getMeAnOwner(Player* currentPlayer);
 private:
 	int houseNumber;
 	bool hasHotel;
