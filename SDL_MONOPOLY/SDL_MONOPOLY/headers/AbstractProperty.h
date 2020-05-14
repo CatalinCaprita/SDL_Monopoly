@@ -21,6 +21,7 @@ public:
 	virtual void getMeAnOwner(Player* currentPlayer) = 0;
 	int getBuyPrice();
 	virtual void update() {};
+	virtual void setOwner(Player* newOwner);
 	Player* getOwner();
 	
 };

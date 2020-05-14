@@ -33,7 +33,7 @@ public:
 	int getMoney();
 	int receiveMoney(int = 0);
 	int payMoney(int = 0);
-	void buyProperty(Tile*,const std::string& type);
+	void buyProperty(Tile*subject,bool byTrade = false);
 	void sellProperty(Tile*);
 	int getOwnedStations();
 	int getOwnedUtils();
@@ -41,8 +41,11 @@ public:
 	void destroyHousesFromColor(Groups color);
 	void payPerBuildings();
 	void startTrade(Player* otherTrader);
-	bool proposeSum();
-	bool listenSum(int amount);
+	void endTradeFor(Tile * subject,int priceSet);
+	int proposeSumFor(Tile * target);
+	void setProposedSum(int amount);
+	void setTradeStatus(bool);
+	bool onGoingTrade();
 
 	//Flag Setters
 	int getFlag();
@@ -65,18 +68,24 @@ private:
 	int  flagType;
 	int direction;
 	const int id;
-	int totalMoney;
-	Player* ownerToTrade;
-	int currentPosition;
-	bool bankrupt;
-	bool finishMoving;
-	int remainingSteps;
-	int renderDelay = 250;
-	int lastRender;
-	int jailTurnsLeft;
-	std::string name;
-	std::unordered_map<std::string,std::vector<Tile*> > ownedProperties;
 	SDL_Rect spriteFrame;
 	SDL_Texture* playerTexture;
 	Sprite* sprite;
+	std::string name;
+
+	//Money Management, Buying and Trading
+	int totalMoney;
+	bool bankrupt;
+	Player* tradeWith;
+	bool onGoing;
+	std::unordered_map<Groups, std::vector<Tile*> > ownedProperties;
+	int sumToAccept;
+
+
+	//Movement
+	bool finishMoving;
+	int remainingSteps;
+	int jailTurnsLeft;
+	int currentPosition;
+
 };

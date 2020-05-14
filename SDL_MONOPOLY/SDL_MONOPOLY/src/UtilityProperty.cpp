@@ -50,6 +50,7 @@ void UtilityProperty::doEffect(Player* currentPlayer) {
 			std::cout << currentPlayer->getName() << " needs to pay " << sumToPay << " to " << owner->getName() << std::endl;
 			owner->receiveMoney(sumToPay);
 			currentPlayer->payMoney(sumToPay);
+			UserAnimator::playerPaysPlayer(owner, currentPlayer);
 		}
 		else {
 			std::cout << currentPlayer->getName() << " cannot pay the rent.";

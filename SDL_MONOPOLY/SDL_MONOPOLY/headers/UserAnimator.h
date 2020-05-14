@@ -13,7 +13,8 @@ public:
 	static void playerPaysPlayer(Player*, Player*);
 	static void fadePropertyCard(Tile*);
 	static void popCommandCardBack(CommandTile* card);
-
+	static void update();
+	static void render();
 	static void attach(Game *instance) {
 		game = instance;
 	}
@@ -23,7 +24,7 @@ private:
 	~UserAnimator();
 	static Game* game;
 	static SDL_Texture* backup;
-	static Sprite* sprite;
+	static std::unordered_map<std::string,Sprite*> sprites;
 	static double lastRender;
 	static int renderDelay;
 };

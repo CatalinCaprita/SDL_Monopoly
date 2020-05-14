@@ -25,7 +25,7 @@ void HouseProperty::update() {
 
 	if (rentStage < rentPrices.size() - 1) {
 		
-		if (Game::isBuyPressed()) {
+		if (true) {
 			if(owner->getMoney() >= updateCost){
 				owner->payMoney(updateCost);
 				if (houseNumber < MAX_HOUSES) {
@@ -106,7 +106,7 @@ void HouseProperty::update() {
 			else {
 				std::cout << "Update failed due to bakruptcy" << std::endl;
 			}
-			Game::setBuyPressed(false);
+			//Game::setBuyPressed(false);
 		}
 	}
 	
@@ -127,7 +127,7 @@ void HouseProperty::mortgage(Player* currentPlayer) {
 			}
 		}
 		else {
-			std::cout << "It appears you have already mortgaged this property. Lifting the mortgage would mean paying " <<
+			std::cout << "It appears you have mortgaged this property. Lifting the mortgage would mean paying " <<
 				"The mortgage Value of the property + 10 % of its value for a total of  " << mortgageVal * 1.1 << ". Proceed? (1/0).";
 			int answer;
 			std::cin >> answer;
@@ -170,44 +170,46 @@ void HouseProperty::getMeAnOwner(Player* currentPlayer) {
 			}
 			else {
 				owner = currentPlayer;
-				currentPlayer->buyProperty(this, "house");
+				currentPlayer->buyProperty(this);
 			}
 			Game::setBuyPressed(false);
+			UserAnimator::fadePropertyCard(this);
 		}
 	}
 	else {
-		std::cout << "Property already owned\n";
+		if (owner != currentPlayer && mortgaged) {
+			std::cout << "Please Wait while " << currentPlayer->getName() << " and" << owner->getName() << "are negotiating for " << name << std::endl;
+			currentPlayer->startTrade(owner);
+			currentPlayer->setBuyerTradeFlag();
+			owner->startTrade(currentPlayer);
+			owner->setOwnerTradeFlag();
+
+		}
+		
 	}
 }
 
 void HouseProperty::doEffect(Player* currentPlayer) {
-	//calls Animator::tileExpandAnimation()
 	std::cout << currentPlayer->getName() <<" stepped on " << name << std::endl;
 	if (owner == currentPlayer) {
-		if(rentStage < rentPrices.size() - 1)
+		if(!mortgaged && rentStage < rentPrices.size() - 1)
 			update();
 		mortgage(currentPlayer);
 	}
 	else if (owner == NULL) {
-		// int answer = UserDialog::purchasePropertyDialog()
 		UserAnimator::popPropertyCard(this);
 		getMeAnOwner(currentPlayer);		
-		UserAnimator::fadePropertyCard(this);
 	}
 	else if(currentPlayer != owner){
 		if (!mortgaged) {
 			std::cout << currentPlayer->getName() << " needs to pay " << getRentPrice() << " to " << owner->getName() << std::endl;
-			//UserAnimator::playerPaysPlayer(currentPlayer, owner);
+			UserAnimator::playerPaysPlayer(currentPlayer,owner);
 			owner->receiveMoney(getRentPrice());
 			currentPlayer->payMoney(getRentPrice());
 		}
 		else {
-			std::cout << owner->getName() << " chose to mortgage this property, thus the is no rent to pay. Do want to start trading for the property?(1/0).\n";
-			int answer;
-			std::cin >> answer;
-			if (answer == 1) {
-				currentPlayer->startTrade(owner);
-			}
+			std::cout << owner->getName() << " chose to mortgage this property, so no rent is payed. Press Start to start trading with the owner.\n";
+			//getMeAnOwner(currentPlayer);
 		}
 	}
 }

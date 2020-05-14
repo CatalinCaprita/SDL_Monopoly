@@ -17,3 +17,7 @@ int AbstractProperty::getBuyPrice() {
 Player* AbstractProperty::getOwner() {
 	return owner;
 }
+
+void AbstractProperty::setOwner(Player* newOwner) {
+	owner = newOwner;
+}

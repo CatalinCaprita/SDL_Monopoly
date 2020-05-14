@@ -22,8 +22,8 @@
 #define DICE_MOVE 0
 #define MUST_BE_JAILED 1
 #define EXEC_COMMAND 2
-#define OWNER_TRADE 3
 #define BUYER_TRADE 4
+#define OWNER_TRADE 3
 
 int Game::count = 0;
 bool Game::buyPressed = false;
@@ -48,7 +48,7 @@ int utilIdx[] = { 12,28 };
 int Game::nrDoublesThrown = 0;
 Dice* Game::dice = nullptr;
 SDL_Renderer* Game::renderer = nullptr;
-
+int last = 0;
 int globalSum = 0;
 Game::Game(const char* title, int x_pos, int y_pos, int width, int height, bool full_screen):tiles(40){
 	mousePressed = false;
@@ -73,7 +73,7 @@ Game::Game(const char* title, int x_pos, int y_pos, int width, int height, bool 
 		dice = new Dice();
 		dice->getFirstDieSprite()->setScale(width, height);
 		dice->getSecondDieSprite()->setScale(width, height);
-		players.push_back(new Player("Player 1", "assets/blue.bmp", START_X, START_Y, PAWN_SIZE, PAWN_SIZE));
+		players.push_back(new Player("Player 1", "assets/branza.bmp", START_X, START_Y, PAWN_SIZE, PAWN_SIZE));
 		players[0]->setSpriteScale(width, height);
 		players.push_back(new Player("Player 2", "assets/red.bmp", START_X + 1, START_Y -1, PAWN_SIZE, PAWN_SIZE));
 		players[1]->setSpriteScale(width, height);
@@ -164,8 +164,8 @@ Dice* Game::getDice() {
 							 dice->setBlocked(true); //Set the dice block so while the current player is moving nobody can run the dice;
 						 }
 						 else {
-							 players[turn]->setRemainingSteps(dice->getFirstDieValue() + dice->getSecondDieValue());
-							 players[turn]->setRemainingSteps(1);
+							 //players[turn]->setRemainingSteps(dice->getFirstDieValue() + dice->getSecondDieValue());
+							 players[turn]->setRemainingSteps(8);
 							 if (!dice->thrownDouble()) {
 								 dice->setBlocked(true);
 								 Game::nrDoublesThrown = 0;
@@ -178,22 +178,29 @@ Dice* Game::getDice() {
 				 
 				 std::cout << "button0" << std::endl;
 				 this->setBuyPressed(true);
-				 //tiles[players[turn]->getCurrentPosition()]->getMeAnOwner(players[turn]);
-				 tiles[5]->getMeAnOwner(players[turn]);
+				 tiles[players[turn]->getCurrentPosition()]->getMeAnOwner(players[turn]);
+				 //tiles[8]->getMeAnOwner(players[turn]);
+				 last = (last + 1 ) % STATION_NUM;
 				 
 			 }
 			 else if (buttons[1]->hoverButton(mouseX, mouseY)) {
 				 this->setMortgagePressed(true);
 				 std::cout << "button1" << std::endl;
-				 dynamic_cast<StationProperty*>(tiles[5])->mortgage(players[turn]);
+				 dynamic_cast<HouseProperty*>(tiles[players[turn]->getCurrentPosition()])->mortgage(players[turn]);
 			 }
 			 else if (buttons[2]->hoverButton(mouseX, mouseY)) {
-				turn++;
-				 turn %= 2;
-				 dice->setBlocked(false);
-				 this->setBuyPressed(false);
-				 this->setMortgagePressed(false);
-				 std::cout << "button2" << std::endl;
+				 if (!(players[turn]->getFlag() == BUYER_TRADE || players[turn]->getFlag() == OWNER_TRADE)){
+					 turn++;
+					 turn %= 2;
+					 dice->setBlocked(false);
+					 this->setBuyPressed(false);
+					 this->setMortgagePressed(false);
+					 UserAnimator::fadePropertyCard(tiles[players[turn]->getCurrentPosition()]);
+					 std::cout << "button2" << std::endl;
+				 }
+				 else {
+					 std::cout << "You must finish the trade before ending your turn !\n";
+				 }
 			 }
 		 }
 		 mousePressed = true;
@@ -215,6 +222,7 @@ Dice* Game::getDice() {
 		 buttons[i]->render();
 	 dice->render();
 	 //menu->render();
+	 UserAnimator::render();
 	 SDL_RenderPresent(renderer);
 }
 
@@ -228,12 +236,11 @@ Dice* Game::getDice() {
 		 Daca la iteratia curenta a Game::update() playerul a carui de la tura curent terminat sa de mutat ,i.e. remainingSteps == 0,
 		 Vedem in functie de flagType ul pe care il avea setat ce se intampla cu el
 		 */
-		 if (players[turn]->finishedMoving()) {
+		 if (i == turn && players[turn]->finishedMoving()) {
 			 switch (players[turn]->getFlag()) {
 			 case DICE_MOVE:
-				 //tiles[players[turn]->getCurrentPosition()]->doEffect(players[turn]);
-				 tiles[stationIdx[last]]->doEffect(players[turn]);
-				 //last = (last + 1) % 4;
+				 tiles[players[turn]->getCurrentPosition()]->doEffect(players[turn]);
+				 //tiles[8]->doEffect(players[turn]);
 				 break;
 			 case MUST_BE_JAILED:
 				 players[turn]->goToJail();
@@ -256,18 +263,20 @@ Dice* Game::getDice() {
 				 players[turn]->setDiceFlag();
 				 break;
 			 case BUYER_TRADE:
-				 globalSum = players[turn]->proposeSum();
+				 if (players[turn]->onGoingTrade())
+					 players[turn]->proposeSumFor(tiles[players[turn]->getCurrentPosition()]);
+				 else {
+					 players[turn]->buyProperty(tiles[players[turn]->getCurrentPosition()], true);
+					 players[turn]->setDiceFlag();
+				 }
 				 break;
-			 case OWNER_TRADE:
-				 players[turn]->listenSum();
-				 break;
-			 }
 			
+			 }
+		  }
 
-			 
-		 }
 	 }
 	 dice->update();
+	 UserAnimator::update();
  }
 
  Groups getGroupId(int i) {

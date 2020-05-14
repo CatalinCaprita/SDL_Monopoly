@@ -18,7 +18,7 @@ Dice::~Dice() {
 void Dice::roll(SDL_Renderer* renderer) {
 	std::string filepath1 = "";
 	std::string filepath2 = "";
-	for (int i = 0; i < 3; i++) {
+	for (int i = 0; i < 4; i++) {
 		firstDieValue = rand() % 6 + 1;
 		secondDieValue = rand() % 6 + 1;
 		filepath1 = filepath1 + "assets/zar" + (char)('0' + firstDieValue) + ".bmp";

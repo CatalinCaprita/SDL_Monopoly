@@ -26,5 +26,6 @@ public:
 	Groups getGroupId() {
 		return groupId;
 	}
+	
 };
 #endif // !TILE_H

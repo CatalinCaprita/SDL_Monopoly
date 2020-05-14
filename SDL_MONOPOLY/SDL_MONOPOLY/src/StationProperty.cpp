@@ -65,7 +65,17 @@ void StationProperty::getMeAnOwner(Player* currentPlayer) {
 		}
 	}
 	else {
-		std::cout << "This station already has an owner\n";
+		if (owner != currentPlayer && mortgaged) {
+			std::cout << "Please Wait while " << currentPlayer->getName() << " and" << owner->getName() << "are negotiating for " << name << std::endl;
+			currentPlayer->startTrade(owner);
+			currentPlayer->setBuyerTradeFlag();
+			owner->startTrade(currentPlayer);
+			owner->setOwnerTradeFlag();
+		}
+
+		else {
+			std::cout << "This station already has an owner\n";
+		}
 	}
 }
 void StationProperty::doEffect(Player* currentPlayer) {
@@ -92,6 +102,7 @@ void StationProperty::doEffect(Player* currentPlayer) {
 				std::cout << currentPlayer->getName() << " needs to pay " << sumToPay << " to " << owner->getName() << std::endl;
 				owner->receiveMoney(sumToPay);
 				currentPlayer->payMoney(sumToPay);
+				UserAnimator::playerPaysPlayer(currentPlayer, owner);
 			}
 			else {
 				std::cout << owner->getName() << " chose to mortgage this property, thus the is no rent to pay \n";
