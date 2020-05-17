@@ -13,6 +13,7 @@ private:
 	float hRatio = 1.0f;
 	int renderDelay;
 	int lastRender;
+	const char* path;
 public :
 	int width, height;
 	Sprite(const char* path, int unitW, int unitH,int unitX = 0,int unitY = 0,int screenW = -1, int screenH = -1,bool ignoresBG = false){
@@ -20,6 +21,7 @@ public :
 		if (texture == NULL) {
 			std::cout << "FAILED TO LOAD IMAGE AT " <<path <<std::endl;
 		}
+		this->path = path;
 		this->width = unitW; //number of units
 		this->height = unitH; // number of units
 		srcRect.x = 0;
@@ -52,7 +54,13 @@ public :
 		destRect.h = (int)height * hRatio;
 	}
 	void setPath(const char* newPath,bool ignoreBck = false) {
+		
+		if (texture) {
+			std::cout << "Am intrat\n";
+			SDL_DestroyTexture(texture);
+		}
 		texture = TextureMaker::textureFromBMP(newPath,ignoreBck);
+		
 	}
 	
 	void update(int xUnits, int yUnits) {
@@ -123,8 +131,14 @@ public :
 		}
 		return false;
 	}
+	const char* getPath() { return path; }
 	void setRenderDelay(int ms) {
 		renderDelay = ms;
+	}
+
+	SDL_Texture* getTexture() { return texture; }
+	void setTexture(SDL_Texture* texture) {
+		this->texture = texture;
 	}
 
 };

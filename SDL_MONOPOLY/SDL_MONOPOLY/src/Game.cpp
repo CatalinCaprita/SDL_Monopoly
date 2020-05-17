@@ -28,7 +28,7 @@
 int Game::count = 0;
 bool Game::buyPressed = false;
 bool Game::mortgagePressed = false;
-
+int mouseX = 0, mouseY = 0;
 //Array of indexes for the HouseProperty properties
 // tiles[propIdx[i]] = new HouseProperty();
 int propIdx[] = { 1,3,			// BROWN
@@ -81,9 +81,9 @@ Game::Game(const char* title, int x_pos, int y_pos, int width, int height, bool 
 		players.push_back(new Player("Player 3", "assets/purple.bmp", 950, 930, PAWN_SIZE, PAWN_SIZE));
 		players.push_back(new Player("Player 4", "assets/black.bmp", 960, 930, PAWN_SIZE, PAWN_SIZE));59
 		*/
-		buttons.push_back(new Button("assets/buy_button.bmp", 37, 39, 22,10));
-		buttons.push_back(new Button("assets/sell_button.bmp", 37, 49, 22, 10));
-		buttons.push_back(new Button("assets/end_turn_button.bmp", 37, 59, 22, 10));
+		buttons.push_back(new Button("assets/buy_button0.bmp", "assets/buy_button1.bmp", 37, 39, 22,10));
+		buttons.push_back(new Button("assets/sell_button0.bmp", "assets/sell_button1.bmp", 37, 49, 22, 10));
+		buttons.push_back(new Button("assets/end_turn_button0.bmp", "assets/end_turn_button1.bmp", 37, 59, 22, 10));
 		for (int i = 0; i < buttons.size(); i++)
 			buttons[i]->getSprite()->setScale(width, height);
 		isRunning = true;
@@ -121,7 +121,7 @@ Dice* Game::getDice() {
  void Game::listen_event() {
 	 //menu->listen_event();
 	 SDL_Event e;
-	 int mouseX, mouseY;
+	 
 	 SDL_PollEvent(&e);
 	 SDL_PumpEvents();
 
@@ -275,6 +275,11 @@ Dice* Game::getDice() {
 		  }
 
 	 }
+	 
+	 for (int i = 0; i < buttons.size(); i++) {
+		 buttons[i]->update(mouseX, mouseY);
+	 }
+	 
 	 dice->update();
 	 UserAnimator::update();
  }
