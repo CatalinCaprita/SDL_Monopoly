@@ -198,11 +198,18 @@ void HouseProperty::doEffect(Player* currentPlayer) {
 	}
 	else if (owner == NULL) {
 		UserAnimator::popPropertyCard(this);
+		std::string str = "Press 'Buy' if you want to buy this property.";
+		std::string str2 = "It appears you have mortgaged this property. Lifting the mortgage would mean paying The mortgage Value of the property + 10 % of its value for a total of " 
+			+ std::to_string(mortgageVal * 1.1) + ".Press  Buy if you want to proceed";
+
+		UserAnimator::popUpMessage(str2);
 		getMeAnOwner(currentPlayer);		
 	}
 	else if(currentPlayer != owner){
 		if (!mortgaged) {
-			std::cout << currentPlayer->getName() << " needs to pay " << getRentPrice() << " to " << owner->getName() << std::endl;
+			std::string str = currentPlayer->getName() + " needs to pay " + std::to_string(getRentPrice()) + " to " + owner->getName();
+			std::string str2 = "It appears you have mortgaged this property. Lifting the mortgage would mean paying The mortgage Value of the property + 10 % of its value for a total of  ";
+			UserAnimator::popUpMessage(str2);
 			UserAnimator::playerPaysPlayer(currentPlayer,owner);
 			owner->receiveMoney(getRentPrice());
 			currentPlayer->payMoney(getRentPrice());

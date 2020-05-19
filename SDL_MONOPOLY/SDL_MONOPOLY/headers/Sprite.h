@@ -127,4 +127,11 @@ public :
 		renderDelay = ms;
 	}
 
+	float getWRatio() {
+		return wRatio;
+	}
+	float getHRatio() {
+		return hRatio;
+	}
+
 };

@@ -10,16 +10,22 @@
 #define P1_END_Y 36
 #define P2_END_X 76
 #define P2_END_Y 36
-
+#define MON_MAN_X 54
+#define MON_MAN_Y 60
+#define MAX_PROMPT_W 40
+#define MAX_PROMPT_H 30
 Game* UserAnimator::game = NULL;
 double UserAnimator::lastRender = 0.0;
 int UserAnimator::renderDelay = 300;
 std::unordered_map<std::string, Sprite*> UserAnimator::sprites;
+std::vector<Prompt*> UserAnimator::prompts;
 
 int pReached = 0;
 UserAnimator::UserAnimator(){}
 
-UserAnimator::~UserAnimator() {}
+UserAnimator::~UserAnimator() {
+	
+}
 
 void UserAnimator::setDelay(int milliseconds) {
 	renderDelay = milliseconds;
@@ -64,6 +70,19 @@ void UserAnimator::fadePropertyCard(Tile * target) {
 		sprites.erase("pop");
 		lastRender = 0; 
 		
+	}
+}
+
+void UserAnimator::popUpMessage(std::string& message) {
+	Prompt* prompt = new Prompt("assets/bubble_prompt.bmp", MON_MAN_X, MON_MAN_Y + 5, 0, 0, message);
+	prompt->setScale(game->getScreenW(), game->getScreenH());
+	prompt->setLifeTime(3000);
+	prompts.push_back(prompt);
+	auto it = sprites.find("mon_man");
+	if (it == sprites.end()) {
+		Sprite* monopolyMan = new Sprite("assets/monopoly_man.bmp", 10, 17, MON_MAN_X, MON_MAN_Y, game->getScreenW(), game->getScreenH(), true);
+		sprites.insert({ "mon_man",monopolyMan });
+		std::cout << "Insertet Mon_man";
 	}
 }
 /*
@@ -180,11 +199,39 @@ void UserAnimator::update() {
 			}
 			++item;
 		}
+		else if (item->first == "mon_man") {
+			item->second->update(0, 0);
+			++item;
+		}
+
+	}	
+
+	for (int i = 0; i < prompts.size(); i++) {
+		if (prompts[i]->canBeUpdated()) {
+			if (prompts[i]->getW() < MAX_PROMPT_W) {
+				prompts[i]->updateWH(1);
+			}
+			if (prompts[i]->getH() < MAX_PROMPT_H) {
+				prompts[i]->updateXY(0, -1);
+				prompts[i]->updateWH(0, 1);
+			}
+			/*
+			else {
+				prompts[i]->decreaseLifeTime();
+				if (prompts[i]->isDone()) {
+					prompts.erase(prompts.begin() + i);
+					break;
+				}
+			}*/
+		}
 	}
+	
 }
 
 void UserAnimator::render() {
 	for (auto it : sprites) {
 		it.second->render();
 	}
+	for (auto it : prompts)
+		it->render();
 }

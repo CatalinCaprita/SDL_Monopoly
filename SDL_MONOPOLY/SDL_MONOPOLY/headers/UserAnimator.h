@@ -5,6 +5,7 @@
 #include "Game.h"
 #include "Sprite.h"
 #include "Properties.h"
+#include "Prompt.h"
 class Tile;
 class Player;
 class UserAnimator {
@@ -13,6 +14,7 @@ public:
 	static void playerPaysPlayer(Player*, Player*);
 	static void fadePropertyCard(Tile*);
 	static void popCommandCardBack(CommandTile* card);
+	static void popUpMessage(std::string & message);
 	static void update();
 	static void render();
 	static void attach(Game *instance) {
@@ -25,6 +27,7 @@ private:
 	static Game* game;
 	static SDL_Texture* backup;
 	static std::unordered_map<std::string,Sprite*> sprites;
+	static std::vector<Prompt*> prompts;
 	static double lastRender;
 	static int renderDelay;
 };

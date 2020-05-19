@@ -11,6 +11,9 @@
 #include "../headers/Properties.h"
 #include "../headers/Sprite.h"
 #include "../headers/Menu.h"
+#include "../headers/UILabel.h"
+#include "../headers/Prompt.h"
+#include "SDL_ttf.h"
 
 class Menu;
 
@@ -56,6 +59,7 @@ private:
 	static SDL_Renderer* renderer;		//renderer composite passed as arg to all render functinos. see update() and render()
 	Sprite* background;
 	std::vector<Tile*> tiles;
+	Prompt* test_prompt;
 	Menu* menu;
 
 };

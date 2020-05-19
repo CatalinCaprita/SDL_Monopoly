@@ -3,6 +3,7 @@
 #include "../headers/Game.h"
 #include "../headers/TextureMaker.h"
 #include "../headers/UserAnimator.h"
+
 #include <string>
 #include <vector>
 #include <utility>
@@ -57,6 +58,11 @@ Game::Game(const char* title, int x_pos, int y_pos, int width, int height, bool 
 	if (full_screen) {
 		new_flag = SDL_WINDOW_FULLSCREEN;
 	}
+	if (TTF_Init() == -1) {
+		std::cerr << "TTF init error \n";
+		isRunning = false;
+		return;
+	}
 	if (SDL_Init(SDL_INIT_EVERYTHING) == 0) {
 // width + menu_width
 		window = SDL_CreateWindow(title, x_pos, y_pos, width + 300, height, SDL_WINDOW_OPENGL);
@@ -81,9 +87,9 @@ Game::Game(const char* title, int x_pos, int y_pos, int width, int height, bool 
 		players.push_back(new Player("Player 3", "assets/purple.bmp", 950, 930, PAWN_SIZE, PAWN_SIZE));
 		players.push_back(new Player("Player 4", "assets/black.bmp", 960, 930, PAWN_SIZE, PAWN_SIZE));59
 		*/
-		buttons.push_back(new Button("assets/buy_button.bmp", 37, 39, 22,10));
-		buttons.push_back(new Button("assets/sell_button.bmp", 37, 49, 22, 10));
-		buttons.push_back(new Button("assets/end_turn_button.bmp", 37, 59, 22, 10));
+		buttons.push_back(new Button("assets/buy_button.bmp", 107, 39, 22,10));
+		buttons.push_back(new Button("assets/sell_button.bmp", 107, 49, 22, 10));
+		buttons.push_back(new Button("assets/end_turn_button.bmp", 107, 59, 22, 10));
 		for (int i = 0; i < buttons.size(); i++)
 			buttons[i]->getSprite()->setScale(width, height);
 		isRunning = true;
