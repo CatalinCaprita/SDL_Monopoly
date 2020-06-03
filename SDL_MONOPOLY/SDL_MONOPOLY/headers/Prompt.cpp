@@ -9,7 +9,6 @@
 SDL_Color colors[] = { {255,255,255,255},{0,0,0,0}, {205,92,92,50} };
 Prompt::Prompt(const char* backPath, int unitX, int unitY, int unitW, int unitH, std::string& message) {
 	bubble = new Sprite(backPath, unitW, unitH, unitX, unitY,-1,-1,true);
-	//monopolyMan = new Sprite("assets/monopoly_man.bmp", unitW, unitH, unitX - 5, unitY + 6, -1, -1, true);
 	text = new UILabel(unitX + 5, unitY + 5, unitW, unitH , message, TTF_OpenFont("assets/fonts/prompt_std2.ttf", 60), colors[BLACK]);
 	bubble->setRenderDelay(10);
 	updateDelay = 3;
@@ -35,7 +34,6 @@ void Prompt::updateWH(int byW, int byH) {
 		else updateDelay--;
 }
 void Prompt::render() {
-	//monopolyMan->render();
 	bubble->render();
 	text->render();
 
@@ -45,7 +43,6 @@ void Prompt::setScale(int screenW, int screenH) {
 	bubble->setScale(screenW, screenH);
 	text->setScale(screenW, screenH);
 	text->setLabelTexture(screenW);
-	//monopolyMan->setScale(screenW, screenH);
 
 };
 
@@ -76,4 +73,8 @@ void Prompt::decreaseLifeTime() {
 
 bool Prompt::isDone() {
 	return lifeTime > 0;
+}
+
+Sprite* Prompt::getBubbleSprite() {
+	return bubble;
 }

@@ -14,7 +14,7 @@ public:
 	static void playerPaysPlayer(Player*, Player*);
 	static void fadePropertyCard(Tile*);
 	static void popCommandCardBack(CommandTile* card);
-	static void popUpMessage(std::string & message);
+	static void popUpMessage(std::string& message);
 	static void update();
 	static void render();
 	static void attach(Game *instance) {

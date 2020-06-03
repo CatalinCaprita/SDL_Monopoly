@@ -53,7 +53,9 @@ void UserAnimator::playerPaysPlayer(Player* src, Player* dest) {
 		return;
 
 	Sprite* srcSprite = new Sprite(src->getSprite());
+	srcSprite->setPath(src->getSprite()->getPath(),true);
 	Sprite* destSprite = new Sprite(dest->getSprite());
+	destSprite->setPath(dest->getSprite()->getPath(), true);
 	destSprite->setRenderDelay(45);
 	srcSprite->setRenderDelay(45);
 	destSprite->updateUnitHeigth(10); destSprite->updateUnitWidth(10);
@@ -74,7 +76,7 @@ void UserAnimator::fadePropertyCard(Tile * target) {
 }
 
 void UserAnimator::popUpMessage(std::string& message) {
-	Prompt* prompt = new Prompt("assets/bubble_prompt.bmp", MON_MAN_X, MON_MAN_Y + 5, 0, 0, message);
+	Prompt* prompt = new Prompt("assets/bubble_prompt.bmp", MON_MAN_X, MON_MAN_Y + 5, 0, 0,message);
 	prompt->setScale(game->getScreenW(), game->getScreenH());
 	prompt->setLifeTime(3000);
 	prompts.push_back(prompt);
@@ -89,8 +91,6 @@ void UserAnimator::popUpMessage(std::string& message) {
 Updates all the sprite components of the map according to the specification 
 */
 void UserAnimator::update() {
-	if (sprites.size() <= 0)
-		return;
 	
 	for (auto item = sprites.begin(); item != sprites.end();) {
 		//IF there is a property deed sprite to be updated, update it accordingly
@@ -215,14 +215,12 @@ void UserAnimator::update() {
 				prompts[i]->updateXY(0, -1);
 				prompts[i]->updateWH(0, 1);
 			}
-			/*
-			else {
-				prompts[i]->decreaseLifeTime();
-				if (prompts[i]->isDone()) {
-					prompts.erase(prompts.begin() + i);
-					break;
-				}
-			}*/
+			else  if(prompts[i]->getBubbleSprite()->isClicked()){
+				std::cout << "Bubble clicked!";
+				prompts.erase(prompts.begin() + i);
+				sprites.erase("mon_man");
+
+			}
 		}
 	}
 	

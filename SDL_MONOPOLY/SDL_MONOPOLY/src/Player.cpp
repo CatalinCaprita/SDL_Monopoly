@@ -303,6 +303,8 @@ Otherwise player's sprite keeps its position
 int direction - 1 forward, -1 backward
 */
 void Player::update() {
+	if (sprite->isClicked())
+		std::cout << "Player Sprite Clicked!\n";
 	if (sprite->candBeUpdated()) {
 		/*
 		Daca NU e Jailed, i.e. e deja in tile-ul jail SI mai are pasi de facut, atunci pozitia lui se updateaza

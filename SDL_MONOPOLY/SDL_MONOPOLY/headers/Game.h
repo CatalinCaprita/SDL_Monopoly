@@ -42,6 +42,15 @@ public:
 	static void setBuyPressed(bool buyPressed) { Game::buyPressed = buyPressed; }
 	static bool isMortgagePressed() { return mortgagePressed; }
 	static void setMortgagePressed(bool mortgagePressed) { Game::mortgagePressed = mortgagePressed; }
+	static bool mouseClick() {
+		return mousePressed;
+	};
+	static int getClickX() {
+		return clickX;
+	};
+	static int getClickY() {
+		return clickY;
+	}
 	
 private:
 	int turn;
@@ -50,8 +59,12 @@ private:
 	static int nrDoublesThrown;
 	static bool buyPressed;
 	static bool mortgagePressed;
+	static int mouseX;
+	static int mouseY;
+	static int clickX;
+	static int clickY;
+	static bool mousePressed;
 	bool isRunning;
-	bool mousePressed;
 	std::vector<Player*> players;
 	std::vector<Button*> buttons;
 	static Dice* dice;

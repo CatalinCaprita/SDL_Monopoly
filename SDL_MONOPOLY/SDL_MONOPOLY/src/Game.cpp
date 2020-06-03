@@ -26,9 +26,6 @@
 #define BUYER_TRADE 4
 #define OWNER_TRADE 3
 
-int Game::count = 0;
-bool Game::buyPressed = false;
-bool Game::mortgagePressed = false;
 
 //Array of indexes for the HouseProperty properties
 // tiles[propIdx[i]] = new HouseProperty();
@@ -51,6 +48,22 @@ Dice* Game::dice = nullptr;
 SDL_Renderer* Game::renderer = nullptr;
 int last = 0;
 int globalSum = 0;
+int Game::count = 0;
+int Game::mouseX = 0;
+int Game::mouseY = 0;
+int Game::clickX = 0;
+int Game::clickY = 0;
+
+bool Game::buyPressed = false;
+bool Game::mortgagePressed = false;
+bool Game::mousePressed = false;
+
+
+int debounceDelay = 300;
+int lastDebounce = 0;
+std::string messageString;
+int lastTurnToPressBuy = -1;
+
 Game::Game(const char* title, int x_pos, int y_pos, int width, int height, bool full_screen):tiles(40){
 	mousePressed = false;
 	turn = 0;
@@ -87,10 +100,11 @@ Game::Game(const char* title, int x_pos, int y_pos, int width, int height, bool 
 		players.push_back(new Player("Player 3", "assets/purple.bmp", 950, 930, PAWN_SIZE, PAWN_SIZE));
 		players.push_back(new Player("Player 4", "assets/black.bmp", 960, 930, PAWN_SIZE, PAWN_SIZE));59
 		*/
-		buttons.push_back(new Button("assets/buy_button.bmp", 107, 39, 22,10));
-		buttons.push_back(new Button("assets/sell_button.bmp", 107, 49, 22, 10));
-		buttons.push_back(new Button("assets/end_turn_button.bmp", 107, 59, 22, 10));
-		for (int i = 0; i < buttons.size(); i++)
+
+		buttons.push_back(new Button("assets/buy_button0.bmp", "assets/buy_button1.bmp", 107, 39, 22,10));
+		buttons.push_back(new Button("assets/sell_button0.bmp", "assets/sell_button1.bmp", 107, 49, 22, 10));
+		buttons.push_back(new Button("assets/end_turn_button0.bmp", "assets/end_turn_button1.bmp", 107, 59, 22, 10));
+ 		for (int i = 0; i < buttons.size(); i++)
 			buttons[i]->getSprite()->setScale(width, height);
 		isRunning = true;
 		fillTiles("assets/houseProperties.txt");
@@ -127,93 +141,108 @@ Dice* Game::getDice() {
  void Game::listen_event() {
 	 //menu->listen_event();
 	 SDL_Event e;
-	 int mouseX, mouseY;
+	 
 	 SDL_PollEvent(&e);
 	 SDL_PumpEvents();
-
-	 if (e.type == SDL_QUIT)
+	 switch (e.type) {
+	 case SDL_QUIT:
 		 isRunning = false;
-
-	 if (SDL_GetMouseState(&mouseX, &mouseY) & SDL_BUTTON(SDL_BUTTON_LEFT)) { 
-		 if (!mousePressed) {
-
-			 if (mouseX > dice->getFirstDieSprite()->pixelX() &&
-				 mouseX < dice->getSecondDieSprite()->pixelX() + dice->getSecondDieSprite()->pixelW() &&
-				 mouseY > dice->getFirstDieSprite()->pixelY() &&
-				 mouseY < dice->getFirstDieSprite()->pixelY() + dice->getFirstDieSprite()->pixelH()) {
-				 if (!dice->isBlocked()) {
-					 dice->roll(renderer);
-					 std::cout << "Ai dat " << dice->getFirstDieValue() + dice->getSecondDieValue() << std::endl;
-					 if (players[turn]->isJailed()) {
-						 if (dice->thrownDouble()) {
-							 players[turn]->freeFromJail();
+		 break;
+		 //if (SDL_GetMouseState(&mouseX, &mouseY) & SDL_BUTTON(SDL_BUTTON_LEFT)) {
+	 case SDL_MOUSEBUTTONUP:
+		 mousePressed = false;
+		 break;
+	 case SDL_MOUSEBUTTONDOWN: {
+		 if (e.button.state == SDL_PRESSED && e.button.button == SDL_BUTTON_LEFT) {
+			 if (!mousePressed) {
+				 mousePressed = true;
+				 clickX = e.button.x;
+				 clickY = e.button.y;
+				 std::cout << "Mouse X " << clickX << " Mouse Y :" << clickY << " \n";
+				 lastDebounce = SDL_GetTicks();
+				 if (dice->getFirstDieSprite()->isClicked() || dice->getSecondDieSprite()->isClicked()){
+					 if (!dice->isBlocked()) {
+						 dice->roll(renderer);
+						 std::cout << "Ai dat " << dice->getFirstDieValue() + dice->getSecondDieValue() << std::endl;
+						 if (players[turn]->isJailed()) {
+							 if (dice->thrownDouble()) {
+								 players[turn]->freeFromJail();
+							 }
+							 else {
+								 int turns = players[turn]->getJailTurnsLeft();
+								 players[turn]->setJailTurnsLeft(turns - 1); // decrement jail turn left for players at current turn
+								 if (!players[turn]->isJailed())
+									 players[turn]->freeFromJail();
+							 }
+							 dice->setBlocked(true);
+							 Game::nrDoublesThrown = 0;
 						 }
 						 else {
-							 int turns = players[turn]->getJailTurnsLeft();
-							 players[turn]->setJailTurnsLeft(turns - 1); // decrement jail turn left for players at current turn
-							if(!players[turn]->isJailed())
-								players[turn]->freeFromJail();
-						 }
-						 dice->setBlocked(true);
-						 Game::nrDoublesThrown = 0;
-					 }
-					 else {
-						 if (dice->thrownDouble()) {
-							 Game::nrDoublesThrown++;
-						 }
+							 if (dice->thrownDouble()) {
+								 Game::nrDoublesThrown++;
+							 }
 
-						 if (Game::nrDoublesThrown == 3) {
-							 players[turn]->setRemainingSteps(50 - players[turn]->getCurrentPosition());
-							 //players[turn]->setRemainingSteps(players[turn]->getCurrentPosition() - 10);
-							 
-							 players[turn]->setJailFlag(); //Player is now in moving, once it will finish, it will go direcly to jail
-							 dice->setBlocked(true); //Set the dice block so while the current player is moving nobody can run the dice;
-						 }
-						 else {
-							 //players[turn]->setRemainingSteps(dice->getFirstDieValue() + dice->getSecondDieValue());
-							 players[turn]->setRemainingSteps(8);
-							 if (!dice->thrownDouble()) {
+							 if (Game::nrDoublesThrown == 3) {
+								 players[turn]->setRemainingSteps(50 - players[turn]->getCurrentPosition());
+								 //players[turn]->setRemainingSteps(players[turn]->getCurrentPosition() - 10);
+
+								 players[turn]->setJailFlag(); //Player is now in moving, once it will finish, it will go direcly to jail
+								 dice->setBlocked(true); //Set the dice block so while the current player is moving nobody can run the dice;
+							 }
+							 else {
+								 //players[turn]->setRemainingSteps(dice->getFirstDieValue() + dice->getSecondDieValue());
+								 players[turn]->setRemainingSteps(1);
 								 dice->setBlocked(true);
-								 Game::nrDoublesThrown = 0;
+								 if (!dice->thrownDouble()) {
+									 dice->setBlocked(true);
+									 Game::nrDoublesThrown = 0;
+								 }
 							 }
 						 }
 					 }
 				 }
-			 }
-			 else if (buttons[0]->hoverButton(mouseX, mouseY)) {
-				 
-				 std::cout << "button0" << std::endl;
-				 this->setBuyPressed(true);
-				 tiles[players[turn]->getCurrentPosition()]->getMeAnOwner(players[turn]);
-				 //tiles[8]->getMeAnOwner(players[turn]);
-				 last = (last + 1 ) % STATION_NUM;
-				 
-			 }
-			 else if (buttons[1]->hoverButton(mouseX, mouseY)) {
-				 this->setMortgagePressed(true);
-				 std::cout << "button1" << std::endl;
-				 dynamic_cast<HouseProperty*>(tiles[players[turn]->getCurrentPosition()])->mortgage(players[turn]);
-			 }
-			 else if (buttons[2]->hoverButton(mouseX, mouseY)) {
-				 if (!(players[turn]->getFlag() == BUYER_TRADE || players[turn]->getFlag() == OWNER_TRADE)){
-					 turn++;
-					 turn %= 2;
-					 dice->setBlocked(false);
-					 this->setBuyPressed(false);
-					 this->setMortgagePressed(false);
-					 UserAnimator::fadePropertyCard(tiles[players[turn]->getCurrentPosition()]);
-					 std::cout << "button2" << std::endl;
-				 }
-				 else {
-					 std::cout << "You must finish the trade before ending your turn !\n";
-				 }
-			 }
-		 }
-		 mousePressed = true;
-	 }
-	 else
-		 mousePressed = false;
+				 else if (buttons[0]->getSprite()->isClicked()) {
 
+					 std::cout << "button0" << std::endl;
+					 this->setBuyPressed(true);
+					 //tiles[players[turn]->getCurrentPosition()]->getMeAnOwner(players[turn]);
+					 if (lastTurnToPressBuy != turn) {
+						 tiles[1]->getMeAnOwner(players[turn]);
+						 lastTurnToPressBuy = turn;
+					 }
+					 else
+						 std::cout << "BUY WAS ALREADY PRESSED";
+					 this->setBuyPressed(false);
+				}
+				 else if (buttons[1]->getSprite()->isClicked()) {
+					 this->setMortgagePressed(true);
+					 std::cout << "button1" << std::endl;
+					 dynamic_cast<HouseProperty*>(tiles[8])->mortgage(players[turn]);
+				 }
+				 else if (buttons[2]->getSprite()->isClicked()) {
+					 if (!(players[turn]->getFlag() == BUYER_TRADE || players[turn]->getFlag() == OWNER_TRADE)) {
+						 lastTurnToPressBuy = turn;
+						 turn++;
+						 turn %= 2;
+						 dice->setBlocked(false);
+						 this->setBuyPressed(false);
+						 this->setMortgagePressed(false);
+						 UserAnimator::fadePropertyCard(tiles[players[turn]->getCurrentPosition()]);
+						 std::cout << "button2" << std::endl;
+					 }
+					 else {
+						 messageString = "You must finish the trade before ending your turn !";
+						 UserAnimator::popUpMessage(messageString);
+					 }
+				 }
+			 }
+			 mousePressed = true;
+		 }
+		 else
+			 mousePressed = false;
+		}
+							 break;
+	 }
  }
  void Game::render() {
 	 SDL_RenderClear(renderer);
@@ -236,6 +265,7 @@ Dice* Game::getDice() {
 	 //
 	 //std::cout << menu->getCurrentPage() << std::endl;
 	 //
+	 SDL_GetMouseState(&mouseX, &mouseY);
 	 for (int i = 0; i < players.size(); i++) {
 		 players[i]->update();
 		 /*
@@ -245,8 +275,8 @@ Dice* Game::getDice() {
 		 if (i == turn && players[turn]->finishedMoving()) {
 			 switch (players[turn]->getFlag()) {
 			 case DICE_MOVE:
-				 tiles[players[turn]->getCurrentPosition()]->doEffect(players[turn]);
-				 //tiles[8]->doEffect(players[turn]);
+				// tiles[players[turn]->getCurrentPosition()]->doEffect(players[turn]);
+				 tiles[1]->doEffect(players[turn]);
 				 break;
 			 case MUST_BE_JAILED:
 				 players[turn]->goToJail();
@@ -281,6 +311,11 @@ Dice* Game::getDice() {
 		  }
 
 	 }
+	 
+	 for (int i = 0; i < buttons.size(); i++) {
+		 buttons[i]->update(mouseX, mouseY);
+	 }
+	 
 	 dice->update();
 	 UserAnimator::update();
  }
