@@ -135,7 +135,7 @@ void HouseProperty::mortgage(Player* currentPlayer) {
 		}
 		else {
 			std::string message = "It appears you have mortgaged this property. Lifting the mortgage would mean paying ";
-			message += "The mortgage Value of the property + 10 % of its value for a total of  ";
+			message += " the mortgage Value of the property + 10 % of its value for a total of  ";
 			message += std::to_string(mortgageVal * 1.1)+ ". Proceed? (1/0).";
 			UserAnimator::popUpMessage(message);
 			int answer;
