@@ -202,7 +202,8 @@ void HouseProperty::getMeAnOwner(Player* currentPlayer) {
 			owner->setOwnerTradeFlag();
 
 		}
-		else if (owner == currentPlayer) {// && owner->ownsAllOfColor(groupId))
+		else if (owner == currentPlayer) {
+			// && owner->ownsAllOfColor(groupId))
 			update();
 			Game::setBuyPressed(false);
 			
@@ -215,7 +216,7 @@ void HouseProperty::doEffect(Player* currentPlayer) {
 	std::cout << currentPlayer->getName() <<" stepped on " << name << std::endl;
 	if (owner == currentPlayer) {
 		if (!mortgaged && rentStage < rentPrices.size() - 1) {
-			message = "Press 'Buy' if you want to uptade this property.";
+			message = "Press 'Buy' if you want to upgrade this property.";
 			UserAnimator::popUpMessage(message);
 
 		}
@@ -246,7 +247,6 @@ void HouseProperty::doEffect(Player* currentPlayer) {
 		else {
 			std::string message = owner->getName() + " chose to mortgage this property, so no rent is payed. Press 'Buy' to start trading with the owner.\n";
 			UserAnimator::popUpMessage(message);
-			//getMeAnOwner(currentPlayer);
 		}
 	}
 }

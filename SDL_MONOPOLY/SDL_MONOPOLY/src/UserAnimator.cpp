@@ -30,6 +30,7 @@ UserAnimator::~UserAnimator() {
 void UserAnimator::setDelay(int milliseconds) {
 	renderDelay = milliseconds;
 }
+
 void UserAnimator::popPropertyCard(Tile * target) {
 	auto item = sprites.find("pop");
 	if (item == sprites.end()) {
@@ -42,7 +43,7 @@ void UserAnimator::popPropertyCard(Tile * target) {
 		std::cout << "Successively inserted" << target->getName() << std::endl;
 	}
 
-}
+} // Pops up a Tile on the screen
 	
 void UserAnimator::playerPaysPlayer(Player* src, Player* dest) {
 	auto item = sprites.find("src");
@@ -64,7 +65,8 @@ void UserAnimator::playerPaysPlayer(Player* src, Player* dest) {
 	sprites.insert({ "dest",destSprite });
 	pReached = 0;
 
-}
+} // Animation where "src" pays "dest"
+
 void UserAnimator::fadePropertyCard(Tile * target) {
 	auto item = sprites.find("pop");
 	if (item != sprites.end()) {
@@ -73,7 +75,7 @@ void UserAnimator::fadePropertyCard(Tile * target) {
 		lastRender = 0; 
 		
 	}
-}
+} // Animation where the Tile on screen fades out
 
 void UserAnimator::popUpMessage(std::string& message) {
 	Prompt* prompt = new Prompt("assets/bubble_prompt.bmp", MON_MAN_X, MON_MAN_Y + 5, 0, 0,message);
@@ -86,18 +88,20 @@ void UserAnimator::popUpMessage(std::string& message) {
 	if (it == sprites.end()) {
 		Sprite* monopolyMan = new Sprite("assets/monopoly_man.bmp", 10, 17, MON_MAN_X, MON_MAN_Y, game->getScreenW(), game->getScreenH(), true);
 		sprites.insert({ "mon_man", monopolyMan });
-		std::cout << "Insertet Mon_man";
+		std::cout << "Inserted Mon_man";
 	}
-}
+} // Animation where Monopoly Man appears and gives a prompt
+
 /*
 Updates all the sprite components of the map according to the specification 
 */
+
 void UserAnimator::update() {
 	
 	for (auto item = sprites.begin(); item != sprites.end();) {
 		//IF there is a property deed sprite to be updated, update it accordingly
 		if (item->first == "pop") {
-			if (item->second->candBeUpdated()) {
+			if (item->second->canBeUpdated()) {
 				if (item->second->unitX() > CARD_END_POS_X&& item->second->unitY() > CARD_END_POS_Y) {
 					item->second->updateUnitHeigth(2);
 					item->second->updateUnitWidth(1);
@@ -109,7 +113,7 @@ void UserAnimator::update() {
 			++item;
 		}
 		else if (item->first == "fade") {
-			if (item->second->candBeUpdated()) {
+			if (item->second->canBeUpdated()) {
 				if (item->second->unitH() > 0 && item->second->unitW() > 0) {
 	
 					item->second->updateUnitHeigth(-2);
@@ -127,7 +131,7 @@ void UserAnimator::update() {
 			}
 		}
 		else if (item->first == "src") {
-			if (item->second->candBeUpdated()) {
+			if (item->second->canBeUpdated()) {
 				if (item->second->unitX() == P1_END_X && (item->second->unitY() == P1_END_Y)) {
 					if (pReached < 2)
 						pReached++;
@@ -163,7 +167,7 @@ void UserAnimator::update() {
 			++item;
 		}
 		else if (item->first == "dest") {
-			if (item->second->candBeUpdated()) {
+			if (item->second->canBeUpdated()) {
 				if (item->second->unitX() == P2_END_X && (item->second->unitY() == P2_END_Y)) {
 					if (pReached < 2)
 						pReached++;	
@@ -187,7 +191,7 @@ void UserAnimator::update() {
 			++item;
 		}
 		else if (item->first == "money") {
-			if(item->second->candBeUpdated()){
+			if(item->second->canBeUpdated()){
 				if (item->second->unitX() < P2_END_X) {
 						item->second->update(1, 0);
 					
