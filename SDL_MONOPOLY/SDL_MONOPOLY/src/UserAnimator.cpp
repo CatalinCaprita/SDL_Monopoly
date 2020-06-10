@@ -79,11 +79,13 @@ void UserAnimator::popUpMessage(std::string& message) {
 	Prompt* prompt = new Prompt("assets/bubble_prompt.bmp", MON_MAN_X, MON_MAN_Y + 5, 0, 0,message);
 	prompt->setScale(game->getScreenW(), game->getScreenH());
 	prompt->setLifeTime(3000);
-	prompts.push_back(prompt);
+	if (prompts.size()== 1)
+		prompts[0] = prompt;
+	else prompts.push_back(prompt);
 	auto it = sprites.find("mon_man");
 	if (it == sprites.end()) {
 		Sprite* monopolyMan = new Sprite("assets/monopoly_man.bmp", 10, 17, MON_MAN_X, MON_MAN_Y, game->getScreenW(), game->getScreenH(), true);
-		sprites.insert({ "mon_man",monopolyMan });
+		sprites.insert({ "mon_man", monopolyMan });
 		std::cout << "Insertet Mon_man";
 	}
 }

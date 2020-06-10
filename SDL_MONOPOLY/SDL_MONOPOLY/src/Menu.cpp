@@ -3,8 +3,10 @@
 Menu::Menu(Game* game) {
 	this->game = game;
 	currentPage = 0;
-	pages.push_back(new Page(game,10,10));
-	pages.push_back(new Page(game,20,20));
+	pages.push_back(new Page(game, 1));
+	pages.push_back(new Page(game, 2));
+	//pages.push_back(new Page(game, 3));
+	//pages.push_back(new Page(game, 4));
 }
 
 void Menu::render() {

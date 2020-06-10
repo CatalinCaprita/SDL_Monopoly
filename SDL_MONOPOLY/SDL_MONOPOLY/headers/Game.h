@@ -51,6 +51,9 @@ public:
 	static int getClickY() {
 		return clickY;
 	}
+	Player* getPlayer(int i) {
+		return players[i];
+	}
 	
 private:
 	int turn;
@@ -67,6 +70,7 @@ private:
 	bool isRunning;
 	std::vector<Player*> players;
 	std::vector<Button*> buttons;
+	std::vector<Button*> randomButtons;
 	static Dice* dice;
 	SDL_Window* window;			//window object to be used as the main game frame
 	static SDL_Renderer* renderer;		//renderer composite passed as arg to all render functinos. see update() and render()
