@@ -195,9 +195,9 @@ Dice* Game::getDice() {
 							 else {
 								 players[turn]->setRemainingSteps(dice->getFirstDieValue() + dice->getSecondDieValue());
 
-								 //			DEBUG
+								 /*			DEBUG
+								 /**/
 								 //players[turn]->setRemainingSteps(1);
-								 //
 
 								 dice->setBlocked(true);
 								 if (!dice->thrownDouble()) {
@@ -209,16 +209,21 @@ Dice* Game::getDice() {
 					 }
 				 }
 				 else if (buttons[0]->getSprite()->isClicked()) {
-
-					 std::cout << "button0" << std::endl;
-					 this->setBuyPressed(true);
-					 if (lastTurnToPressBuy != turn) {
-						 tiles[players[turn]->getCurrentPosition()]->getMeAnOwner(players[turn]); //tiles[1]->getMeAnOwner(players[turn]);
-						 lastTurnToPressBuy = turn;
+					 if (!dice->isBlocked()) {
+						 messageString = "You must roll the dice first!";
+						 UserAnimator::popUpMessage(messageString);
 					 }
-					 else
-						 std::cout << "BUY WAS ALREADY PRESSED";
-					 this->setBuyPressed(false);
+					 else {
+						 std::cout << "button0" << std::endl;
+						 this->setBuyPressed(true);
+						 if (lastTurnToPressBuy != turn) {
+							 tiles[players[turn]->getCurrentPosition()]->getMeAnOwner(players[turn]); //tiles[1]->getMeAnOwner(players[turn]);
+							 lastTurnToPressBuy = turn;
+						 }
+						 else
+							 std::cout << "BUY WAS ALREADY PRESSED";
+						 this->setBuyPressed(false);
+					 }
 				 }
 				 else if (buttons[1]->getSprite()->isClicked()){
 					 this->setMortgagePressed(true);
@@ -226,6 +231,7 @@ Dice* Game::getDice() {
 					 dynamic_cast<HouseProperty*>(tiles[8])->mortgage(players[turn]);
 				 }
 				 else if (buttons[2]->getSprite()->isClicked()) {
+
 					 if (!(players[turn]->getFlag() == BUYER_TRADE || players[turn]->getFlag() == OWNER_TRADE)) {
 						 lastTurnToPressBuy = turn;
 						 turn++;

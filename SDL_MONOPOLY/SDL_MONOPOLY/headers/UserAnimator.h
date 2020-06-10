@@ -27,7 +27,7 @@ private:
 	static Game* game;
 	static SDL_Texture* backup;
 	static std::unordered_map<std::string,Sprite*> sprites;
-	static std::vector<Prompt*> prompts;
+	static std::vector<Prompt* >prompts;
 	static double lastRender;
 	static int renderDelay;
 };

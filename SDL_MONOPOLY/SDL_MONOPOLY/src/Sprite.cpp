@@ -21,6 +21,7 @@ Sprite::Sprite(const char* path, int unitW, int unitH, int unitX, int unitY , in
 }
 Sprite::~Sprite() {
 	SDL_DestroyTexture(texture);
+	std::cout << "Destroyed sprte";
 }
 Sprite::Sprite(Sprite* copy) {
 	wRatio = copy->wRatio;

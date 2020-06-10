@@ -16,6 +16,7 @@ class Prompt {
 public:
 	Prompt(const char *backPath,int unitX,int unitY, int unitW,int unitH,std::string& message);
 	~Prompt();
+	void destroy();
 	void updateXY(int byX = 0 , int byY = 0);
 	void updateWH(int byW = 0, int byH = 0);
 	void render();

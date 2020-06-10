@@ -81,7 +81,7 @@ void UserAnimator::popUpMessage(std::string& message) {
 	Prompt* prompt = new Prompt("assets/bubble_prompt.bmp", MON_MAN_X, MON_MAN_Y + 5, 0, 0,message);
 	prompt->setScale(game->getScreenW(), game->getScreenH());
 	prompt->setLifeTime(3000);
-	if (prompts.size()== 1)
+	if (prompts.size() == 1)
 		prompts[0] = prompt;
 	else prompts.push_back(prompt);
 	auto it = sprites.find("mon_man");
@@ -97,7 +97,7 @@ Updates all the sprite components of the map according to the specification
 */
 
 void UserAnimator::update() {
-	
+	bool onFade = false;
 	for (auto item = sprites.begin(); item != sprites.end();) {
 		//IF there is a property deed sprite to be updated, update it accordingly
 		if (item->first == "pop") {
@@ -108,6 +108,9 @@ void UserAnimator::update() {
 					item->second->update(-1, -1);
 					lastRender = SDL_GetTicks();
 
+				}
+				else if (item->second->isClicked()) {
+					onFade = true;
 				}
 			}
 			++item;
@@ -197,8 +200,11 @@ void UserAnimator::update() {
 					
 				}
 				else {
+					delete sprites["dest"];
 					sprites.erase("dest");
+					delete sprites["src"];
 					sprites.erase("src");
+					delete sprites["money"];
 					sprites.erase("money");
 					break;
 				}
@@ -223,12 +229,17 @@ void UserAnimator::update() {
 			}
 			else  if(prompts[i]->getBubbleSprite()->isClicked()){
 				std::cout << "Bubble clicked!";
+				delete prompts[i];
 				prompts.erase(prompts.begin() + i);
+				std::cout << "Deleted sucessfully";
+				delete sprites["mon_man"];
 				sprites.erase("mon_man");
 
 			}
 		}
 	}
+	if (onFade)
+		fadePropertyCard(nullptr);
 	
 }
 

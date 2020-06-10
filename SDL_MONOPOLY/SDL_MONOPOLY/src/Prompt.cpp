@@ -14,9 +14,15 @@ Prompt::Prompt(const char* backPath, int unitX, int unitY, int unitW, int unitH,
 	updateDelay = 3;
 };
 Prompt::~Prompt() {
+	
 	delete bubble;
 	delete text;
+	std::cout << "Prompt Destroyed";
 };
+void Prompt::destroy() {
+	delete bubble;
+	delete text;
+}
 void Prompt::updateXY(int byX, int byY ) {
 		bubble->update(byX, byY);
 		text->updateXY(byX, byY);

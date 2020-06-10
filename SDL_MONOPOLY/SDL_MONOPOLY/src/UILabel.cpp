@@ -23,9 +23,7 @@ UILabel::UILabel(Sprite* background, std::string& text, TTF_Font* font, SDL_Colo
 }
 UILabel::~UILabel() {
 	SDL_DestroyTexture(labelTexture);
-	delete labelTexture;
-	delete& textColor;
-	delete labelFont;
+	TTF_CloseFont(labelFont);
 };
 
 void UILabel::setLabelTexture(int wordWrapPixels) {
