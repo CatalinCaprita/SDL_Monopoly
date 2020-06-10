@@ -187,7 +187,7 @@ void Player::setTradeStatus(bool status) {
 int Player::proposeSumFor(Tile * propWanted) {
 	if (tradeWith != nullptr) {
 		int answer = -1;
-		std::cout <<name<< ": Please set what sum you propse for " << propWanted->getName() << ": ";
+		std::cout <<name<< ": Please set what sum you propose for " << propWanted->getName() << ": ";
 		bool valid = false;
 		do {
 			std::cin >> answer;
@@ -218,11 +218,11 @@ Totusi, in iteratiile Game::update() si Game::render() el figureaza ca mai are d
 /*
 Jail Functions
 */
-void Player::goToJail() {
+void Player::goToJail() { 
 	std::cout << name << " will GO TO JAIL !\n";
-		currentPosition = 10;
-		jailTurnsLeft = 3;
-}
+	setRemainingSteps((50 - this->getCurrentPosition()) % 40); //Player is now in moving, once it will finish, it will go direcly to jail
+	jailTurnsLeft = 3;
+} 
 bool Player::isJailed()
 {
 	return !(jailTurnsLeft == 0);

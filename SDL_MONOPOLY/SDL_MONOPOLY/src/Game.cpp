@@ -188,16 +188,16 @@ Dice* Game::getDice() {
 							 if (dice->thrownDouble()) {
 								 Game::nrDoublesThrown++;
 							 }
-
+							 
 							 if (Game::nrDoublesThrown == 3) {
-								 players[turn]->setRemainingSteps(50 - players[turn]->getCurrentPosition());
-								 //players[turn]->setRemainingSteps(players[turn]->getCurrentPosition() - 10);
-
-								 players[turn]->setJailFlag(); //Player is now in moving, once it will finish, it will go direcly to jail
+								 players[turn]->setJailFlag();
+								 players[turn]->goToJail();
 								 dice->setBlocked(true); //Set the dice block so while the current player is moving nobody can run the dice;
 							 }
 							 else {
-								 players[turn]->setRemainingSteps(dice->getFirstDieValue() + dice->getSecondDieValue());
+								 //players[turn]->setRemainingSteps(dice->getFirstDieValue() + dice->getSecondDieValue());
+								 //			DEBUG
+								 players[turn]->setRemainingSteps(1);
 								 dice->setBlocked(true);
 								 if (!dice->thrownDouble()) {
 									 dice->setBlocked(true);
@@ -288,9 +288,8 @@ Dice* Game::getDice() {
 }
 
  void Game::update() {
-	 //
-	 //std::cout << menu->getCurrentPage() << std::endl;
-	 //
+	 std::cout << "   " << players[turn]->getFlag() << "   "<< std::endl;
+
 	 SDL_GetMouseState(&mouseX, &mouseY);
 	 for (int i = 0; i < players.size(); i++) {
 		 players[i]->update();

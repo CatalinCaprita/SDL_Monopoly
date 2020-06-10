@@ -16,7 +16,6 @@ int main(int argc, char *argv[]) {
 		instance->listen_event();
 		instance->update();
 		instance->render();
-		//std::cout << "Mouse Pressed ?" << Game::mouseClick()<<std::endl;
 		frame_time = SDL_GetTicks() - frame_start;
 		if (frame_time < frame_rate) {
 			SDL_Delay(frame_rate - frame_time);
