@@ -28,7 +28,7 @@ public:
 	int getH();
 	bool isDone();
 	bool canBeUpdated() {
-		return bubble->candBeUpdated();
+		return bubble->canBeUpdated();
 	}
 	Sprite* getBubbleSprite();
 

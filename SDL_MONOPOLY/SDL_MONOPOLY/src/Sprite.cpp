@@ -112,7 +112,7 @@ int Sprite::unitW() {
 int Sprite::unitH() {
 	return destRect.h / (int)hRatio;
 }
-bool Sprite::candBeUpdated() {
+bool Sprite::canBeUpdated() {
 	if (SDL_GetTicks() - lastRender >= renderDelay) {
 		lastRender = SDL_GetTicks();
 		return true;

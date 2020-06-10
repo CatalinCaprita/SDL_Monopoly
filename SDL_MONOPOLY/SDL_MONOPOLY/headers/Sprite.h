@@ -43,7 +43,7 @@ public :
 
 	float getWRatio();
 	float getHRatio();
-	bool candBeUpdated();
+	bool canBeUpdated();
 	bool isClicked();
 	const char* getPath();
 	SDL_Texture* getTexture();

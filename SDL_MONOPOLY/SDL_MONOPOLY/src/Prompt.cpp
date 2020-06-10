@@ -67,7 +67,7 @@ void Prompt::setLifeTime(int ms) {
 }
 
 void Prompt::decreaseLifeTime() {
-	if (lifeTime > 0 && bubble->candBeUpdated())
+	if (lifeTime > 0 && bubble->canBeUpdated())
 		lifeTime--;
 }
 

@@ -77,7 +77,6 @@ Game::Game(const char* title, int x_pos, int y_pos, int width, int height, bool 
 		return;
 	}
 	if (SDL_Init(SDL_INIT_EVERYTHING) == 0) {
-// width + menu_width
 		window = SDL_CreateWindow(title, x_pos, y_pos, width + 300, height, SDL_WINDOW_OPENGL);
 		renderer = SDL_CreateRenderer(window, -1, 0);
 		if (renderer)
@@ -155,7 +154,6 @@ Dice* Game::getDice() {
 	 case SDL_QUIT:
 		 isRunning = false;
 		 break;
-		 //if (SDL_GetMouseState(&mouseX, &mouseY) & SDL_BUTTON(SDL_BUTTON_LEFT)) {
 	 case SDL_MOUSEBUTTONUP:
 		 mousePressed = false;
 		 break;
@@ -167,7 +165,7 @@ Dice* Game::getDice() {
 				 clickY = e.button.y;
 				 std::cout << "Mouse X " << clickX << " Mouse Y :" << clickY << " \n";
 				 lastDebounce = SDL_GetTicks();
-				 if (dice->getFirstDieSprite()->isClicked() || dice->getSecondDieSprite()->isClicked()){
+				 if (dice->getFirstDieSprite()->isClicked() || dice->getSecondDieSprite()->isClicked()) {
 					 if (!dice->isBlocked()) {
 						 dice->roll(renderer);
 						 std::cout << "Ai dat " << dice->getFirstDieValue() + dice->getSecondDieValue() << std::endl;
@@ -188,16 +186,19 @@ Dice* Game::getDice() {
 							 if (dice->thrownDouble()) {
 								 Game::nrDoublesThrown++;
 							 }
-							 
+
 							 if (Game::nrDoublesThrown == 3) {
 								 players[turn]->setJailFlag();
 								 players[turn]->goToJail();
 								 dice->setBlocked(true); //Set the dice block so while the current player is moving nobody can run the dice;
 							 }
 							 else {
-								 //players[turn]->setRemainingSteps(dice->getFirstDieValue() + dice->getSecondDieValue());
+								 players[turn]->setRemainingSteps(dice->getFirstDieValue() + dice->getSecondDieValue());
+
 								 //			DEBUG
-								 players[turn]->setRemainingSteps(1);
+								 //players[turn]->setRemainingSteps(1);
+								 //
+
 								 dice->setBlocked(true);
 								 if (!dice->thrownDouble()) {
 									 dice->setBlocked(true);
@@ -211,16 +212,15 @@ Dice* Game::getDice() {
 
 					 std::cout << "button0" << std::endl;
 					 this->setBuyPressed(true);
-					 //tiles[players[turn]->getCurrentPosition()]->getMeAnOwner(players[turn]);
 					 if (lastTurnToPressBuy != turn) {
-						 tiles[1]->getMeAnOwner(players[turn]);
+						 tiles[players[turn]->getCurrentPosition()]->getMeAnOwner(players[turn]); //tiles[1]->getMeAnOwner(players[turn]);
 						 lastTurnToPressBuy = turn;
 					 }
 					 else
 						 std::cout << "BUY WAS ALREADY PRESSED";
 					 this->setBuyPressed(false);
-				}
-				 else if (buttons[1]->getSprite()->isClicked()) {
+				 }
+				 else if (buttons[1]->getSprite()->isClicked()){
 					 this->setMortgagePressed(true);
 					 std::cout << "button1" << std::endl;
 					 dynamic_cast<HouseProperty*>(tiles[8])->mortgage(players[turn]);
@@ -263,7 +263,7 @@ Dice* Game::getDice() {
 		 else
 			 mousePressed = false;
 		}
-							 break;
+		break;
 	 }
  }
  void Game::render() {
@@ -288,15 +288,15 @@ Dice* Game::getDice() {
 }
 
  void Game::update() {
-	 std::cout << "   " << players[turn]->getFlag() << "   "<< std::endl;
-
 	 SDL_GetMouseState(&mouseX, &mouseY);
 	 for (int i = 0; i < players.size(); i++) {
 		 players[i]->update();
+
 		 /*
 		 Daca la iteratia curenta a Game::update() playerul a carui de la tura curent terminat sa de mutat ,i.e. remainingSteps == 0,
 		 Vedem in functie de flagType ul pe care il avea setat ce se intampla cu el
 		 */
+
 		 if (i == turn && players[turn]->finishedMoving()) {
 			 switch (players[turn]->getFlag()) {
 			 case DICE_MOVE:
@@ -308,6 +308,7 @@ Dice* Game::getDice() {
 			 case EXEC_COMMAND:
 				 std::cout << players[turn]->getName() << " finished the command." << std::endl;
 				 /*Dupa ce termina command, reintra in starea de "Sunt gata sa mut dupa cum zice zarul"*/
+
 				 if (players[turn]->getCurrentPosition() == 28 || players[turn]->getCurrentPosition() == 12) {
 					 if (dynamic_cast<UtilityProperty*>(tiles[players[turn]->getCurrentPosition()])->getOwner() != NULL
 						 && !players[turn]->isBankrupt()) {
@@ -448,8 +449,4 @@ Dice* Game::getDice() {
 
  Menu* Game::getMenu() {
 	 return menu;
- }
- 
- bool Game::getMousePressed() {
-	 return mousePressed;
  }

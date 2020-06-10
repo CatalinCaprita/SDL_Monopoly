@@ -31,7 +31,6 @@ public:
 	void fillTiles(const char *);
 
 	Menu* getMenu();
-	bool getMousePressed();
 	int getScreenW();
 	int getScreenH();
 	SDL_Window* getWindow();
