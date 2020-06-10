@@ -1,6 +1,7 @@
 #include "../headers/UILabel.h"
 #include "../headers/Game.h"
 UILabel:: UILabel(int unitX, int unitY, int unitW, int unitH, std::string& text, TTF_Font* font, SDL_Color& color) : labelText(text), labelFont(font), textColor(color) {
+	TTF_Init();
 	if (labelFont == nullptr) {
 		std::cerr << "Label font path iw wrong! \n "<<TTF_GetError();
 	}
@@ -28,10 +29,9 @@ UILabel::~UILabel() {
 };
 
 void UILabel::setLabelTexture(int wordWrapPixels) {
-	SDL_Surface* surface = TTF_RenderText_Blended_Wrapped(labelFont, labelText.c_str(), textColor,wordWrapPixels);
+	SDL_Surface* surface = TTF_RenderText_Blended_Wrapped(labelFont, labelText.c_str(), textColor, wordWrapPixels);
 	labelTexture = SDL_CreateTextureFromSurface(Game::getRenderer(), surface);
 	SDL_FreeSurface(surface);
-
 };
 void UILabel::render() {
 	TextureMaker::render(labelTexture, NULL, &position);
@@ -55,7 +55,7 @@ void UILabel::setScale(int screenW, int screenH) {
 }
 void UILabel::setMessage(std::string& newMessage) {
 	labelText = newMessage;
-	setLabelTexture();
+	//setLabelTexture();
 }
 
 void UILabel::setWH(int unitW, int unitH) {

@@ -92,18 +92,25 @@ Game::Game(const char* title, int x_pos, int y_pos, int width, int height, bool 
 		dice = new Dice();
 		dice->getFirstDieSprite()->setScale(width, height);
 		dice->getSecondDieSprite()->setScale(width, height);
-		players.push_back(new Player("Player 1", "assets/branza.bmp", START_X, START_Y, PAWN_SIZE, PAWN_SIZE));
+		players.push_back(new Player("Player 1", "assets/branza.bmp", START_X, START_Y, PAWN_SIZE + 3, PAWN_SIZE + 3));
 		players[0]->setSpriteScale(width, height);
 		players.push_back(new Player("Player 2", "assets/red.bmp", START_X + 1, START_Y -1, PAWN_SIZE, PAWN_SIZE));
 		players[1]->setSpriteScale(width, height);
 		/*
 		players.push_back(new Player("Player 3", "assets/purple.bmp", 950, 930, PAWN_SIZE, PAWN_SIZE));
-		players.push_back(new Player("Player 4", "assets/black.bmp", 960, 930, PAWN_SIZE, PAWN_SIZE));59
+		players.push_back(new Player("Player 4", "assets/black.bmp", 960, 930, PAWN_SIZE, PAWN_SIZE));
 		*/
 
-		buttons.push_back(new Button("assets/buy_button0.bmp", "assets/buy_button1.bmp", 107, 39, 22,10));
-		buttons.push_back(new Button("assets/sell_button0.bmp", "assets/sell_button1.bmp", 107, 49, 22, 10));
-		buttons.push_back(new Button("assets/end_turn_button0.bmp", "assets/end_turn_button1.bmp", 107, 59, 22, 10));
+		randomButtons.push_back(new Button("assets/buy_button0.bmp", "assets/buy_button0.bmp", 100, 5, 7, 5));
+		randomButtons.push_back(new Button("assets/buy_button0.bmp", "assets/buy_button0.bmp", 107, 5, 7, 5));
+		randomButtons.push_back(new Button("assets/buy_button0.bmp", "assets/buy_button0.bmp", 114, 5, 7, 5));
+		randomButtons.push_back(new Button("assets/buy_button0.bmp", "assets/buy_button0.bmp", 121, 5, 7, 5));
+		for (int i = 0; i < randomButtons.size(); i++)
+			randomButtons[i]->getSprite()->setScale(width, height);
+
+		buttons.push_back(new Button("assets/buy_button0.bmp", "assets/buy_button1.bmp", 107, 60, 22, 10));
+		buttons.push_back(new Button("assets/sell_button0.bmp", "assets/sell_button1.bmp", 107, 70, 22, 10));
+		buttons.push_back(new Button("assets/end_turn_button0.bmp", "assets/end_turn_button1.bmp", 107, 80, 22, 10));
  		for (int i = 0; i < buttons.size(); i++)
 			buttons[i]->getSprite()->setScale(width, height);
 		isRunning = true;
@@ -139,7 +146,7 @@ Dice* Game::getDice() {
 }
 
  void Game::listen_event() {
-	 //menu->listen_event();
+	 menu->listen_event();
 	 SDL_Event e;
 	 
 	 SDL_PollEvent(&e);
@@ -190,8 +197,7 @@ Dice* Game::getDice() {
 								 dice->setBlocked(true); //Set the dice block so while the current player is moving nobody can run the dice;
 							 }
 							 else {
-								 //players[turn]->setRemainingSteps(dice->getFirstDieValue() + dice->getSecondDieValue());
-								 players[turn]->setRemainingSteps(1);
+								 players[turn]->setRemainingSteps(dice->getFirstDieValue() + dice->getSecondDieValue());
 								 dice->setBlocked(true);
 								 if (!dice->thrownDouble()) {
 									 dice->setBlocked(true);
@@ -235,6 +241,22 @@ Dice* Game::getDice() {
 						 UserAnimator::popUpMessage(messageString);
 					 }
 				 }
+				 else if (randomButtons[0]->getSprite()->isClicked()) {
+					 std::cout << "Am apasat butonul asta";
+					 menu->setCurrentPage(0);
+				 }
+				 else if (randomButtons[1]->getSprite()->isClicked()) {
+					 std::cout << "Am apasat butonul asta";
+					 menu->setCurrentPage(1);
+				 }
+				 else if (randomButtons[2]->getSprite()->isClicked()) {
+					 std::cout << "Am apasat butonul asta";
+					 menu->setCurrentPage(2);
+				 }
+				 else if (randomButtons[3]->getSprite()->isClicked()) {
+					 std::cout << "Am apasat butonul asta";
+					 menu->setCurrentPage(3);
+				 }
 			 }
 			 mousePressed = true;
 		 }
@@ -255,8 +277,12 @@ Dice* Game::getDice() {
 	
 	 for (int i = 0; i < buttons.size(); i++)
 		 buttons[i]->render();
+
+	 for (int i = 0; i < randomButtons.size(); i++)
+		 randomButtons[i]->render();
+
 	 dice->render();
-	 //menu->render();
+	 menu->render();
 	 UserAnimator::render();
 	 SDL_RenderPresent(renderer);
 }
@@ -275,8 +301,7 @@ Dice* Game::getDice() {
 		 if (i == turn && players[turn]->finishedMoving()) {
 			 switch (players[turn]->getFlag()) {
 			 case DICE_MOVE:
-				// tiles[players[turn]->getCurrentPosition()]->doEffect(players[turn]);
-				 tiles[1]->doEffect(players[turn]);
+				 tiles[players[turn]->getCurrentPosition()]->doEffect(players[turn]);
 				 break;
 			 case MUST_BE_JAILED:
 				 players[turn]->goToJail();
