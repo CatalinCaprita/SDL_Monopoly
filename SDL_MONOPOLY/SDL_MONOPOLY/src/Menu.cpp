@@ -2,6 +2,13 @@
 
 Menu::Menu(Game* game) {
 	this->game = game;
+	int game_height = game->getScreenH();
+	int game_width = game->getScreenW();
+	/*int menu_height = game->getScreenH();
+	int menu_width = 300;*/
+
+	sprite = new Sprite("assets/menu/panel6.bmp", 31, 101, 99, 0);
+	sprite->setScale(game_width, game_height);
 	currentPage = 0;
 	pages.push_back(new Page(game, 1));
 	pages.push_back(new Page(game, 2));
@@ -10,6 +17,7 @@ Menu::Menu(Game* game) {
 }
 
 void Menu::render() {
+	sprite->render();
 	pages[currentPage]->render();
 }
 

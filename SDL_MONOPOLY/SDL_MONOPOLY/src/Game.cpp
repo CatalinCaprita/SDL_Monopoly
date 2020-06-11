@@ -80,7 +80,7 @@ Game::Game(const char* title, int x_pos, int y_pos, int width, int height, bool 
 		window = SDL_CreateWindow(title, x_pos, y_pos, width + 300, height, SDL_WINDOW_OPENGL);
 		renderer = SDL_CreateRenderer(window, -1, 0);
 		if (renderer)
-			SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
+			SDL_SetRenderDrawColor(renderer, 204, 227, 199, 255);
 		UserAnimator::attach(this);
 		background = new Sprite("assets/board.bmp", width, height, 0, 0);
 		if (!background)
@@ -91,25 +91,27 @@ Game::Game(const char* title, int x_pos, int y_pos, int width, int height, bool 
 		dice = new Dice();
 		dice->getFirstDieSprite()->setScale(width, height);
 		dice->getSecondDieSprite()->setScale(width, height);
-		players.push_back(new Player("Player 1", "assets/branza.bmp", START_X, START_Y, PAWN_SIZE + 3, PAWN_SIZE + 3));
+		players.push_back(new Player("Player 1", "assets/car.bmp", START_X, START_Y, PAWN_SIZE + 3, PAWN_SIZE + 3));
 		players[0]->setSpriteScale(width, height);
-		players.push_back(new Player("Player 2", "assets/red.bmp", START_X + 1, START_Y -1, PAWN_SIZE, PAWN_SIZE));
+		players.push_back(new Player("Player 2", "assets/ship.bmp", START_X + 1, START_Y -1, PAWN_SIZE + 3, PAWN_SIZE + 3));
 		players[1]->setSpriteScale(width, height);
 		/*
 		players.push_back(new Player("Player 3", "assets/purple.bmp", 950, 930, PAWN_SIZE, PAWN_SIZE));
 		players.push_back(new Player("Player 4", "assets/black.bmp", 960, 930, PAWN_SIZE, PAWN_SIZE));
 		*/
 
-		randomButtons.push_back(new Button("assets/buy_button0.bmp", "assets/buy_button0.bmp", 100, 5, 7, 5));
-		randomButtons.push_back(new Button("assets/buy_button0.bmp", "assets/buy_button0.bmp", 107, 5, 7, 5));
-		randomButtons.push_back(new Button("assets/buy_button0.bmp", "assets/buy_button0.bmp", 114, 5, 7, 5));
-		randomButtons.push_back(new Button("assets/buy_button0.bmp", "assets/buy_button0.bmp", 121, 5, 7, 5));
+		randomButtons.push_back(new Button("assets/menu/car_button.bmp", "assets/menu/car_button1.bmp", "assets/menu/car_button2.bmp", 103, 7, 5, 5));
+		randomButtons.push_back(new Button("assets/menu/ship_button.bmp", "assets/menu/ship_button1.bmp", "assets/menu/ship_button2.bmp", 109, 7, 5, 5));
+		randomButtons.push_back(new Button("assets/menu/plane_button.bmp", "assets/menu/plane_button1.bmp", "assets/menu/plane_button2.bmp", 115, 7, 5, 5));
+		randomButtons.push_back(new Button("assets/menu/train_button.bmp", "assets/menu/train_button1.bmp", "assets/menu/train_button2.bmp", 121, 7, 5, 5));
 		for (int i = 0; i < randomButtons.size(); i++)
 			randomButtons[i]->getSprite()->setScale(width, height);
 
-		buttons.push_back(new Button("assets/buy_button0.bmp", "assets/buy_button1.bmp", 107, 60, 22, 10));
-		buttons.push_back(new Button("assets/sell_button0.bmp", "assets/sell_button1.bmp", 107, 70, 22, 10));
-		buttons.push_back(new Button("assets/end_turn_button0.bmp", "assets/end_turn_button1.bmp", 107, 80, 22, 10));
+		//buttons.push_back(new Button("assets/buy_button0.bmp", "assets/buy_button1.bmp", "assets/buy_button1.bmp", 107, 60, 22, 10));
+		//buttons.push_back(new Button("assets/sell_button0.bmp", "assets/sell_button1.bmp", "assets/sell_button1.bmp", 107, 70, 22, 10));
+		buttons.push_back(new Button("assets/menu/buy_button.bmp", "assets/menu/buy_button1.bmp", "assets/menu/buy_button2.bmp", 105, 65, 20, 9));
+		buttons.push_back(new Button("assets/menu/sell_button.bmp", "assets/menu/sell_button1.bmp", "assets/menu/sell_button2.bmp", 105, 76, 20, 9));
+		buttons.push_back(new Button("assets/menu/button_end_turn.bmp", "assets/menu/button_end_turn1.bmp", "assets/menu/button_end_turn2.bmp", 105, 87, 20, 9));
  		for (int i = 0; i < buttons.size(); i++)
 			buttons[i]->getSprite()->setScale(width, height);
 		isRunning = true;
@@ -275,6 +277,7 @@ Dice* Game::getDice() {
  void Game::render() {
 	 SDL_RenderClear(renderer);
 	 background->render();
+	 menu->render();
 	 for (int i = 0; i < PROP_NUM; i++) {
 		 tiles[propIdx[i]]->render();
 	 }
@@ -288,7 +291,6 @@ Dice* Game::getDice() {
 		 randomButtons[i]->render();
 
 	 dice->render();
-	 menu->render();
 	 UserAnimator::render();
 	 SDL_RenderPresent(renderer);
 }
@@ -345,6 +347,9 @@ Dice* Game::getDice() {
 	 
 	 for (int i = 0; i < buttons.size(); i++) {
 		 buttons[i]->update(mouseX, mouseY);
+	 }
+	 for (int i = 0; i < randomButtons.size(); i++) {
+		 randomButtons[i]->update(mouseX, mouseY);
 	 }
 	 
 	 dice->update();

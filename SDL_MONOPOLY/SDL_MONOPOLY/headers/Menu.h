@@ -15,7 +15,6 @@ public:
 	Menu(Game* );
 	~Menu();
 	void render();
-	void update();
 	void listen_event();
 	void setCurrentPage(int);
 	int getCurrentPage();
