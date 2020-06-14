@@ -164,14 +164,13 @@ bool Game::findPlayer(std::string playerString)
 		strcpy_s(filepath, "assets/train.bmp");
 	}
 
-	std::cout << playerString << std::endl;
 	for (Player* x : players) {
 		if (strcmp(x->getSprite()->getPath(), filepath) == 0)
 			return true;
 	}
 
 	return false;
-}
+} // function that takes as an argument a string { "car", "ship", "plane", "train" } and returns true if the player exists
 
 int Game::getScreenW() {
 	return screenWidth;
