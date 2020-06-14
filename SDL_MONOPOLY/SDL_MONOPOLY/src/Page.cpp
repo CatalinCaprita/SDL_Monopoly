@@ -6,7 +6,7 @@ Page::Page(Game* game, int i) {
 	this->game = game;
 	this->pageNumber = i;
 
-	std::string text = "Player" + std::to_string(i);
+	std::string text = game->getPlayer(i - 1)->getName();
 	nameLabel = new UILabel(100, 30, 22, 10, text, TTF_OpenFont("assets/fonts/lucida_sans.ttf", 60), *(new SDL_Color({0,0,0,0})));
 	nameLabel->setLabelTexture(game->getScreenW());
 	nameLabel->setScale(game->getScreenW(), game->getScreenH());

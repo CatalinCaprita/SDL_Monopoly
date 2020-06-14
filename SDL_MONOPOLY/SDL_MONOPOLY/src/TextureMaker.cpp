@@ -1,5 +1,6 @@
 #include "../headers/TextureMaker.h"
 #include "../headers/Game.h"
+#include "../headers/GameStateManager.h"
 SDL_Surface* TextureMaker::temp = NULL;
 SDL_Renderer* TextureMaker::link = Game::getRenderer();
 TextureMaker::TextureMaker(){}
@@ -20,7 +21,7 @@ SDL_Texture* TextureMaker::textureFromBMP(const char* path,bool ignoreBg) {
 		Uint32 colorkey = SDL_MapRGB(temp->format, 0, 0, 0);
 		SDL_SetColorKey(temp, SDL_TRUE, colorkey);
 	}
-	return SDL_CreateTextureFromSurface(Game::getRenderer(),temp);
+	return SDL_CreateTextureFromSurface(GameStateManager::getInstance()->getRenderer(),temp);
 }
 SDL_Texture* TextureMaker::getWindowTexture(SDL_Window* win) {
 	temp = SDL_GetWindowSurface(win);
@@ -28,9 +29,9 @@ SDL_Texture* TextureMaker::getWindowTexture(SDL_Window* win) {
 		std::cerr << "Could not load from Window: " << SDL_GetError() << std::endl;
 		return NULL;
 	}
-	return SDL_CreateTextureFromSurface(Game::getRenderer(),temp);
+	return SDL_CreateTextureFromSurface(GameStateManager::getInstance()->getRenderer(),temp);
 
 }
 void TextureMaker::render(SDL_Texture* texture, SDL_Rect* srcRect, SDL_Rect* destRect) {
-	SDL_RenderCopy(Game::getRenderer(), texture, srcRect, destRect);
+	SDL_RenderCopy(GameStateManager::getInstance()->getRenderer(), texture, srcRect, destRect);
 }

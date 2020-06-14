@@ -119,19 +119,18 @@ void UserAnimator::startTrade(Player * buyer, Player * owner) {
 	owner->startTrade(buyer);
 	owner->setOwnerTradeFlag();
 	Sprite* buyerSprite = new Sprite(buyer->getSprite()->getPath(),10,12,TRADEL_X,TRADEL_Y,game->getScreenW(),game->getScreenH(),true);
-	std::cout << "BUYER SPRITE IN\n";
+	
 	Sprite* ownerSprite = new Sprite(owner->getSprite()->getPath(), 10, 12, TRADER_X, TRADER_Y, game->getScreenW(), game->getScreenH(), true);
-	std::cout << "OWNER SPRITE IN\n";
+	
 	Sprite* monOwner = new Sprite("assets/trade/trade_mon_own.bmp", TRADE_MONW, TRADE_MONH, TRADE_MON_X, TRADE_MON_Y, game->getScreenW(), game->getScreenH(), true);
 	Sprite* monBuy = new Sprite("assets/trade/trade_mon_buy.bmp", TRADE_MONW, TRADE_MONH, TRADE_MON_X, TRADE_MON_Y, game->getScreenW(), game->getScreenH(), true);
-	std::cout << "MON SPRITEs IN\n";
+	
 	ownerSprite->setRenderDelay(45);
 	buyerSprite->setRenderDelay(45);
 	sprites.insert({ "buyer",buyerSprite });
 	sprites.insert({ "owner",ownerSprite });
 	sprites.insert({ "monBuyer",monBuy });
 	sprites.insert({ "monOwner",monOwner});
-	std::cout << "SPRITES INSERTED IN\n";
 	std::string m = "Enter the sum you propse to " + owner->getName();
 	Prompt* buyPrompt = new Prompt("assets/trade/trade_bubble.bmp", TRADE_PX, TRADE_PY, TRADE_PW, TRADE_PH, m);
 	buyPrompt->setSumInput(true);
@@ -139,10 +138,10 @@ void UserAnimator::startTrade(Player * buyer, Player * owner) {
 	buyPrompt->setTextWH(TRADE_PW * 0.75 , TRADE_PH * 0.35);
 	buyPrompt->adjustText(-3,4,TRADE_PW);
 	buyPrompt->setScale(game->getScreenW(), game->getScreenH());
-	std::cout << "BUYER PROMPT IN\n";
+	
 	m = buyer->getName() + ", do you accept that much?";
 	Prompt* ownPrompt = new Prompt("assets/trade/trade_bubble2.bmp", TRADE_MON_X + TRADE_MONW * 0.25, TRADE_PY, TRADE_PW, TRADE_PH, m);
-	std::cout << "OWNER PROMPT IN\n";
+
 	ownPrompt->setAcceptInput(true);
 	ownPrompt->setClickFadeable(false);
 	ownPrompt->setScale(game->getScreenW(), game->getScreenH());

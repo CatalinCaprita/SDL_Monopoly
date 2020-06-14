@@ -1,5 +1,6 @@
 #include "../headers/Sprite.h"
 #include "../headers/Game.h"
+#include "../headers/GameStateManager.h"
 
 Sprite::Sprite(const char* path, int unitW, int unitH, int unitX, int unitY , int screenW , int screenH, bool ignoresBG ) {
 	texture = TextureMaker::textureFromBMP(path, ignoresBG);
@@ -47,8 +48,11 @@ void Sprite::setPath(const char* newPath, bool ignoreBck) {
 
 }
 bool Sprite::isClicked() {
-	return Game::mouseClick() && destRect.x <= Game::getClickX() && Game::getClickX() <= destRect.x + destRect.w
-		&& destRect.y <= Game::getClickY() && Game::getClickY() <= destRect.y + destRect.h;
+	return GameStateManager::getInstance()->mouseClick() 
+		&& destRect.x <= GameStateManager::getInstance()->getClickX() 
+		&& GameStateManager::getInstance()->getClickX() <= destRect.x + destRect.w
+		&& destRect.y <= GameStateManager::getInstance()->getClickY() 
+		&& GameStateManager::getInstance()->getClickY() <= destRect.y + destRect.h;
 }
 void Sprite::update(int xUnits, int yUnits) {
 	destRect.x += xUnits * wRatio;

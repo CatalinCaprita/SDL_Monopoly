@@ -3,6 +3,7 @@
 #include "../headers/Game.h"
 #include "../headers/TextureMaker.h"
 #include "../headers/UserAnimator.h"
+#include "../headers/GameStateManager.h"
 
 #include <string>
 #include <vector>
@@ -39,7 +40,7 @@ int propIdx[] = { 1,3,			// BROWN
 					37,39 };		//BLUE
 
 //Array of indexes for the Card type
-//tiles[cardIdx[i]] = new Card();
+
 int cardIdx[] = { 2,7,17,22,33,36 };
 int stationIdx[] = { 5,15,25,35 };
 int utilIdx[] = { 12,28 };
@@ -69,23 +70,16 @@ int lastDebounce = 0;
 std::string messageString;
 int lastTurnToPressBuy = -1;
 
-Game::Game(const char* title, int x_pos, int y_pos, int width, int height, bool full_screen):tiles(40){
+Game::Game(int width, int height,std::vector<std::string>&playerNames):tiles(40){
 	mousePressed = false;
 	turn = 0;
-	int new_flag = 0;
-	if (full_screen) {
-		new_flag = SDL_WINDOW_FULLSCREEN;
-	}
 	if (TTF_Init() == -1) {
 		std::cerr << "TTF init error \n";
 		isRunning = false;
 		return;
 	}
 	if (SDL_Init(SDL_INIT_EVERYTHING) == 0) {
-		window = SDL_CreateWindow(title, x_pos, y_pos, width + 300, height, SDL_WINDOW_OPENGL);
-		renderer = SDL_CreateRenderer(window, -1, 0);
-		if (renderer)
-			SDL_SetRenderDrawColor(renderer, 204, 227, 199, 255);
+		setRenderer(GameStateManager::getInstance()->getRenderer());
 		UserAnimator::attach(this);
 		background = new Sprite("assets/board.bmp", width, height, 0, 0);
 		if (!background)
@@ -96,14 +90,10 @@ Game::Game(const char* title, int x_pos, int y_pos, int width, int height, bool 
 		dice = new Dice();
 		dice->getFirstDieSprite()->setScale(width, height);
 		dice->getSecondDieSprite()->setScale(width, height);
-		players.push_back(new Player("Player 1", "assets/car.bmp", START_X, START_Y, PAWN_SIZE + 3, PAWN_SIZE + 3));
-		players[0]->setSpriteScale(width, height);
-		players.push_back(new Player("Player 2", "assets/ship.bmp", START_X + 1, START_Y -1, PAWN_SIZE + 3, PAWN_SIZE + 3));
-		players[1]->setSpriteScale(width, height);
-		/*
-		players.push_back(new Player("Player 3", "assets/purple.bmp", 950, 930, PAWN_SIZE, PAWN_SIZE));
-		players.push_back(new Player("Player 4", "assets/black.bmp", 960, 930, PAWN_SIZE, PAWN_SIZE));
-		*/
+		for (int i = 0; i < playerNames.size(); i++) {
+			players.push_back(new Player(playerNames[i], "assets/car.bmp", START_X + i, START_Y - 2, PAWN_SIZE + 3, PAWN_SIZE + 3));
+			players[i]->setSpriteScale(width, height);
+		}
 
 		randomButtons.push_back(new Button("assets/menu/car_button.bmp", "assets/menu/car_button1.bmp", "assets/menu/car_button2.bmp", 103, 7, 5, 5));
 		randomButtons.push_back(new Button("assets/menu/ship_button.bmp", "assets/menu/ship_button1.bmp", "assets/menu/ship_button2.bmp", 109, 7, 5, 5));
@@ -112,8 +102,6 @@ Game::Game(const char* title, int x_pos, int y_pos, int width, int height, bool 
 		for (int i = 0; i < randomButtons.size(); i++)
 			randomButtons[i]->getSprite()->setScale(width, height);
 
-		//buttons.push_back(new Button("assets/buy_button0.bmp", "assets/buy_button1.bmp", "assets/buy_button1.bmp", 107, 60, 22, 10));
-		//buttons.push_back(new Button("assets/sell_button0.bmp", "assets/sell_button1.bmp", "assets/sell_button1.bmp", 107, 70, 22, 10));
 		buttons.push_back(new Button("assets/menu/buy_button.bmp", "assets/menu/buy_button1.bmp", "assets/menu/buy_button2.bmp", 105, 65, 20, 9));
 		buttons.push_back(new Button("assets/menu/sell_button.bmp", "assets/menu/sell_button1.bmp", "assets/menu/sell_button2.bmp", 105, 76, 20, 9));
 		buttons.push_back(new Button("assets/menu/button_end_turn.bmp", "assets/menu/button_end_turn1.bmp", "assets/menu/button_end_turn2.bmp", 105, 87, 20, 9));
@@ -122,11 +110,7 @@ Game::Game(const char* title, int x_pos, int y_pos, int width, int height, bool 
 		isRunning = true;
 		fillTiles("assets/houseProperties.txt");
 		menu = new Menu(this);
-		/*std::string m = "";
-		test = new TextBox("assets/bubble_prompt.bmp",36,27,40,20,m);
-		test->setScale(screenWidth, screenHeight);
-		SDL_SetTextInputRect(&test->getRect());
-		*/
+		
 	}
 	else {
 		isRunning = false;
@@ -168,18 +152,23 @@ Dice* Game::getDice() {
 		 break;
 	 case SDL_KEYDOWN:
 		 if (e.key.keysym.sym == SDLK_BACKSPACE) {
-			 backPressed = true;
+			 GameStateManager::getInstance()->setBackFlag(true);
+			backPressed = true;
 		 }
 		 else if (e.key.keysym.sym == SDLK_RETURN) {
+			 GameStateManager::getInstance()->setEnterFlag(true);
 			 enterPressed = true;
 		 }
 		 break;
 	 case SDL_TEXTINPUT:
+		 GameStateManager::getInstance()->setKeyStroke(true);
+		 GameStateManager::getInstance()->setInChar(e.text.text[0]);
 		 keyStroke = true;
 		 inChar = e.text.text[0];
 		 break;
 	 case SDL_MOUSEBUTTONUP:
 		 mousePressed = false;
+		 GameStateManager::getInstance()->setMousePressed(false);
 		 break;
 	 case SDL_MOUSEBUTTONDOWN: {
 		 if (e.button.state == SDL_PRESSED && e.button.button == SDL_BUTTON_LEFT) {
@@ -187,6 +176,10 @@ Dice* Game::getDice() {
 				 mousePressed = true;
 				 clickX = e.button.x;
 				 clickY = e.button.y;
+				 GameStateManager::getInstance()->setClickX(clickX);
+				 GameStateManager::getInstance()->setClickY(clickY);
+				 GameStateManager::getInstance()->setMousePressed(true);
+
 				 std::cout << "Mouse X " << clickX << " Mouse Y :" << clickY << " \n";
 				 lastDebounce = SDL_GetTicks();
 				 if (dice->getFirstDieSprite()->isClicked() || dice->getSecondDieSprite()->isClicked()) {
@@ -217,12 +210,12 @@ Dice* Game::getDice() {
 								 dice->setBlocked(true); //Set the dice block so while the current player is moving nobody can run the dice;
 							 }
 							 else {
-								 players[turn]->setRemainingSteps(dice->getFirstDieValue() + dice->getSecondDieValue());
+								// players[turn]->setRemainingSteps(dice->getFirstDieValue() + dice->getSecondDieValue());
 
 								 /*			DEBUG
-								 /*
+								 /**/
 								 players[turn]->setRemainingSteps(1);
-								 */
+								
 								 dice->setBlocked(true);
 								 if (!dice->thrownDouble()) {
 									 dice->setBlocked(true);
@@ -243,8 +236,8 @@ Dice* Game::getDice() {
 						 std::cout << "button0" << std::endl;
 						 this->setBuyPressed(true);
 						 if (lastTurnToPressBuy != turn) {
-							 tiles[players[turn]->getCurrentPosition()]->getMeAnOwner(players[turn]); 
-							 //TRADE DEBUG: tiles[1]->getMeAnOwner(players[turn]);
+							 //tiles[players[turn]->getCurrentPosition()]->getMeAnOwner(players[turn]); 
+							 tiles[1]->getMeAnOwner(players[turn]);
 							 lastTurnToPressBuy = turn;
 						 }
 						 else
@@ -255,8 +248,9 @@ Dice* Game::getDice() {
 				 else if (buttons[1]->getSprite()->isClicked()) {
 						 this->setMortgagePressed(true);
 						 std::cout << "button1" << std::endl;
-						 dynamic_cast<HouseProperty*>(tiles[players[turn]->getCurrentPosition()])->mortgage(players[turn]);
-					 }
+						 //dynamic_cast<HouseProperty*>(tiles[players[turn]->getCurrentPosition()])->mortgage(players[turn]);
+						 dynamic_cast<HouseProperty*>(tiles[1])->mortgage(players[turn]);
+				 }
 					 else if (buttons[2]->getSprite()->isClicked()) {
 
 						 if (!(players[turn]->getFlag() == BUYER_TRADE || players[turn]->getFlag() == OWNER_TRADE)) {
@@ -294,8 +288,10 @@ Dice* Game::getDice() {
 					 }
 				 mousePressed = true;
 			 }
-			 else
+			 else {
 				 mousePressed = false;
+				 GameStateManager::getInstance()->setMousePressed(false);
+			 }
 		 }
 		 break;
 		}
@@ -336,8 +332,9 @@ Dice* Game::getDice() {
 		 if (i == turn && players[turn]->finishedMoving()) {
 			 switch (players[turn]->getFlag()) {
 			 case DICE_MOVE:
-				 tiles[players[turn]->getCurrentPosition()]->doEffect(players[turn]);
-				 //TRADE DEBUG :tiles[1]->doEffect(players[turn]);
+				 //tiles[players[turn]->getCurrentPosition()]->doEffect(players[turn]);
+				 //TRADE DEBUG :
+				 tiles[1]->doEffect(players[turn]);
 				 break;
 			 case MUST_BE_JAILED:
 				 players[turn]->goToJail();

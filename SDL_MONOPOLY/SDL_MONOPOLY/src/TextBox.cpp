@@ -34,31 +34,31 @@ std::string& TextBox::getInput()
 
 void TextBox::update(){
 	if (textArea->isClicked()) {
-		std::cout << "FOCUSED";
-		lastClickX = Game::getClickX();
-		lastClickY = Game::getClickY();
+		SDL_SetTextInputRect(&textArea->getRect());
+		lastClickX = GameStateManager::getInstance()->getClickX();
+		lastClickY = GameStateManager::getInstance()->getClickY();
 		isFocused = true;
 	}
-	else if(Game::getClickX() != lastClickX && Game::getClickY() != lastClickY){
+	else if(GameStateManager::getInstance()->getClickX() != lastClickX && GameStateManager::getInstance()->getClickY() != lastClickY){
 		isFocused = false;
 	}
 	if (isFocused) {
-		if (Game::isEnter()) {
+		if (GameStateManager::getInstance()->isEnter()) {
 			isFocused = false;
 			textReturn = true;
-			Game::setEnterFlag(false);
+			GameStateManager::getInstance()->setEnterFlag(false);
 		}
-		if(Game::isBack() && shownText->size() > 0){
+		if(GameStateManager::getInstance()->isBack() && shownText->size() > 0){
 			shownText->updateWH(-2, 0);
 			shownText->popText();
 			cursor->updateXY(-2, 0);
-			Game::setBackFlag(false);
+			GameStateManager::getInstance()->setBackFlag(false);
 		}
-		else if (Game::isStroke() && shownText->unitW() < textArea->unitW() - 5) {
+		else if (GameStateManager::getInstance()->isStroke() && shownText->unitW() < textArea->unitW() - 5) {
 			shownText->updateWH(2, 0);
-			shownText->appendText(Game::getInChar());
+			shownText->appendText(GameStateManager::getInstance()->getInChar());
 			cursor->updateXY(2, 0);
-			Game::setKeyStroke(false);
+			GameStateManager::getInstance()->setKeyStroke(false);
 		}
 		if (textArea->canBeUpdated()) {
 			//Make cursor visible 

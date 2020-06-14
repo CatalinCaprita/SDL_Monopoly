@@ -14,13 +14,14 @@
 #include "../headers/UILabel.h"
 #include "../headers/Prompt.h"
 #include "SDL_ttf.h"
+#include "GameState.h"
 
 class Menu;
 
-class Game {
+class Game: public GameState {
 public:
 	friend class Player;
-	Game(const char* title, int x_pos, int y_pos, int width, int height, bool full_screen);
+	Game(int width, int height, std::vector<std::string> &playerNames);
 	~Game();
 	bool running() {
 		return isRunning;
@@ -76,6 +77,9 @@ public:
 	}
 	static void setEnterFlag(bool value) {
 		enterPressed = value;
+	}
+	static void setRenderer(SDL_Renderer * rend) {
+		renderer = rend;
 	}
 	Player* getPlayer(int i) {
 		return players[i];
