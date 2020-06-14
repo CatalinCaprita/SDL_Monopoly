@@ -18,4 +18,5 @@ public:
 	void listen_event();
 	void setCurrentPage(int);
 	int getCurrentPage();
+	void update();
 };

@@ -97,13 +97,12 @@ Game::Game(const char* title, int x_pos, int y_pos, int width, int height, bool 
 		dice->getFirstDieSprite()->setScale(width, height);
 		dice->getSecondDieSprite()->setScale(width, height);
 		players.push_back(new Player("Player 1", "assets/car.bmp", START_X, START_Y, PAWN_SIZE + 3, PAWN_SIZE + 3));
-		players[0]->setSpriteScale(width, height);
-		players.push_back(new Player("Player 2", "assets/ship.bmp", START_X + 1, START_Y -1, PAWN_SIZE + 3, PAWN_SIZE + 3));
-		players[1]->setSpriteScale(width, height);
-		/*
-		players.push_back(new Player("Player 3", "assets/purple.bmp", 950, 930, PAWN_SIZE, PAWN_SIZE));
-		players.push_back(new Player("Player 4", "assets/black.bmp", 960, 930, PAWN_SIZE, PAWN_SIZE));
-		*/
+		players.push_back(new Player("Player 2", "assets/ship.bmp", START_X + 2, START_Y, PAWN_SIZE + 3, PAWN_SIZE + 3));
+		players.push_back(new Player("Player 3", "assets/plane.bmp", START_X + 4, START_Y, PAWN_SIZE + 3, PAWN_SIZE + 3));
+		players.push_back(new Player("Player 4", "assets/train.bmp", START_X + 6, START_Y, PAWN_SIZE + 3, PAWN_SIZE + 3));
+
+		for (Player* p : players)
+			p->setSpriteScale(width, height);
 
 		int PAGESPRITEWIDTH = 5; 
 		int PAGESPRITEHEIGHT = 5;
@@ -117,10 +116,10 @@ Game::Game(const char* title, int x_pos, int y_pos, int width, int height, bool 
 		   hence it won't let the player "click" it. It's plain garbage.
 		*/
 
-		playerPageButtons.push_back(new Button("assets/menu/car_button.bmp", "assets/menu/car_button1.bmp", "assets/menu/car_button2.bmp", PAGESPRITECOORDX, PAGESPRITECOORDY, PAGESPRITEWIDTH, PAGESPRITEHEIGHT, findPlayer("car") ? NORMAL : NOPLAYER));
-		playerPageButtons.push_back(new Button("assets/menu/ship_button.bmp", "assets/menu/ship_button1.bmp", "assets/menu/ship_button2.bmp", PAGESPRITECOORDX + PAGESPRITEOFFSET, PAGESPRITECOORDY, PAGESPRITEWIDTH, PAGESPRITEHEIGHT, findPlayer("ship") ? NORMAL : NOPLAYER));
-		playerPageButtons.push_back(new Button("assets/menu/plane_button.bmp", "assets/menu/plane_button1.bmp", "assets/menu/plane_button2.bmp", PAGESPRITECOORDX + PAGESPRITEOFFSET * 2, PAGESPRITECOORDY, PAGESPRITEWIDTH, PAGESPRITEHEIGHT, findPlayer("plane") ? NORMAL : NOPLAYER));
-		playerPageButtons.push_back(new Button("assets/menu/train_button.bmp", "assets/menu/train_button1.bmp", "assets/menu/train_button2.bmp", PAGESPRITECOORDX + PAGESPRITEOFFSET * 3, PAGESPRITECOORDY, PAGESPRITEWIDTH, PAGESPRITEHEIGHT, findPlayer("train") ? NORMAL : NOPLAYER));
+		playerPageButtons.push_back(new Button("assets/menu/car_button.bmp", "assets/menu/car_button1.bmp", "assets/menu/car_button2.bmp", PAGESPRITECOORDX, PAGESPRITECOORDY, PAGESPRITEWIDTH, PAGESPRITEHEIGHT, doesPlayerExist("car") ? NORMAL : NOPLAYER));
+		playerPageButtons.push_back(new Button("assets/menu/ship_button.bmp", "assets/menu/ship_button1.bmp", "assets/menu/ship_button2.bmp", PAGESPRITECOORDX + PAGESPRITEOFFSET, PAGESPRITECOORDY, PAGESPRITEWIDTH, PAGESPRITEHEIGHT, doesPlayerExist("ship") ? NORMAL : NOPLAYER));
+		playerPageButtons.push_back(new Button("assets/menu/plane_button.bmp", "assets/menu/plane_button1.bmp", "assets/menu/plane_button2.bmp", PAGESPRITECOORDX + PAGESPRITEOFFSET * 2, PAGESPRITECOORDY, PAGESPRITEWIDTH, PAGESPRITEHEIGHT, doesPlayerExist("plane") ? NORMAL : NOPLAYER));
+		playerPageButtons.push_back(new Button("assets/menu/train_button.bmp", "assets/menu/train_button1.bmp", "assets/menu/train_button2.bmp", PAGESPRITECOORDX + PAGESPRITEOFFSET * 3, PAGESPRITECOORDY, PAGESPRITEWIDTH, PAGESPRITEHEIGHT, doesPlayerExist("train") ? NORMAL : NOPLAYER));
 		for (int i = 0; i < playerPageButtons.size(); i++)
 			playerPageButtons[i]->getSprite()->setScale(width, height);
 
@@ -151,7 +150,7 @@ SDL_Renderer* Game::getRenderer() {
 	return renderer;
 }
 
-bool Game::findPlayer(std::string playerString)
+bool Game::doesPlayerExist(std::string playerString)
 {
 	char filepath[30] = "";
 	if (playerString.compare("car") == 0) {
@@ -171,6 +170,29 @@ bool Game::findPlayer(std::string playerString)
 
 	return false;
 } // function that takes as an argument a string { "car", "ship", "plane", "train" } and returns true if the player exists
+
+int Game::findPlayer(std::string playerString)
+{
+	char filepath[30] = "";
+	if (playerString.compare("car") == 0) {
+		strcpy_s(filepath, "assets/car.bmp");
+	}
+	else if (playerString.compare("ship") == 0) {
+		strcpy_s(filepath, "assets/ship.bmp");
+	}
+	else if (playerString.compare("plane") == 0) {
+		strcpy_s(filepath, "assets/plane.bmp");
+	}
+	else if (playerString.compare("train") == 0) {
+		strcpy_s(filepath, "assets/train.bmp");
+	}
+	for (int i = 0; i < players.size(); i++) {
+		if (strcmp(players[i]->getSprite()->getPath(), filepath) == 0)
+			return i;
+	}
+	return -1;
+} // function that takes as an argument a string { "car", "ship", "plane", "train" } and returns the index in player if the player exists
+
 
 int Game::getScreenW() {
 	return screenWidth;
@@ -292,7 +314,7 @@ Dice* Game::getDice() {
 						 if (!(players[turn]->getFlag() == BUYER_TRADE || players[turn]->getFlag() == OWNER_TRADE)) {
 							 lastTurnToPressBuy = turn;
 							 turn++;
-							 turn %= 2;
+							 turn %= players.size();
 							 dice->setBlocked(false);
 							 this->setBuyPressed(false);
 							 this->setMortgagePressed(false);
@@ -306,22 +328,18 @@ Dice* Game::getDice() {
 							 UserAnimator::popUpMessage(messageString);
 						 }
 					 }
-					 else if (playerPageButtons[0]->getSprite()->isClicked() && playerPageButtons[0]->getButtonState() != NOPLAYER) {
-						 std::cout << "Am apasat butonul asta";
-						 menu->setCurrentPage(0);
-					 }
-					 else if (playerPageButtons[1]->getSprite()->isClicked() && playerPageButtons[1]->getButtonState() != NOPLAYER){
-						 std::cout << "Am apasat butonul asta";
-						 menu->setCurrentPage(1);
-					 }
-					 else if (playerPageButtons[2]->getSprite()->isClicked() && playerPageButtons[2]->getButtonState() != NOPLAYER){
-						 std::cout << "Am apasat butonul asta";
-						 menu->setCurrentPage(2);
-					 }
-					 else if (playerPageButtons[3]->getSprite()->isClicked() && playerPageButtons[3]->getButtonState() != NOPLAYER){
-						 std::cout << "Am apasat butonul asta";
-						 menu->setCurrentPage(3);
-					 }
+					 else if (playerPageButtons[0]->getSprite()->isClicked() && 
+						      playerPageButtons[0]->getButtonState() != NOPLAYER)
+								    menu->setCurrentPage(findPlayer("car"));
+					 else if (playerPageButtons[1]->getSprite()->isClicked() && 
+							  playerPageButtons[1]->getButtonState() != NOPLAYER)
+								    menu->setCurrentPage(findPlayer("ship"));
+					 else if (playerPageButtons[2]->getSprite()->isClicked() && 
+							  playerPageButtons[2]->getButtonState() != NOPLAYER)
+									menu->setCurrentPage(findPlayer("plane"));
+					 else if (playerPageButtons[3]->getSprite()->isClicked() && 
+							  playerPageButtons[3]->getButtonState() != NOPLAYER)
+									menu->setCurrentPage(findPlayer("train"));
 				 mousePressed = true;
 			 }
 			 else
@@ -409,7 +427,7 @@ Dice* Game::getDice() {
 	 for (int i = 0; i < playerPageButtons.size(); i++) {
 		 playerPageButtons[i]->update(mouseX, mouseY);
 	 }
-	 
+	 menu->update();
 	 dice->update();
 	 UserAnimator::update();
 	 //test->update();

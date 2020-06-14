@@ -10,10 +10,8 @@ Menu::Menu(Game* game) {
 	sprite = new Sprite("assets/menu/panel6.bmp", 31, 101, 99, 0);
 	sprite->setScale(game_width, game_height);
 	currentPage = 0;
-	pages.push_back(new Page(game, 1));
-	pages.push_back(new Page(game, 2));
-	//pages.push_back(new Page(game, 3));
-	//pages.push_back(new Page(game, 4));
+	for (Player* x : game->getPlayers())
+		pages.push_back(new Page(game, x));
 }
 
 void Menu::render() {
@@ -31,4 +29,9 @@ void Menu::setCurrentPage(int page) {
 
 int Menu::getCurrentPage() {
 	return currentPage;
+}
+
+void Menu::update() {
+	for (Page* page : pages)
+		page->update();
 }

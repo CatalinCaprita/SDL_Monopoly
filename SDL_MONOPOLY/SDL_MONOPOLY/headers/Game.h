@@ -77,13 +77,17 @@ public:
 	static void setEnterFlag(bool value) {
 		enterPressed = value;
 	}
+	std::vector<Player*> getPlayers() {
+		return players;
+	}
 	Player* getPlayer(int i) {
 		return players[i];
 	}
 
 	
 private:
-	bool findPlayer(std::string);
+	int findPlayer(std::string);
+	bool doesPlayerExist(std::string);
 	int turn;
 	int screenWidth, screenHeight;
 	static int count;
