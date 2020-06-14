@@ -10,6 +10,7 @@ public:
 	CommandTile(const std::string& name);
 	void doEffect(Player* currentPlayer);
 	void getMeAnOwner(Player* currentPlayer);
+	void mortgage(Player* currentPlayer);
 	void print();
 	std::string& getFrontTexturePath();
 	static void shuffle(std::queue<int> &);

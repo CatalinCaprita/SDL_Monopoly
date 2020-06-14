@@ -12,6 +12,7 @@ public:
 	void print();
 	int getRentPrice();
 	virtual void getMeAnOwner(Player* currentPlayer);
+	virtual void mortgage(Player* currentPlayer);
 private:
 	
 };

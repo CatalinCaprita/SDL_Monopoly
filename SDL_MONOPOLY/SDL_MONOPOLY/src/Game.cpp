@@ -286,7 +286,7 @@ Dice* Game::getDice() {
 				 else if (buttons[1]->getSprite()->isClicked()) {
 						 this->setMortgagePressed(true);
 						 std::cout << "button1" << std::endl;
-						 dynamic_cast<HouseProperty*>(tiles[players[turn]->getCurrentPosition()])->mortgage(players[turn]);
+						 tiles[players[turn]->getCurrentPosition()]->mortgage(players[turn]);
 					 }
 					 else if (buttons[2]->getSprite()->isClicked()) {
 
