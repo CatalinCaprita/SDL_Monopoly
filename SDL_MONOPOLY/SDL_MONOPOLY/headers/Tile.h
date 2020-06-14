@@ -15,6 +15,7 @@ public:
 	std::string getName();
 	virtual void doEffect(Player* currentPlayer) = 0;
 	virtual void getMeAnOwner(Player* currentPlayer) = 0;
+	virtual void mortgage(Player* currentPlayer) = 0;
 	virtual void print() = 0;
 	virtual void render(){}
 	virtual bool isRenderable() {

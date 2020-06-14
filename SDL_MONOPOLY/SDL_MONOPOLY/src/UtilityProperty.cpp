@@ -11,13 +11,17 @@ UtilityProperty::~UtilityProperty() {
 }
 //Function that will be called as a listener if the button "Buy" is pressed in game
 void UtilityProperty::getMeAnOwner(Player* currentPlayer) {
+	std::string msg;
 	if (owner == nullptr) {
 		//Checks if the player pressed the buy button 
 		if (Game::isBuyPressed()) {
 			if (currentPlayer->getMoney() < buyPrice) {
-				std::cout << " Aquisition failed. Lack of funds `\( `-`)/` ";
+				msg = "Aquisition failed. Lack of funds `\( `-`)/`";
+				UserAnimator::popUpMessage(msg);
 			}
 			else {
+				std::string message = currentPlayer->getName() + " bought " + name;
+				UserAnimator::popUpMessage(message);
 				owner = currentPlayer;
 				currentPlayer->buyProperty(this, "utility");
 			}
@@ -25,13 +29,18 @@ void UtilityProperty::getMeAnOwner(Player* currentPlayer) {
 		}
 	}
 	else {
-		std::cout << "This utility already has an owner\n";
+		msg = "This utility already has an owner\n";
+		UserAnimator::popUpMessage(msg);
 	}
 }
 
 void UtilityProperty::doEffect(Player* currentPlayer) {
+	std::string msg;
 	if (owner == nullptr) {
 		UserAnimator::popPropertyCard(this);
+		msg = "Press 'Buy' if you want to buy this property.";
+
+		UserAnimator::popUpMessage(msg);
 		getMeAnOwner(currentPlayer);
 		return;
 	}
@@ -47,19 +56,25 @@ void UtilityProperty::doEffect(Player* currentPlayer) {
 		}
 		int sumToPay = multiplier * getRentPrice();
 		if (currentPlayer->getMoney() >= sumToPay) {
-			std::cout << currentPlayer->getName() << " needs to pay " << sumToPay << " to " << owner->getName() << std::endl;
+			msg = currentPlayer->getName() + " needs to pay " + std::to_string(sumToPay) + " to " + owner->getName();
+			UserAnimator::popUpMessage(msg);
 			owner->receiveMoney(sumToPay);
 			currentPlayer->payMoney(sumToPay);
 			UserAnimator::playerPaysPlayer(owner, currentPlayer);
 		}
 		else {
-			std::cout << currentPlayer->getName() << " cannot pay the rent.";
+			msg = currentPlayer->getName() + " cannot pay the rent.";
+			UserAnimator::popUpMessage(msg);
 		}
 		
 	}
 }
 void UtilityProperty::print() {
 	std::cout << name << " Buys for: " << buyPrice << " Rents for: " << getRentPrice() << std::endl;
+}
+
+void UtilityProperty::mortgage(Player* currentPlayer) {
+
 }
 
 int UtilityProperty::getRentPrice() {

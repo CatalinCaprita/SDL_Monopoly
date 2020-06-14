@@ -90,21 +90,47 @@ Game::Game(int width, int height,std::vector<std::string>&playerNames):tiles(40)
 		dice = new Dice();
 		dice->getFirstDieSprite()->setScale(width, height);
 		dice->getSecondDieSprite()->setScale(width, height);
+
+		/*TO DO 
+			The players are now loaded via the playerName vector
+			Aka As many Players as names in the vector. 
+			Work around to set the propper pawn to everyone. U could rename the pawns like 'i_car.bmp' for i = 0 -> 4;
+		*/
 		for (int i = 0; i < playerNames.size(); i++) {
 			players.push_back(new Player(playerNames[i], "assets/car.bmp", START_X + i, START_Y - 2, PAWN_SIZE + 3, PAWN_SIZE + 3));
 			players[i]->setSpriteScale(width, height);
 		}
+		/*
+		players.push_back(new Player("Player 1", "assets/car.bmp", START_X, START_Y, PAWN_SIZE + 3, PAWN_SIZE + 3));
+		players.push_back(new Player("Player 2", "assets/ship.bmp", START_X + 2, START_Y, PAWN_SIZE + 3, PAWN_SIZE + 3));
+		players.push_back(new Player("Player 3", "assets/plane.bmp", START_X + 4, START_Y, PAWN_SIZE + 3, PAWN_SIZE + 3));
+		players.push_back(new Player("Player 4", "assets/train.bmp", START_X + 6, START_Y, PAWN_SIZE + 3, PAWN_SIZE + 3));
+		for (Player* p : players)
+			p->setSpriteScale(width, height);
+			*/
+		int PAGESPRITEWIDTH = 5; 
+		int PAGESPRITEHEIGHT = 5;
+		int PAGESPRITECOORDX = 103;
+		int PAGESPRITECOORDY = 7;
+		int PAGESPRITEOFFSET = 6;
 
-		randomButtons.push_back(new Button("assets/menu/car_button.bmp", "assets/menu/car_button1.bmp", "assets/menu/car_button2.bmp", 103, 7, 5, 5));
-		randomButtons.push_back(new Button("assets/menu/ship_button.bmp", "assets/menu/ship_button1.bmp", "assets/menu/ship_button2.bmp", 109, 7, 5, 5));
-		randomButtons.push_back(new Button("assets/menu/plane_button.bmp", "assets/menu/plane_button1.bmp", "assets/menu/plane_button2.bmp", 115, 7, 5, 5));
-		randomButtons.push_back(new Button("assets/menu/train_button.bmp", "assets/menu/train_button1.bmp", "assets/menu/train_button2.bmp", 121, 7, 5, 5));
-		for (int i = 0; i < randomButtons.size(); i++)
-			randomButtons[i]->getSprite()->setScale(width, height);
+		/* These constants represent the values for the next buttons 
+		   at the top of menu screen (the ones that change the currentPage).
+		   This is a dirty method to display the BLACK/WHITE button sprite if a player doesn't exist,
+		   hence it won't let the player "click" it. It's plain garbage.
+		*/
 
-		buttons.push_back(new Button("assets/menu/buy_button.bmp", "assets/menu/buy_button1.bmp", "assets/menu/buy_button2.bmp", 105, 65, 20, 9));
-		buttons.push_back(new Button("assets/menu/sell_button.bmp", "assets/menu/sell_button1.bmp", "assets/menu/sell_button2.bmp", 105, 76, 20, 9));
-		buttons.push_back(new Button("assets/menu/button_end_turn.bmp", "assets/menu/button_end_turn1.bmp", "assets/menu/button_end_turn2.bmp", 105, 87, 20, 9));
+		playerPageButtons.push_back(new Button("assets/menu/car_button.bmp", "assets/menu/car_button1.bmp", "assets/menu/car_button2.bmp", PAGESPRITECOORDX, PAGESPRITECOORDY, PAGESPRITEWIDTH, PAGESPRITEHEIGHT, doesPlayerExist("car") ? NORMAL : NOPLAYER));
+		playerPageButtons.push_back(new Button("assets/menu/ship_button.bmp", "assets/menu/ship_button1.bmp", "assets/menu/ship_button2.bmp", PAGESPRITECOORDX + PAGESPRITEOFFSET, PAGESPRITECOORDY, PAGESPRITEWIDTH, PAGESPRITEHEIGHT, doesPlayerExist("ship") ? NORMAL : NOPLAYER));
+		playerPageButtons.push_back(new Button("assets/menu/plane_button.bmp", "assets/menu/plane_button1.bmp", "assets/menu/plane_button2.bmp", PAGESPRITECOORDX + PAGESPRITEOFFSET * 2, PAGESPRITECOORDY, PAGESPRITEWIDTH, PAGESPRITEHEIGHT, doesPlayerExist("plane") ? NORMAL : NOPLAYER));
+		playerPageButtons.push_back(new Button("assets/menu/train_button.bmp", "assets/menu/train_button1.bmp", "assets/menu/train_button2.bmp", PAGESPRITECOORDX + PAGESPRITEOFFSET * 3, PAGESPRITECOORDY, PAGESPRITEWIDTH, PAGESPRITEHEIGHT, doesPlayerExist("train") ? NORMAL : NOPLAYER));
+		for (int i = 0; i < playerPageButtons.size(); i++)
+			playerPageButtons[i]->getSprite()->setScale(width, height);
+
+		buttons.push_back(new Button("assets/menu/buy_button.bmp", "assets/menu/buy_button1.bmp", "assets/menu/buy_button2.bmp", 105, 64, 20, 7));
+		buttons.push_back(new Button("assets/menu/sell_button.bmp", "assets/menu/sell_button1.bmp", "assets/menu/sell_button2.bmp", 105, 72, 20, 7));
+		buttons.push_back(new Button("assets/menu/button_end_turn.bmp", "assets/menu/button_end_turn1.bmp", "assets/menu/button_end_turn2.bmp", 105, 80, 20, 7));
+
  		for (int i = 0; i < buttons.size(); i++)
 			buttons[i]->getSprite()->setScale(width, height);
 		isRunning = true;
@@ -124,6 +150,50 @@ Game::~Game() {
 SDL_Renderer* Game::getRenderer() {
 	return renderer;
 }
+
+bool Game::doesPlayerExist(std::string playerString)
+{
+	char filepath[30] = "";
+	if (playerString.compare("car") == 0) {
+		strcpy_s(filepath,"assets/car.bmp");
+	}else if (playerString.compare("ship") == 0) {
+		strcpy_s(filepath, "assets/ship.bmp");
+	} else if (playerString.compare("plane") == 0) {
+		strcpy_s(filepath, "assets/plane.bmp");
+	} else if (playerString.compare("train") == 0) {
+		strcpy_s(filepath, "assets/train.bmp");
+	}
+
+	for (Player* x : players) {
+		if (strcmp(x->getSprite()->getPath(), filepath) == 0)
+			return true;
+	}
+
+	return false;
+} // function that takes as an argument a string { "car", "ship", "plane", "train" } and returns true if the player exists
+
+int Game::findPlayer(std::string playerString)
+{
+	char filepath[30] = "";
+	if (playerString.compare("car") == 0) {
+		strcpy_s(filepath, "assets/car.bmp");
+	}
+	else if (playerString.compare("ship") == 0) {
+		strcpy_s(filepath, "assets/ship.bmp");
+	}
+	else if (playerString.compare("plane") == 0) {
+		strcpy_s(filepath, "assets/plane.bmp");
+	}
+	else if (playerString.compare("train") == 0) {
+		strcpy_s(filepath, "assets/train.bmp");
+	}
+	for (int i = 0; i < players.size(); i++) {
+		if (strcmp(players[i]->getSprite()->getPath(), filepath) == 0)
+			return i;
+	}
+	return -1;
+} // function that takes as an argument a string { "car", "ship", "plane", "train" } and returns the index in player if the player exists
+
 
 int Game::getScreenW() {
 	return screenWidth;
@@ -210,11 +280,11 @@ Dice* Game::getDice() {
 								 dice->setBlocked(true); //Set the dice block so while the current player is moving nobody can run the dice;
 							 }
 							 else {
-								// players[turn]->setRemainingSteps(dice->getFirstDieValue() + dice->getSecondDieValue());
+								 players[turn]->setRemainingSteps(dice->getFirstDieValue() + dice->getSecondDieValue());
 
 								 /*			DEBUG
 								 /**/
-								 players[turn]->setRemainingSteps(1);
+								// players[turn]->setRemainingSteps(1);
 								
 								 dice->setBlocked(true);
 								 if (!dice->thrownDouble()) {
@@ -236,8 +306,8 @@ Dice* Game::getDice() {
 						 std::cout << "button0" << std::endl;
 						 this->setBuyPressed(true);
 						 if (lastTurnToPressBuy != turn) {
-							 //tiles[players[turn]->getCurrentPosition()]->getMeAnOwner(players[turn]); 
-							 tiles[1]->getMeAnOwner(players[turn]);
+							 tiles[players[turn]->getCurrentPosition()]->getMeAnOwner(players[turn]); 
+							//tiles[1]->getMeAnOwner(players[turn]);
 							 lastTurnToPressBuy = turn;
 						 }
 						 else
@@ -249,19 +319,22 @@ Dice* Game::getDice() {
 						 this->setMortgagePressed(true);
 						 std::cout << "button1" << std::endl;
 						 //dynamic_cast<HouseProperty*>(tiles[players[turn]->getCurrentPosition()])->mortgage(players[turn]);
-						 dynamic_cast<HouseProperty*>(tiles[1])->mortgage(players[turn]);
+						 tiles[players[turn]->getCurrentPosition()]->mortgage(players[turn]);
+						 //dynamic_cast<HouseProperty*>(tiles[1])->mortgage(players[turn]);
 				 }
+						 
+					 //}
 					 else if (buttons[2]->getSprite()->isClicked()) {
 
 						 if (!(players[turn]->getFlag() == BUYER_TRADE || players[turn]->getFlag() == OWNER_TRADE)) {
 							 lastTurnToPressBuy = turn;
 							 turn++;
-							 turn %= 2;
+							 turn %= players.size();
 							 dice->setBlocked(false);
 							 this->setBuyPressed(false);
 							 this->setMortgagePressed(false);
-							 //UserAnimator::fadePropertyCard(tiles[players[turn]->getCurrentPosition()]);
 							 UserAnimator::fadePropertyCard(tiles[players[turn]->getCurrentPosition()]);
+							 // DEBUG PURPOSES UserAnimator::fadePropertyCard(tiles[1]);
 
 							 std::cout << "button2" << std::endl;
 						 }
@@ -270,22 +343,18 @@ Dice* Game::getDice() {
 							 UserAnimator::popUpMessage(messageString);
 						 }
 					 }
-					 else if (randomButtons[0]->getSprite()->isClicked()) {
-						 std::cout << "Am apasat butonul asta";
-						 menu->setCurrentPage(0);
-					 }
-					 else if (randomButtons[1]->getSprite()->isClicked()) {
-						 std::cout << "Am apasat butonul asta";
-						 menu->setCurrentPage(1);
-					 }
-					 else if (randomButtons[2]->getSprite()->isClicked()) {
-						 std::cout << "Am apasat butonul asta";
-						 menu->setCurrentPage(2);
-					 }
-					 else if (randomButtons[3]->getSprite()->isClicked()) {
-						 std::cout << "Am apasat butonul asta";
-						 menu->setCurrentPage(3);
-					 }
+					 else if (playerPageButtons[0]->getSprite()->isClicked() && 
+						      playerPageButtons[0]->getButtonState() != NOPLAYER)
+								    menu->setCurrentPage(findPlayer("car"));
+					 else if (playerPageButtons[1]->getSprite()->isClicked() && 
+							  playerPageButtons[1]->getButtonState() != NOPLAYER)
+								    menu->setCurrentPage(findPlayer("ship"));
+					 else if (playerPageButtons[2]->getSprite()->isClicked() && 
+							  playerPageButtons[2]->getButtonState() != NOPLAYER)
+									menu->setCurrentPage(findPlayer("plane"));
+					 else if (playerPageButtons[3]->getSprite()->isClicked() && 
+							  playerPageButtons[3]->getButtonState() != NOPLAYER)
+									menu->setCurrentPage(findPlayer("train"));
 				 mousePressed = true;
 			 }
 			 else {
@@ -310,8 +379,8 @@ Dice* Game::getDice() {
 	 for (int i = 0; i < buttons.size(); i++)
 		 buttons[i]->render();
 
-	 for (int i = 0; i < randomButtons.size(); i++)
-		 randomButtons[i]->render();
+	 for (int i = 0; i < playerPageButtons.size(); i++)
+		 playerPageButtons[i]->render();
 
 	 dice->render();
 	 //test->render();
@@ -332,9 +401,9 @@ Dice* Game::getDice() {
 		 if (i == turn && players[turn]->finishedMoving()) {
 			 switch (players[turn]->getFlag()) {
 			 case DICE_MOVE:
-				 //tiles[players[turn]->getCurrentPosition()]->doEffect(players[turn]);
-				 //TRADE DEBUG :
-				 tiles[1]->doEffect(players[turn]);
+				 tiles[players[turn]->getCurrentPosition()]->doEffect(players[turn]);
+				 //DEBUG :
+				 //tiles[1]->doEffect(players[turn]);
 				 break;
 			 case MUST_BE_JAILED:
 				 players[turn]->goToJail();
@@ -373,10 +442,10 @@ Dice* Game::getDice() {
 	 for (int i = 0; i < buttons.size(); i++) {
 		 buttons[i]->update(mouseX, mouseY);
 	 }
-	 for (int i = 0; i < randomButtons.size(); i++) {
-		 randomButtons[i]->update(mouseX, mouseY);
+	 for (int i = 0; i < playerPageButtons.size(); i++) {
+		 playerPageButtons[i]->update(mouseX, mouseY);
 	 }
-	 
+	 menu->update();
 	 dice->update();
 	 UserAnimator::update();
 	 //test->update();

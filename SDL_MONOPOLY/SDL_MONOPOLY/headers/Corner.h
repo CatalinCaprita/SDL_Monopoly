@@ -15,6 +15,7 @@ public :
 	}
 	void doEffect(Player* currentPlayer);
 	void getMeAnOwner(Player* currentPlayer);
+	void mortgage(Player* currentPlayer);
 	void print() {
 		std::cout << command << std::endl;
 	}

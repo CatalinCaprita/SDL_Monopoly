@@ -31,6 +31,7 @@ std::queue< int>CommandTile::communityQ;
 bool CommandTile::initialized = false;
 
 void CommandTile::shuffle(std::queue<int>&whichQ) {
+	std::string msg;
 	std::cout << "Suffling Community Chest and Chance decks\n";
 	int indexes[COMMANDS_SIZE];
 	for (int i = 0; i < COMMANDS_SIZE; i++) {
@@ -45,6 +46,11 @@ void CommandTile::shuffle(std::queue<int>&whichQ) {
 void CommandTile::getMeAnOwner(Player* currentPlayer) {
 	return;
 }
+
+void CommandTile::mortgage(Player* currentPlayer) {
+
+}
+
 CommandTile::CommandTile(const std::string& name) : Tile(name) {
 	if (!initialized) {
 		shuffle(communityQ);
@@ -84,17 +90,19 @@ void CommandTile::print() {
 	std::cout << "Card Type is :" << name << ", thus its animation starts at (" << destX << "," << destY << ")\n";
 }
 void CommandTile::doEffect(Player *currentPlayer) {
-	
+	std::string msg;
 	if (groupId == LUX_TAX) {
 		UserAnimator::popPropertyCard(this);
-		std::cout << "LUXURY TAX. PAY 100$ \n";
+		msg =  "LUXURY TAX. PAY 100$ \n";
+		UserAnimator::popUpMessage(msg);
 		currentPlayer->payMoney(100);
 		SDL_Delay(500);
 		return;
 	}
 	if (groupId == INC_TAX) {
 		UserAnimator::popPropertyCard(this);
-		std::cout << "INCOME TAX. PAY 200$ \n";
+		msg = "INCOME TAX. PAY 200$ \n";
+		UserAnimator::popUpMessage(msg);
 		currentPlayer->payMoney(200);
 		SDL_Delay(500);
 		return;
@@ -113,7 +121,8 @@ void CommandTile::doEffect(Player *currentPlayer) {
 		CommandTile::chanceQ.pop();
 		CommandTile::chanceQ.push(index);
 	}
-	std::cout << allCommands[index]<< std::endl;
+	std::string command = allCommands[index];
+	UserAnimator::popUpMessage(command);
 	switch (index) {
 	/*If they are Queues, how do you know the index for the command??
 	 - i thought maybe transform each string

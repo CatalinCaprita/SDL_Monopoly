@@ -50,7 +50,7 @@ public:
 	};
 	static int getClickY() {
 		return clickY;
-	}
+	};
 	static int getMouseX() {
 		return clickX;
 	};
@@ -78,8 +78,12 @@ public:
 	static void setEnterFlag(bool value) {
 		enterPressed = value;
 	}
-	static void setRenderer(SDL_Renderer * rend) {
+	static void setRenderer(SDL_Renderer* rend) {
 		renderer = rend;
+	}
+	std::vector<Player*> getPlayers() {
+		return players;
+
 	}
 	Player* getPlayer(int i) {
 		return players[i];
@@ -87,6 +91,8 @@ public:
 
 	
 private:
+	int findPlayer(std::string);
+	bool doesPlayerExist(std::string);
 	int turn;
 	int screenWidth, screenHeight;
 	static int count;
@@ -109,7 +115,7 @@ private:
 	static char  inChar;
 	std::vector<Player*> players;
 	std::vector<Button*> buttons;
-	std::vector<Button*> randomButtons;
+	std::vector<Button*> playerPageButtons;
 	static Dice* dice;
 	SDL_Window* window;			//window object to be used as the main game frame
 	static SDL_Renderer* renderer;		//renderer composite passed as arg to all render functinos. see update() and render()
@@ -117,7 +123,6 @@ private:
 	std::vector<Tile*> tiles;
 	Prompt* test_prompt;
 	Menu* menu;
-	//TextBox* test;
-
+	
 };
 #endif // !GAME_H

@@ -27,37 +27,47 @@ void StationProperty::mortgage(Player* currentPlayer) {
 			}
 		}
 		else {
-			std::cout << "It appears you have already mortgaged this property. Lifting the mortgage would mean paying " <<
-				"The mortgage Value of the property + 10 % of its value for a total of  " << mortgageVal * 1.1 << ". Proceed? (1/0).";
+			std::string msg = "It appears you have already mortgaged this property. Lifting the mortgage would mean paying \n The mortgage Value of the property + 10 % of its value for a total of  " + std::to_string(mortgageVal * 1.1);
+			UserAnimator::popUpMessage(msg);
+			
 			int answer;
-			std::cin >> answer;
-			if (answer == 1) {
+			
+			if (Game::isBuyPressed()) {
 				if (owner->getMoney() < buyPrice * 1.1) {
-					std::cout << " Insufficient Founds to cpmlete action.\n";
+					msg =  " Insufficient Founds to complete action.\n";
+					UserAnimator::popUpMessage(msg);
 					return;
 				}
 				owner->payMoney(mortgageVal * 1.1);
-				std::cout << "Mortgage lifted for " << name << "\n";
+
+				msg = "Mortgage lifted for " + name;
+				UserAnimator::popUpMessage(msg);
 				mortgaged = false;
 
 			}
 		}
 	}
 	else {
-		std::cout << "You do not own this property\n";
+		std::string msg = "You do not own this property\n ";
+		UserAnimator::popUpMessage(msg);
+
 	}
 }
 //Function that will be called as a listener if the button "Buy" is pressed in game
 void StationProperty::getMeAnOwner(Player* currentPlayer) {
+	std::string msg;
 	if (owner == nullptr) {
 		std::cout << "Im almost in\n";
 		//Checks if the player pressed the buy button 
 		if (Game::isBuyPressed()) {
 			std::cout << "Im in\n";
 			if (currentPlayer->getMoney() < buyPrice) {
-				std::cout << " Aquisition failed. Lack of funds `\( `-`)/` ";
+				msg = "Aquisition failed. Lack of funds `\( `-`)/` ";
+				UserAnimator::popUpMessage(msg);
 			}
 			else {
+				std::string message = currentPlayer->getName() + " bought " + name;
+				UserAnimator::popUpMessage(message);
 				owner = currentPlayer;
 				currentPlayer->buyProperty(this, "station");
 			}
@@ -66,7 +76,8 @@ void StationProperty::getMeAnOwner(Player* currentPlayer) {
 	}
 	else {
 		if (owner != currentPlayer && mortgaged) {
-			std::cout << "Please Wait while " << currentPlayer->getName() << " and" << owner->getName() << "are negotiating for " << name << std::endl;
+			msg = "Please Wait while " + currentPlayer->getName() + " and" + owner->getName() + "are negotiating for " + name;
+			UserAnimator::popUpMessage(msg);
 			currentPlayer->startTrade(owner);
 			currentPlayer->setBuyerTradeFlag();
 			owner->startTrade(currentPlayer);
@@ -74,14 +85,18 @@ void StationProperty::getMeAnOwner(Player* currentPlayer) {
 		}
 
 		else {
-			std::cout << "This station already has an owner\n";
+			msg = "This station already has an owner\n";
+			UserAnimator::popUpMessage(msg);
 		}
 	}
 }
 void StationProperty::doEffect(Player* currentPlayer) {
+	std::string msg;
 	if (owner == nullptr) {
 		UserAnimator::popPropertyCard(this);
-		
+		std::string str = "Press 'Buy' if you want to buy this property.";
+
+		UserAnimator::popUpMessage(str);
 		getMeAnOwner(currentPlayer);
 		return;
 	}
@@ -93,19 +108,23 @@ void StationProperty::doEffect(Player* currentPlayer) {
 		sumToPay = owner->getOwnedStations() * 25;
 		rentPrices[0] = sumToPay;
 		if (currentPlayer->getFlag() == 2) {
-			std::cout << currentPlayer->getName() << " needs to pay TWICE  the  sum :" << sumToPay << " to " << owner->getName() << std::endl;
+			msg = currentPlayer->getName() + " needs to pay TWICE  the  sum :" + std::to_string(sumToPay) + " to " + owner->getName();
+			UserAnimator::popUpMessage(msg);
 			owner->receiveMoney(2 * sumToPay);
 			currentPlayer->payMoney( 2 * sumToPay);
 		}
 		else {
 			if (!mortgaged) {
-				std::cout << currentPlayer->getName() << " needs to pay " << sumToPay << " to " << owner->getName() << std::endl;
+				
+				msg = currentPlayer->getName() + " needs to pay " + std::to_string(sumToPay) + " to " + owner->getName();
+				UserAnimator::popUpMessage(msg);
 				owner->receiveMoney(sumToPay);
 				currentPlayer->payMoney(sumToPay);
 				UserAnimator::playerPaysPlayer(currentPlayer, owner);
 			}
 			else {
-				std::cout << owner->getName() << " chose to mortgage this property, thus the is no rent to pay \n";
+				msg = owner->getName() + " chose to mortgage this property, thus the is no rent to pay \n";
+				UserAnimator::popUpMessage(msg);
 			}
 		}
 	}

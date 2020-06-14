@@ -8,13 +8,14 @@ class Game;
 
 class Page {
 private:
+	Player* player;
 	Button* test;
 	Game* game;
 	UILabel* nameLabel;
 	UILabel* moneyLabel;
 	int pageNumber;
 public:
-	Page(Game*, int);
+	Page(Game* game, Player* player);
 	~Page();
 	void update();
 	void render();
