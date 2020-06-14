@@ -15,6 +15,10 @@ void Corner::getMeAnOwner(Player* currentPlayer) {
 	return;
 }
 
+void Corner::mortgage(Player* currentPlayer) {
+	return;
+}
+
 void Corner::doEffect(Player * currentPlayer) {
 	print();
 	//UserAnimator::cornerAnimation(this);
