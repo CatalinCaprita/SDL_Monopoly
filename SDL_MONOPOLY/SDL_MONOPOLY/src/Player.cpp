@@ -1,5 +1,6 @@
 #include "../headers/Player.h"
 #include "../headers/HouseProperty.h"
+#include "../headers/UserAnimator.h"
 #define OFFSET 3
 #define DICE_MOVE 0
 #define MUST_BE_JAILED 1
@@ -184,21 +185,8 @@ bool Player::onGoingTrade() {
 void Player::setTradeStatus(bool status) {
 	onGoing = status;
 }
-int Player::proposeSumFor(Tile * propWanted) {
+int Player::proposeSum(int answer) {
 	if (tradeWith != nullptr) {
-		int answer = -1;
-		std::cout <<name<< ": Please set what sum you propose for " << propWanted->getName() << ": ";
-		bool valid = false;
-		do {
-			std::cin >> answer;
-			if (answer < -1) {
-				std::cout << "You are allowed to offer only positive amounts!\n";
-			}
-			if (answer > totalMoney) {
-				std::cout << "You cannot offer more than you've got !\n";
-			}
-
-		} while (answer < -1 || answer > totalMoney);
 		tradeWith->setProposedSum(answer);
 		return answer;
 	}
@@ -208,7 +196,17 @@ int Player::proposeSumFor(Tile * propWanted) {
 void Player::setProposedSum(int amount) {
 	sumToAccept = amount;
 }
-
+void Player::acceptOffer() {
+	tradeWith->payMoney(sumToAccept);
+	tradeWith->setTradeStatus(false);
+	receiveMoney(sumToAccept);
+	setDiceFlag();
+}
+void Player::denyOffer() {
+	tradeWith->setTradeStatus(true);
+	sumToAccept = -1;
+	UserAnimator::setBuyerFlag();
+}
 /*
 Asta se intampla doar cand playerul trebuie sa ajunga la Jail. O sa aibe cum ati zis voi 50 - currentPosition pozitii de mutat, iar cand termina de mutat,
 remainingSteps == 0, atunci se initiaza goToJail
@@ -331,18 +329,16 @@ void Player::update() {
 		else {
 			if (flagType == OWNER_TRADE) {
 				if (sumToAccept > -1) {
-					std::cout << name<< ": Are you ok with " << sumToAccept << " ? Press 1 and you will sell the property for this sum.";
+					/*std::cout << name<< ": Are you ok with " << sumToAccept << " ? Press 1 and you will sell the property for this sum.";
 					int answer;
 					std::cin >> answer;
 					if (answer == 1) {
-						tradeWith->payMoney(sumToAccept);
-						tradeWith->setTradeStatus(false);
-						receiveMoney(sumToAccept);
-						setDiceFlag();
+						
 					}
 					else {
-						tradeWith->setTradeStatus(true);
-					}
+						
+					}*/
+					UserAnimator::setOwnerFlag();
 				}
 
 			}

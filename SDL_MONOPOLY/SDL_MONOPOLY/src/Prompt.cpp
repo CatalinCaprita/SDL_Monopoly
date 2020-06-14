@@ -9,8 +9,11 @@
 SDL_Color colors[] = { {255,255,255,255},{0,0,0,0}, {205,92,92,50} };
 Prompt::Prompt(const char* backPath, int unitX, int unitY, int unitW, int unitH, std::string& message) {
 	bubble = new Sprite(backPath, unitW, unitH, unitX, unitY,-1,-1,true);
-	text = new UILabel(unitX + 5, unitY + 5, unitW, unitH , message, TTF_OpenFont("assets/fonts/prompt_std2.ttf", 60), colors[BLACK]);
+	text = new UILabel(unitX +5 , unitY + 5, unitW, unitH , message, TTF_OpenFont("assets/fonts/prompt_std2.ttf", 60), colors[BLACK]);
 	bubble->setRenderDelay(10);
+	fadeOnClick = true;
+	sumInput = false;
+	acceptInput = false;
 	updateDelay = 3;
 };
 Prompt::~Prompt() {
@@ -42,6 +45,9 @@ void Prompt::updateWH(int byW, int byH) {
 void Prompt::render() {
 	bubble->render();
 	text->render();
+	for (Button* b : buttons) {
+		b->render();
+	}
 
 };
 
@@ -52,7 +58,7 @@ void Prompt::setScale(int screenW, int screenH) {
 
 };
 
-void Prompt::addButton(std::string& buttonName,Button* button) {
+void Prompt::addButton(Button* button,int unitX,int unitY,int unitW,int unitH) {
 	buttons.push_back(button);
 }
 
@@ -83,4 +89,32 @@ bool Prompt::isDone() {
 
 Sprite* Prompt::getBubbleSprite() {
 	return bubble;
+}
+
+void Prompt::setTextWH(int unitW, int unitH) {
+	text->setWH(unitW, unitH);
+}
+void Prompt::adjustText(int byX , int byY,int wrapSize) {
+	text->updateXY(byX, byY);
+	if(wrapSize > 0)
+		text->setLabelTexture(wrapSize);
+}
+void Prompt::setClickFadeable(bool value) {
+	fadeOnClick = value;
+}
+bool Prompt::isClickFadeable() {
+	return fadeOnClick;
+}
+bool Prompt::isSumImput(){
+	return sumInput;
+}
+bool Prompt::isAcceptInput(){
+	return acceptInput;
+}
+void Prompt::setSumInput(bool value) {
+	sumInput = value;
+}
+
+void Prompt::setAcceptInput(bool value){
+	acceptInput = value;
 }

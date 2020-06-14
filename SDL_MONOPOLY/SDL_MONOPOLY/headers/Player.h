@@ -42,10 +42,12 @@ public:
 	void payPerBuildings();
 	void startTrade(Player* otherTrader);
 	void endTradeFor(Tile * subject,int priceSet);
-	int proposeSumFor(Tile * target);
+	int proposeSum(int sumProposed);
 	void setProposedSum(int amount);
 	void setTradeStatus(bool);
 	bool onGoingTrade();
+	void acceptOffer();
+	void denyOffer();
 
 	//Flag Setters
 	int getFlag();

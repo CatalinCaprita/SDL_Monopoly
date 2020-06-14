@@ -57,6 +57,11 @@ int Game::clickY = 0;
 bool Game::buyPressed = false;
 bool Game::mortgagePressed = false;
 bool Game::mousePressed = false;
+bool Game::keyStroke = false;
+bool Game::backPressed = false;
+bool Game::enterPressed = false;
+
+char Game::inChar;
 
 
 int debounceDelay = 300;
@@ -117,6 +122,11 @@ Game::Game(const char* title, int x_pos, int y_pos, int width, int height, bool 
 		isRunning = true;
 		fillTiles("assets/houseProperties.txt");
 		menu = new Menu(this);
+		/*std::string m = "";
+		test = new TextBox("assets/bubble_prompt.bmp",36,27,40,20,m);
+		test->setScale(screenWidth, screenHeight);
+		SDL_SetTextInputRect(&test->getRect());
+		*/
 	}
 	else {
 		isRunning = false;
@@ -149,12 +159,24 @@ Dice* Game::getDice() {
  void Game::listen_event() {
 	 menu->listen_event();
 	 SDL_Event e;
-	 
+	 SDL_StartTextInput();
 	 SDL_PollEvent(&e);
 	 SDL_PumpEvents();
 	 switch (e.type) {
 	 case SDL_QUIT:
 		 isRunning = false;
+		 break;
+	 case SDL_KEYDOWN:
+		 if (e.key.keysym.sym == SDLK_BACKSPACE) {
+			 backPressed = true;
+		 }
+		 else if (e.key.keysym.sym == SDLK_RETURN) {
+			 enterPressed = true;
+		 }
+		 break;
+	 case SDL_TEXTINPUT:
+		 keyStroke = true;
+		 inChar = e.text.text[0];
 		 break;
 	 case SDL_MOUSEBUTTONUP:
 		 mousePressed = false;
@@ -198,9 +220,9 @@ Dice* Game::getDice() {
 								 players[turn]->setRemainingSteps(dice->getFirstDieValue() + dice->getSecondDieValue());
 
 								 /*			DEBUG
-								 /**/
-								 //players[turn]->setRemainingSteps(1);
-
+								 /*
+								 players[turn]->setRemainingSteps(1);
+								 */
 								 dice->setBlocked(true);
 								 if (!dice->thrownDouble()) {
 									 dice->setBlocked(true);
@@ -210,7 +232,9 @@ Dice* Game::getDice() {
 						 }
 					 }
 				 }
+				
 				 else if (buttons[0]->getSprite()->isClicked()) {
+
 					 if (!dice->isBlocked()) {
 						 messageString = "You must roll the dice first!";
 						 UserAnimator::popUpMessage(messageString);
@@ -219,7 +243,8 @@ Dice* Game::getDice() {
 						 std::cout << "button0" << std::endl;
 						 this->setBuyPressed(true);
 						 if (lastTurnToPressBuy != turn) {
-							 tiles[players[turn]->getCurrentPosition()]->getMeAnOwner(players[turn]); //tiles[1]->getMeAnOwner(players[turn]);
+							 tiles[players[turn]->getCurrentPosition()]->getMeAnOwner(players[turn]); 
+							 //TRADE DEBUG: tiles[1]->getMeAnOwner(players[turn]);
 							 lastTurnToPressBuy = turn;
 						 }
 						 else
@@ -227,51 +252,53 @@ Dice* Game::getDice() {
 						 this->setBuyPressed(false);
 					 }
 				 }
-				 else if (buttons[1]->getSprite()->isClicked()){
-					 this->setMortgagePressed(true);
-					 std::cout << "button1" << std::endl;
-					 dynamic_cast<HouseProperty*>(tiles[8])->mortgage(players[turn]);
-				 }
-				 else if (buttons[2]->getSprite()->isClicked()) {
+				 else if (buttons[1]->getSprite()->isClicked()) {
+						 this->setMortgagePressed(true);
+						 std::cout << "button1" << std::endl;
+						 dynamic_cast<HouseProperty*>(tiles[players[turn]->getCurrentPosition()])->mortgage(players[turn]);
+					 }
+					 else if (buttons[2]->getSprite()->isClicked()) {
 
-					 if (!(players[turn]->getFlag() == BUYER_TRADE || players[turn]->getFlag() == OWNER_TRADE)) {
-						 lastTurnToPressBuy = turn;
-						 turn++;
-						 turn %= 2;
-						 dice->setBlocked(false);
-						 this->setBuyPressed(false);
-						 this->setMortgagePressed(false);
-						 UserAnimator::fadePropertyCard(tiles[players[turn]->getCurrentPosition()]);
-						 std::cout << "button2" << std::endl;
+						 if (!(players[turn]->getFlag() == BUYER_TRADE || players[turn]->getFlag() == OWNER_TRADE)) {
+							 lastTurnToPressBuy = turn;
+							 turn++;
+							 turn %= 2;
+							 dice->setBlocked(false);
+							 this->setBuyPressed(false);
+							 this->setMortgagePressed(false);
+							 //UserAnimator::fadePropertyCard(tiles[players[turn]->getCurrentPosition()]);
+							 UserAnimator::fadePropertyCard(tiles[players[turn]->getCurrentPosition()]);
+
+							 std::cout << "button2" << std::endl;
+						 }
+						 else {
+							 messageString = "You must finish the trade before ending your turn !";
+							 UserAnimator::popUpMessage(messageString);
+						 }
 					 }
-					 else {
-						 messageString = "You must finish the trade before ending your turn !";
-						 UserAnimator::popUpMessage(messageString);
+					 else if (randomButtons[0]->getSprite()->isClicked()) {
+						 std::cout << "Am apasat butonul asta";
+						 menu->setCurrentPage(0);
 					 }
-				 }
-				 else if (randomButtons[0]->getSprite()->isClicked()) {
-					 std::cout << "Am apasat butonul asta";
-					 menu->setCurrentPage(0);
-				 }
-				 else if (randomButtons[1]->getSprite()->isClicked()) {
-					 std::cout << "Am apasat butonul asta";
-					 menu->setCurrentPage(1);
-				 }
-				 else if (randomButtons[2]->getSprite()->isClicked()) {
-					 std::cout << "Am apasat butonul asta";
-					 menu->setCurrentPage(2);
-				 }
-				 else if (randomButtons[3]->getSprite()->isClicked()) {
-					 std::cout << "Am apasat butonul asta";
-					 menu->setCurrentPage(3);
-				 }
+					 else if (randomButtons[1]->getSprite()->isClicked()) {
+						 std::cout << "Am apasat butonul asta";
+						 menu->setCurrentPage(1);
+					 }
+					 else if (randomButtons[2]->getSprite()->isClicked()) {
+						 std::cout << "Am apasat butonul asta";
+						 menu->setCurrentPage(2);
+					 }
+					 else if (randomButtons[3]->getSprite()->isClicked()) {
+						 std::cout << "Am apasat butonul asta";
+						 menu->setCurrentPage(3);
+					 }
+				 mousePressed = true;
 			 }
-			 mousePressed = true;
+			 else
+				 mousePressed = false;
 		 }
-		 else
-			 mousePressed = false;
+		 break;
 		}
-		break;
 	 }
  }
  void Game::render() {
@@ -291,6 +318,7 @@ Dice* Game::getDice() {
 		 randomButtons[i]->render();
 
 	 dice->render();
+	 //test->render();
 	 UserAnimator::render();
 	 SDL_RenderPresent(renderer);
 }
@@ -309,6 +337,7 @@ Dice* Game::getDice() {
 			 switch (players[turn]->getFlag()) {
 			 case DICE_MOVE:
 				 tiles[players[turn]->getCurrentPosition()]->doEffect(players[turn]);
+				 //TRADE DEBUG :tiles[1]->doEffect(players[turn]);
 				 break;
 			 case MUST_BE_JAILED:
 				 players[turn]->goToJail();
@@ -332,11 +361,10 @@ Dice* Game::getDice() {
 				 players[turn]->setDiceFlag();
 				 break;
 			 case BUYER_TRADE:
-				 if (players[turn]->onGoingTrade())
-					 players[turn]->proposeSumFor(tiles[players[turn]->getCurrentPosition()]);
-				 else {
+				 if (!players[turn]->onGoingTrade()){
 					 players[turn]->buyProperty(tiles[players[turn]->getCurrentPosition()], true);
 					 players[turn]->setDiceFlag();
+
 				 }
 				 break;
 			
@@ -354,6 +382,7 @@ Dice* Game::getDice() {
 	 
 	 dice->update();
 	 UserAnimator::update();
+	 //test->update();
  }
 
  Groups getGroupId(int i) {

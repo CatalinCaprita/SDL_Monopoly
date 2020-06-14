@@ -19,10 +19,13 @@ public:
 	void destroy();
 	void updateXY(int byX = 0 , int byY = 0);
 	void updateWH(int byW = 0, int byH = 0);
+	void setTextWH(int unitW = 0, int unitH = 0);
 	void render();
+	void update();
 	void setScale(int screenW,int screenH);
-	void addButton( std::string& buttonName, Button* button);
+	void addButton(Button* button, int unitX, int unitY, int unitW, int unitH);
 	void switchText(std::string& newMessage);
+	void adjustText(int byX = 0, int byY = 0,int wrapSize = 0);
 	void setLifeTime(int ms);
 	void decreaseLifeTime();
 	int getW();
@@ -31,6 +34,13 @@ public:
 	bool canBeUpdated() {
 		return bubble->canBeUpdated();
 	}
+	bool isClicked();
+	void setClickFadeable(bool value = true);
+	bool isClickFadeable();
+	bool isSumImput();
+	bool isAcceptInput();
+	void setSumInput( bool value = false);
+	void setAcceptInput( bool value = false);
 	Sprite* getBubbleSprite();
 
 private:
@@ -39,6 +49,9 @@ private:
 	std::vector<Button*> buttons;
 	int lifeTime;
 	int updateDelay;
+	bool fadeOnClick = true;
+	bool sumInput;
+	bool acceptInput;
 };
 
 

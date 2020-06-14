@@ -18,6 +18,13 @@ public:
 	void setScale(Sprite* scaleTo);
 	void setScale(int screenW = 0 , int screenH = 0);
 	void setMessage(std::string& newMessage);
+	void appendText(char c);
+	void popText();
+	int unitW();
+	int unitH();
+	int size();
+	std::string& getText();
+
 
 private:
 	SDL_Rect position;  //maintain the size of the text
@@ -27,5 +34,6 @@ private:
 	SDL_Color textColor;
 	float wRatio = 1.0f;
 	float hRatio = 1.0f;
+	int wrapSize;
 };
 #endif // !UILABEL_H

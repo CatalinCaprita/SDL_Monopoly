@@ -6,6 +6,7 @@
 
 std::string message;
 bool oneUpdate;
+bool askedUser = false;
 HouseProperty::HouseProperty(std::string name, int buyPrice,int updateCost,int mortgageVal,std::vector<int>& rents, Groups groupId,int rectId) :AbstractProperty(name,buyPrice,updateCost,groupId){
 	this->houseNumber = 0;
 	this->hasHotel = false;
@@ -24,7 +25,6 @@ HouseProperty::~HouseProperty() {
 
 }
 void HouseProperty::update() {
-	//TO DO -- int answer = UserDialog::tileUpdateDialog()
 
 	if (rentStage < rentPrices.size() - 1) {
 		
@@ -134,24 +134,8 @@ void HouseProperty::mortgage(Player* currentPlayer) {
 			}
 		}
 		else {
-			std::string message = "It appears you have mortgaged this property. Lifting the mortgage would mean paying ";
-			message += " the mortgage Value of the property + 10 % of its value for a total of  ";
-			message += std::to_string(mortgageVal * 1.1)+ ". Proceed? (1/0).";
+			std::string message = "This Property is already mortgaged!";
 			UserAnimator::popUpMessage(message);
-			int answer;
-			std::cin >> answer;
-			if (answer == 1) {
-				if (owner->getMoney() < buyPrice * 1.1) {
-					std::string message = " Insufficient Founds to complete action.\n";
-					UserAnimator::popUpMessage(message);
-					return;
-				}
-				owner->payMoney(mortgageVal * 1.1);
-				std::string message =  "Mortgage lifted for " + name + "\n";
-				UserAnimator::popUpMessage(message);
-				mortgaged = false;
-
-			}
 		}
 	}
 	else {
@@ -196,16 +180,33 @@ void HouseProperty::getMeAnOwner(Player* currentPlayer) {
 		if (owner != currentPlayer && mortgaged) {
 			std::string message = +"Please Wait while " + currentPlayer->getName() + " and" + owner->getName() + "are negotiating for " + name;
 			UserAnimator::popUpMessage(message);
-			currentPlayer->startTrade(owner);
-			currentPlayer->setBuyerTradeFlag();
-			owner->startTrade(currentPlayer);
-			owner->setOwnerTradeFlag();
+			UserAnimator::startTrade(currentPlayer,owner);
 
 		}
-		else if (owner == currentPlayer) {
-			// && owner->ownsAllOfColor(groupId))
-			update();
-			Game::setBuyPressed(false);
+		else if (owner == currentPlayer){
+			if (!mortgaged) {
+				if (owner->ownsAllOfColor(groupId)) {
+					update();
+					Game::setBuyPressed(false);
+				}
+				else {
+					std::string msg = "You do not own all the properties of this color!";
+					UserAnimator::popUpMessage(msg);
+				}
+			}
+			else {
+				if( owner->getMoney() < mortgageVal * 1.1){
+					std::string m = "You do not have the money!";
+					UserAnimator::popUpMessage(m);
+				}
+				else {
+					owner->payMoney(mortgageVal * 1.1);
+					mortgaged = false;
+					std::string m = owner->getName() + " lifted the mortage for " +  name;
+					UserAnimator::popUpMessage(m);
+
+				}
+			}
 			
 		}
 		
@@ -220,13 +221,12 @@ void HouseProperty::doEffect(Player* currentPlayer) {
 			UserAnimator::popUpMessage(message);
 
 		}
-			
-			//if(owner->ownsAllOfColor(groupId))
-				//update();
-			/*else {
-			}*/
-
-		mortgage(currentPlayer);
+		else if (mortgaged) {
+			std::string message = "It appears you have mortgaged this property. Lifting the mortgage would mean paying ";
+			message += " the mortgage Value of the property + 10 % of its value for a total of  ";
+			message += std::to_string(mortgageVal * 1.1) + ". Press 'Buy' if you want to proceed.";
+			UserAnimator::popUpMessage(message);
+		}
 	}
 	else if (owner == NULL) {
 		UserAnimator::popPropertyCard(this);

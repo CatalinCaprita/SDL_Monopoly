@@ -50,15 +50,45 @@ public:
 	static int getClickY() {
 		return clickY;
 	}
+	static int getMouseX() {
+		return clickX;
+	};
+	static int getMouseY() {
+		return clickY;
+	}
+	static bool isStroke() {
+		return keyStroke;
+	}
+	static void setKeyStroke(bool value) {
+		keyStroke = value;
+	}
+	static char getInChar() {
+		return inChar;
+	}
+	static bool isBack() {
+		return backPressed;
+	}
+	static void setBackFlag(bool value) {
+		backPressed = value;
+	}
+	static bool isEnter() {
+		return enterPressed;
+	}
+	static void setEnterFlag(bool value) {
+		enterPressed = value;
+	}
 	Player* getPlayer(int i) {
 		return players[i];
 	}
+
 	
 private:
 	int turn;
 	int screenWidth, screenHeight;
 	static int count;
 	static int nrDoublesThrown;
+
+	/*Click-related variables*/
 	static bool buyPressed;
 	static bool mortgagePressed;
 	static int mouseX;
@@ -66,7 +96,13 @@ private:
 	static int clickX;
 	static int clickY;
 	static bool mousePressed;
+
+	/*GUI Related variables*/
 	bool isRunning;
+	static bool keyStroke;
+	static bool backPressed;
+	static bool enterPressed;
+	static char  inChar;
 	std::vector<Player*> players;
 	std::vector<Button*> buttons;
 	std::vector<Button*> randomButtons;
@@ -77,6 +113,7 @@ private:
 	std::vector<Tile*> tiles;
 	Prompt* test_prompt;
 	Menu* menu;
+	//TextBox* test;
 
 };
 #endif // !GAME_H

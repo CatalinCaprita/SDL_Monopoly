@@ -21,7 +21,6 @@ Sprite::Sprite(const char* path, int unitW, int unitH, int unitX, int unitY , in
 }
 Sprite::~Sprite() {
 	SDL_DestroyTexture(texture);
-	std::cout << "Destroyed sprte";
 }
 Sprite::Sprite(Sprite* copy) {
 	wRatio = copy->wRatio;
@@ -42,7 +41,6 @@ void Sprite::copyScale(Sprite* otherSprite) {
 void Sprite::setPath(const char* newPath, bool ignoreBck) {
 
 	if (texture) {
-		std::cout << "Am intrat\n";
 		SDL_DestroyTexture(texture);
 	}
 	texture = TextureMaker::textureFromBMP(newPath, ignoreBck);
@@ -134,6 +132,9 @@ float Sprite::getHRatio() {
 }
 SDL_Texture* Sprite::getTexture() { return texture; }
 
+SDL_Rect& Sprite::getRect() {
+	return destRect;
+}
 void Sprite::setTexture(SDL_Texture* texture) {
 	this->texture = texture;
 }

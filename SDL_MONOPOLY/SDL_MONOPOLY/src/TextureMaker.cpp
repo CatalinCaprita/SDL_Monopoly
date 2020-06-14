@@ -17,7 +17,6 @@ SDL_Texture* TextureMaker::textureFromBMP(const char* path,bool ignoreBg) {
 		return NULL;
 	}
 	if (ignoreBg) {
-		std::cout << "IGNORES BACKGROUND";
 		Uint32 colorkey = SDL_MapRGB(temp->format, 0, 0, 0);
 		SDL_SetColorKey(temp, SDL_TRUE, colorkey);
 	}
