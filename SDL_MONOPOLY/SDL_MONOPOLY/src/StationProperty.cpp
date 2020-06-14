@@ -31,8 +31,8 @@ void StationProperty::mortgage(Player* currentPlayer) {
 			UserAnimator::popUpMessage(msg);
 			
 			int answer;
-			std::cin >> answer;
-			if (answer == 1) {
+			
+			if (Game::isBuyPressed()) {
 				if (owner->getMoney() < buyPrice * 1.1) {
 					msg =  " Insufficient Founds to complete action.\n";
 					UserAnimator::popUpMessage(msg);
