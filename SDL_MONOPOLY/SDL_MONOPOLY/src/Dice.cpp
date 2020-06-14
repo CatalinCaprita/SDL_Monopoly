@@ -3,8 +3,8 @@ Dice::Dice() {
 	blocked = false;
 	firstDieValue = 1;
 	secondDieValue = 1;
-	firstDieSprite = new Sprite("assets/zar2.bmp", 6, 6, 30, 23);
-	secondDieSprite = new Sprite("assets/zar2.bmp", 6, 6, 38, 23);
+	firstDieSprite = new Sprite("assets/zar2.bmp", 8, 9, 106, 88);
+	secondDieSprite = new Sprite("assets/zar2.bmp", 8, 9, 116, 88);
 	/**
 	firstDieRect.x = 300; secondDieRect.x = 360;
 	firstDieRect.y = secondDieRect.y = 300;

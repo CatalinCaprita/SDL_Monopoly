@@ -114,9 +114,9 @@ Game::Game(const char* title, int x_pos, int y_pos, int width, int height, bool 
 
 		//buttons.push_back(new Button("assets/buy_button0.bmp", "assets/buy_button1.bmp", "assets/buy_button1.bmp", 107, 60, 22, 10));
 		//buttons.push_back(new Button("assets/sell_button0.bmp", "assets/sell_button1.bmp", "assets/sell_button1.bmp", 107, 70, 22, 10));
-		buttons.push_back(new Button("assets/menu/buy_button.bmp", "assets/menu/buy_button1.bmp", "assets/menu/buy_button2.bmp", 105, 65, 20, 9));
-		buttons.push_back(new Button("assets/menu/sell_button.bmp", "assets/menu/sell_button1.bmp", "assets/menu/sell_button2.bmp", 105, 76, 20, 9));
-		buttons.push_back(new Button("assets/menu/button_end_turn.bmp", "assets/menu/button_end_turn1.bmp", "assets/menu/button_end_turn2.bmp", 105, 87, 20, 9));
+		buttons.push_back(new Button("assets/menu/buy_button.bmp", "assets/menu/buy_button1.bmp", "assets/menu/buy_button2.bmp", 105, 64, 20, 7));
+		buttons.push_back(new Button("assets/menu/sell_button.bmp", "assets/menu/sell_button1.bmp", "assets/menu/sell_button2.bmp", 105, 72, 20, 7));
+		buttons.push_back(new Button("assets/menu/button_end_turn.bmp", "assets/menu/button_end_turn1.bmp", "assets/menu/button_end_turn2.bmp", 105, 80, 20, 7));
  		for (int i = 0; i < buttons.size(); i++)
 			buttons[i]->getSprite()->setScale(width, height);
 		isRunning = true;
