@@ -110,7 +110,7 @@ void StartUpState::listen_event(){
 					std::vector<std::string> pn;
 					std::string name;
 					for(int i=0; i < tbs.size(); i++){
-						if (tbs[i]->getInput() != " ") {
+						if (tbs[i]->getInput() != " " && tbs[i]->getInput() != "") {
 							pn.push_back(tbs[i]->getInput());
 						}
 					}

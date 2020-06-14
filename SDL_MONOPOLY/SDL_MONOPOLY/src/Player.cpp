@@ -219,6 +219,7 @@ Jail Functions
 void Player::goToJail() { 
 	std::cout << name << " will GO TO JAIL !\n";
 	setRemainingSteps((50 - this->getCurrentPosition()) % 40); //Player is now in moving, once it will finish, it will go direcly to jail
+
 	jailTurnsLeft = 3;
 } 
 bool Player::isJailed()

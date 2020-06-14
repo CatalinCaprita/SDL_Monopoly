@@ -96,18 +96,21 @@ Game::Game(int width, int height,std::vector<std::string>&playerNames):tiles(40)
 			Aka As many Players as names in the vector. 
 			Work around to set the propper pawn to everyone. U could rename the pawns like 'i_car.bmp' for i = 0 -> 4;
 		*/
+		
+		std::vector<const char *> playerIcon = {"assets/car.bmp", "assets/ship.bmp", "assets/plane.bmp", "assets/train.bmp"};
+
 		for (int i = 0; i < playerNames.size(); i++) {
-			players.push_back(new Player(playerNames[i], "assets/car.bmp", START_X + i, START_Y - 2, PAWN_SIZE + 3, PAWN_SIZE + 3));
+			players.push_back(new Player(playerNames[i], playerIcon[i], START_X + i, START_Y - 2, PAWN_SIZE + 3, PAWN_SIZE + 3));
 			players[i]->setSpriteScale(width, height);
 		}
-		/*
-		players.push_back(new Player("Player 1", "assets/car.bmp", START_X, START_Y, PAWN_SIZE + 3, PAWN_SIZE + 3));
-		players.push_back(new Player("Player 2", "assets/ship.bmp", START_X + 2, START_Y, PAWN_SIZE + 3, PAWN_SIZE + 3));
-		players.push_back(new Player("Player 3", "assets/plane.bmp", START_X + 4, START_Y, PAWN_SIZE + 3, PAWN_SIZE + 3));
-		players.push_back(new Player("Player 4", "assets/train.bmp", START_X + 6, START_Y, PAWN_SIZE + 3, PAWN_SIZE + 3));
+		
+		/*players.push_back(new Player(playerNames[i], "assets/car.bmp", START_X, START_Y, PAWN_SIZE + 3, PAWN_SIZE + 3));
+		players.push_back(new Player(playerNames[i], "assets/ship.bmp", START_X + 2, START_Y, PAWN_SIZE + 3, PAWN_SIZE + 3));
+		players.push_back(new Player(playerNames[i], "assets/plane.bmp", START_X + 4, START_Y, PAWN_SIZE + 3, PAWN_SIZE + 3));
+		players.push_back(new Player(playerNames[i], "assets/train.bmp", START_X + 6, START_Y, PAWN_SIZE + 3, PAWN_SIZE + 3));
 		for (Player* p : players)
-			p->setSpriteScale(width, height);
-			*/
+			p->setSpriteScale(width, height);*/
+			
 		int PAGESPRITEWIDTH = 5; 
 		int PAGESPRITEHEIGHT = 5;
 		int PAGESPRITECOORDX = 103;
@@ -187,6 +190,7 @@ int Game::findPlayer(std::string playerString)
 	else if (playerString.compare("train") == 0) {
 		strcpy_s(filepath, "assets/train.bmp");
 	}
+
 	for (int i = 0; i < players.size(); i++) {
 		if (strcmp(players[i]->getSprite()->getPath(), filepath) == 0)
 			return i;
@@ -280,7 +284,7 @@ Dice* Game::getDice() {
 								 dice->setBlocked(true); //Set the dice block so while the current player is moving nobody can run the dice;
 							 }
 							 else {
-								 players[turn]->setRemainingSteps(dice->getFirstDieValue() + dice->getSecondDieValue());
+								 players[turn]->setRemainingSteps(30);
 
 								 /*			DEBUG
 								 /**/
