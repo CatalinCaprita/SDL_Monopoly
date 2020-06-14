@@ -223,7 +223,6 @@ Dice* Game::getDice() {
 								 /*
 								 players[turn]->setRemainingSteps(1);
 								 */
-								 dice->setBlocked(true);
 								 if (!dice->thrownDouble()) {
 									 dice->setBlocked(true);
 									 Game::nrDoublesThrown = 0;
