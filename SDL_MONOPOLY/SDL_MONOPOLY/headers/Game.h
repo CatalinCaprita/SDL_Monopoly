@@ -83,6 +83,7 @@ public:
 
 	
 private:
+	bool findPlayer(std::string);
 	int turn;
 	int screenWidth, screenHeight;
 	static int count;
@@ -105,7 +106,7 @@ private:
 	static char  inChar;
 	std::vector<Player*> players;
 	std::vector<Button*> buttons;
-	std::vector<Button*> randomButtons;
+	std::vector<Button*> playerPageButtons;
 	static Dice* dice;
 	SDL_Window* window;			//window object to be used as the main game frame
 	static SDL_Renderer* renderer;		//renderer composite passed as arg to all render functinos. see update() and render()
