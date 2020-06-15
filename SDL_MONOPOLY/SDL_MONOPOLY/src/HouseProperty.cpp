@@ -129,6 +129,8 @@ void HouseProperty::mortgage(Player* currentPlayer) {
 					owner->destroyHousesFromColor(groupId);
 				}
 				mortgaged = true;
+				std::string message = "You have sold " + this->getName();
+				UserAnimator::popUpMessage(message);
 				owner->receiveMoney(mortgageVal);
 				Game::setMortgagePressed(false);
 			}

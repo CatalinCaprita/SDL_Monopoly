@@ -294,7 +294,7 @@ Dice* Game::getDice() {
 								 dice->setBlocked(true); //Set the dice block so while the current player is moving nobody can run the dice;
 							 }
 							 else {
-								 players[turn]->setRemainingSteps( 40 );
+								 players[turn]->setRemainingSteps(dice->getFirstDieValue() + dice->getSecondDieValue());
 
 								 /*			DEBUG
 								 /**/
