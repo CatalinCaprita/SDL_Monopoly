@@ -123,6 +123,7 @@ void CommandTile::doEffect(Player *currentPlayer) {
 	}
 	std::string command = allCommands[index];
 	UserAnimator::popUpMessage(command);
+	
 	switch (index) {
 	/*If they are Queues, how do you know the index for the command??
 	 - i thought maybe transform each string

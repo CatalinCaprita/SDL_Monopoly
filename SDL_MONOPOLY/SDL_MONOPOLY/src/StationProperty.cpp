@@ -57,10 +57,8 @@ void StationProperty::mortgage(Player* currentPlayer) {
 void StationProperty::getMeAnOwner(Player* currentPlayer) {
 	std::string msg;
 	if (owner == nullptr) {
-		std::cout << "Im almost in\n";
 		//Checks if the player pressed the buy button 
 		if (Game::isBuyPressed()) {
-			std::cout << "Im in\n";
 			if (currentPlayer->getMoney() < buyPrice) {
 				msg = "Aquisition failed. Lack of funds `\( `-`)/` ";
 				UserAnimator::popUpMessage(msg);
@@ -69,7 +67,7 @@ void StationProperty::getMeAnOwner(Player* currentPlayer) {
 				std::string message = currentPlayer->getName() + " bought " + name;
 				UserAnimator::popUpMessage(message);
 				owner = currentPlayer;
-				currentPlayer->buyProperty(this, "station");
+				currentPlayer->buyProperty(this,false);
 			}
 			Game::setBuyPressed(false);
 		}

@@ -23,7 +23,7 @@ void UtilityProperty::getMeAnOwner(Player* currentPlayer) {
 				std::string message = currentPlayer->getName() + " bought " + name;
 				UserAnimator::popUpMessage(message);
 				owner = currentPlayer;
-				currentPlayer->buyProperty(this, "utility");
+				currentPlayer->buyProperty(this,false);
 			}
 			Game::setBuyPressed(false);
 		}
