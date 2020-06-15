@@ -20,16 +20,20 @@ void Corner::mortgage(Player* currentPlayer) {
 }
 
 void Corner::doEffect(Player * currentPlayer) {
-	print();
-	//UserAnimator::cornerAnimation(this);
+	UserAnimator::popUpMessage(command);
 	switch (cornerNo) {
 	case 0:
 		std::cout << currentPlayer->getName() << " passed START. It will recieve 200\n";
 		currentPlayer->receiveMoney(200);
 		break;
 	case 3:
-		std::cout << "Bad Luck! " << currentPlayer->getName() << " will go to jail";
-		currentPlayer->goToJail();
+		
+		if (currentPlayer->getCurrentPosition() > 10)
+			currentPlayer->setRemainingSteps((currentPlayer->getCurrentPosition() - 10) % 40, -1);
+		else
+			currentPlayer->setRemainingSteps(10 - currentPlayer->getCurrentPosition());
+		currentPlayer->setJailFlag();//Player will remain to Jail;
+		//currentPlayer->goToJail();
 		break;
 		
 	}

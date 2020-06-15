@@ -103,8 +103,10 @@ int Player::payMoney(int amount) {
 void Player::buyProperty(Tile* property,bool byTrade)
 {
 	int buyPrice = dynamic_cast<AbstractProperty*>(property)->getBuyPrice();
-	if (!byTrade && totalMoney < buyPrice)
-		std::cout << "Sorry, you don't have the money!";
+	if (!byTrade && totalMoney < buyPrice) {
+		std::string msg = "You do not have the money.";
+		UserAnimator::popUpMessage(msg);
+	}
 	else {
 		if(!byTrade)
 			this->payMoney(buyPrice);
@@ -217,7 +219,6 @@ Totusi, in iteratiile Game::update() si Game::render() el figureaza ca mai are d
 Jail Functions
 */
 void Player::goToJail() { 
-	std::cout << name << " will GO TO JAIL !\n";
 	setRemainingSteps((50 - this->getCurrentPosition()) % 40); //Player is now in moving, once it will finish, it will go direcly to jail
 
 	jailTurnsLeft = 3;
@@ -324,21 +325,11 @@ void Player::update() {
 				if (remainingSteps == 0)
 					finishMoving = true;
 				
-				std::cout << "player " << name << " has to move " << remainingSteps << " steps \n ";
 			}
 		}
 		else {
 			if (flagType == OWNER_TRADE) {
 				if (sumToAccept > -1) {
-					/*std::cout << name<< ": Are you ok with " << sumToAccept << " ? Press 1 and you will sell the property for this sum.";
-					int answer;
-					std::cin >> answer;
-					if (answer == 1) {
-						
-					}
-					else {
-						
-					}*/
 					UserAnimator::setOwnerFlag();
 				}
 

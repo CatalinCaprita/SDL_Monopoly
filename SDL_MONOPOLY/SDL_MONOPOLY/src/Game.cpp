@@ -284,11 +284,11 @@ Dice* Game::getDice() {
 								 dice->setBlocked(true); //Set the dice block so while the current player is moving nobody can run the dice;
 							 }
 							 else {
-								 players[turn]->setRemainingSteps(30);
+								 players[turn]->setRemainingSteps(dice->getFirstDieValue() + dice->getSecondDieValue());
 
 								 /*			DEBUG
 								 /**/
-								// players[turn]->setRemainingSteps(1);
+								 //players[turn]->setRemainingSteps(1);
 								
 								 dice->setBlocked(true);
 								 if (!dice->thrownDouble()) {
@@ -309,9 +309,9 @@ Dice* Game::getDice() {
 					 else {
 						 std::cout << "button0" << std::endl;
 						 this->setBuyPressed(true);
-						 if (lastTurnToPressBuy != turn) {
+						 if (players.size() == 1 || lastTurnToPressBuy != turn) {
 							 tiles[players[turn]->getCurrentPosition()]->getMeAnOwner(players[turn]); 
-							//tiles[1]->getMeAnOwner(players[turn]);
+							//tiles[12]->getMeAnOwner(players[turn]);
 							 lastTurnToPressBuy = turn;
 						 }
 						 else
@@ -407,7 +407,7 @@ Dice* Game::getDice() {
 			 case DICE_MOVE:
 				 tiles[players[turn]->getCurrentPosition()]->doEffect(players[turn]);
 				 //DEBUG :
-				 //tiles[1]->doEffect(players[turn]);
+				 //tiles[30]->doEffect(players[turn]);
 				 break;
 			 case MUST_BE_JAILED:
 				 players[turn]->goToJail();
@@ -415,6 +415,7 @@ Dice* Game::getDice() {
 			 case EXEC_COMMAND:
 				 std::cout << players[turn]->getName() << " finished the command." << std::endl;
 				 /*Dupa ce termina command, reintra in starea de "Sunt gata sa mut dupa cum zice zarul"*/
+				 UserAnimator::fadePropertyCard(nullptr);
 
 				 if (players[turn]->getCurrentPosition() == 28 || players[turn]->getCurrentPosition() == 12) {
 					 if (dynamic_cast<UtilityProperty*>(tiles[players[turn]->getCurrentPosition()])->getOwner() != NULL
