@@ -40,11 +40,14 @@ void Sprite::copyScale(Sprite* otherSprite) {
 	destRect.h = (int)height * hRatio;
 }
 void Sprite::setPath(const char* newPath, bool ignoreBck) {
+	if (path != newPath) {
 
-	if (texture) {
-		SDL_DestroyTexture(texture);
+		if (texture) {
+			SDL_DestroyTexture(texture);
+		}
+		texture = TextureMaker::textureFromBMP(newPath, ignoreBck);
 	}
-	texture = TextureMaker::textureFromBMP(newPath, ignoreBck);
+	
 
 }
 bool Sprite::isClicked() {

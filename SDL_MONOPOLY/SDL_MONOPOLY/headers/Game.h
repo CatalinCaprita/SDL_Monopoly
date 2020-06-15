@@ -113,6 +113,8 @@ private:
 	static bool backPressed;
 	static bool enterPressed;
 	static char  inChar;
+	UILabel* currentPlayerLabel;
+	Sprite* currentPlayerSprite;
 	std::vector<Player*> players;
 	std::vector<Button*> buttons;
 	std::vector<Button*> playerPageButtons;

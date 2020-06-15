@@ -46,7 +46,7 @@ void UtilityProperty::doEffect(Player* currentPlayer) {
 	}
 	if (owner != currentPlayer) {
 		int multiplier = 4;
-		switch (owner->getOwnedUtils()) {
+		switch (owner->getOwnedUtilsLength()) {
 		case(1):
 			multiplier = 4;
 			break;

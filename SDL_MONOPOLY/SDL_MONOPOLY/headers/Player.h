@@ -35,8 +35,9 @@ public:
 	int payMoney(int = 0);
 	void buyProperty(Tile*subject,bool byTrade = false);
 	void sellProperty(Tile*);
-	int getOwnedStations();
-	int getOwnedUtils();
+	int getOwnedStationsLength();
+	int getOwnedUtilsLength();
+	std::vector<Tile*> getOwnedProperties();
 	bool ownsAllOfColor(Groups color);
 	void destroyHousesFromColor(Groups color);
 	void payPerBuildings();

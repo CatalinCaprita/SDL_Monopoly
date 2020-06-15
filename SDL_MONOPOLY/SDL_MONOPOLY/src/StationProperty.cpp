@@ -105,7 +105,7 @@ void StationProperty::doEffect(Player* currentPlayer) {
 	}
 	if (owner != currentPlayer) {
 		int sumToPay = 0;
-		sumToPay = owner->getOwnedStations() * 25;
+		sumToPay = owner->getOwnedStationsLength() * 25;
 		rentPrices[0] = sumToPay;
 		if (currentPlayer->getFlag() == 2) {
 			msg = currentPlayer->getName() + " needs to pay TWICE  the  sum :" + std::to_string(sumToPay) + " to " + owner->getName();

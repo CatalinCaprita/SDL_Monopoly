@@ -124,18 +124,32 @@ void Player::sellProperty(Tile* property)
 	
 }
 
-int Player::getOwnedStations() {
+int Player::getOwnedStationsLength() {
 	auto it = ownedProperties.find(STATION);
 	if(it != ownedProperties.end())
 		return ownedProperties[STATION].size();
 	return 0;
 }
 
-int Player::getOwnedUtils() {
+int Player::getOwnedUtilsLength() {
 	auto it = ownedProperties.find(UTIL);
 	if (it != ownedProperties.end())
-		return ownedProperties[UTIL].size();
+		return ownedProperties[UTIL].size(); 
 	return 0;
+}
+
+std::vector<Tile*> Player::getOwnedProperties() {
+	std::vector<Tile*> tiles;
+	for (int i = BROWN; i != CORNER;i++) {
+		auto it = ownedProperties.find(static_cast<Groups>(i));
+		if (it != ownedProperties.end())
+		{
+			std::vector<Tile*> temp = ownedProperties[static_cast<Groups>(i)];
+			for(int j=0;j<temp.size();j++)
+				tiles.push_back(temp[j]);
+		}
+	}
+	return tiles;
 }
 
 bool Player::ownsAllOfColor(Groups color) {

@@ -13,6 +13,11 @@ private:
 	Game* game;
 	UILabel* nameLabel;
 	UILabel* moneyLabel;
+	UILabel* mortgagedLabel;
+	UILabel* notMortgagedLabel;
+	std::vector<Tile*> playerOwnedProperties;
+	std::vector<UILabel*> propertyLabelMortgaged;
+	std::vector<UILabel*> propertyLabelNotMortgaged;
 	int pageNumber;
 public:
 	Page(Game* game, Player* player);

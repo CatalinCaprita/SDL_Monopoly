@@ -110,18 +110,28 @@ Game::Game(int width, int height,std::vector<std::string>&playerNames):tiles(40)
 		players.push_back(new Player(playerNames[i], "assets/train.bmp", START_X + 6, START_Y, PAWN_SIZE + 3, PAWN_SIZE + 3));
 		for (Player* p : players)
 			p->setSpriteScale(width, height);*/
-			
+
+		std::string txt = "Current player: ";
+		currentPlayerLabel = new UILabel(98, 9, 19, 8, txt, TTF_OpenFont("assets/fonts/lucida_sans.ttf", 60), *(new SDL_Color({ 0,0,0,0 })));
+		currentPlayerLabel->setLabelTexture(width);
+		currentPlayerLabel->setScale(width, height);
+		currentPlayerLabel->updateXY(5, 5);
+		// This outputs "Current player: "
+
+		
+
+
+		/* These constants represent the values for the next buttons
+		   at the top of menu screen (the ones that change the currentPage).
+		   This is a dirty method to display the BLACK/WHITE button sprite if a player doesn't exist,
+		   hence it won't let the player "click" it. It's plain garbage.
+		*/
+
 		int PAGESPRITEWIDTH = 5; 
 		int PAGESPRITEHEIGHT = 5;
 		int PAGESPRITECOORDX = 103;
 		int PAGESPRITECOORDY = 7;
 		int PAGESPRITEOFFSET = 6;
-
-		/* These constants represent the values for the next buttons 
-		   at the top of menu screen (the ones that change the currentPage).
-		   This is a dirty method to display the BLACK/WHITE button sprite if a player doesn't exist,
-		   hence it won't let the player "click" it. It's plain garbage.
-		*/
 
 		playerPageButtons.push_back(new Button("assets/menu/car_button.bmp", "assets/menu/car_button1.bmp", "assets/menu/car_button2.bmp", PAGESPRITECOORDX, PAGESPRITECOORDY, PAGESPRITEWIDTH, PAGESPRITEHEIGHT, doesPlayerExist("car") ? NORMAL : NOPLAYER));
 		playerPageButtons.push_back(new Button("assets/menu/ship_button.bmp", "assets/menu/ship_button1.bmp", "assets/menu/ship_button2.bmp", PAGESPRITECOORDX + PAGESPRITEOFFSET, PAGESPRITECOORDY, PAGESPRITEWIDTH, PAGESPRITEHEIGHT, doesPlayerExist("ship") ? NORMAL : NOPLAYER));
@@ -284,7 +294,7 @@ Dice* Game::getDice() {
 								 dice->setBlocked(true); //Set the dice block so while the current player is moving nobody can run the dice;
 							 }
 							 else {
-								 players[turn]->setRemainingSteps(30);
+								 players[turn]->setRemainingSteps( dice->getFirstDieValue() + dice->getSecondDieValue() );
 
 								 /*			DEBUG
 								 /**/
@@ -374,6 +384,8 @@ Dice* Game::getDice() {
 	 SDL_RenderClear(renderer);
 	 background->render();
 	 menu->render();
+	 currentPlayerLabel->render();
+	 currentPlayerSprite->render();
 	 for (int i = 0; i < PROP_NUM; i++) {
 		 tiles[propIdx[i]]->render();
 	 }
@@ -451,6 +463,13 @@ Dice* Game::getDice() {
 	 }
 	 menu->update();
 	 dice->update();
+
+	 if(currentPlayerSprite)
+		delete currentPlayerSprite;
+	 currentPlayerSprite = new Sprite(players[turn]->getSprite()->getPath(), 6, 6, 122, 15);
+	 currentPlayerSprite->setScale(this->getScreenW(), this->getScreenH());
+	 // This is where we'll have current player's icon displayed
+
 	 UserAnimator::update();
 	 //test->update();
  }

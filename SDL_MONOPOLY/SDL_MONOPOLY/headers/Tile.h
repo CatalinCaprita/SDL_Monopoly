@@ -21,7 +21,7 @@ public:
 	virtual bool isRenderable() {
 		return false;
 	}
-	std::string& getTexturePath() {
+	std::string getTexturePath() {
 		return texturePath;
 	}
 	Groups getGroupId() {
