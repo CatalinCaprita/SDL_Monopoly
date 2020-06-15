@@ -1,0 +1,4 @@
+Reading_Railroad	 200 0  10 4 25 50 100 200
+Pennsylvania_Railroad 200 0 10 4 25 50 100 200
+B._&_O._Railroad	200 0 10 4 25 50 100 200
+Short_Line 200 0 10 4 25 50 100 200
