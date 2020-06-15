@@ -294,7 +294,7 @@ Dice* Game::getDice() {
 								 dice->setBlocked(true); //Set the dice block so while the current player is moving nobody can run the dice;
 							 }
 							 else {
-								 players[turn]->setRemainingSteps( dice->getFirstDieValue() + dice->getSecondDieValue() );
+								 players[turn]->setRemainingSteps( 40 );
 
 								 /*			DEBUG
 								 /**/
@@ -349,7 +349,7 @@ Dice* Game::getDice() {
 							 this->setMortgagePressed(false);
 							 UserAnimator::fadePropertyCard(tiles[players[turn]->getCurrentPosition()]);
 							 // DEBUG PURPOSES UserAnimator::fadePropertyCard(tiles[1]);
-
+							 menu->setCurrentPage(turn);
 							 std::cout << "button2" << std::endl;
 						 }
 						 else {

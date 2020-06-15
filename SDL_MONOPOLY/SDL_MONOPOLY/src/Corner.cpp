@@ -24,7 +24,6 @@ void Corner::doEffect(Player * currentPlayer) {
 	switch (cornerNo) {
 	case 0:
 		std::cout << currentPlayer->getName() << " passed START. It will recieve 200\n";
-		currentPlayer->receiveMoney(200);
 		break;
 	case 3:
 		

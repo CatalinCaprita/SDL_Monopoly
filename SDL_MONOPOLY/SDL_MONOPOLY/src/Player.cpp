@@ -49,11 +49,6 @@ Once finnished moving the player reaches a certain currentPosition
 
 void Player::move() {
 	currentPosition++;
-	if (currentPosition != currentPosition % 40)
-	{
-		std::cout << "Ai trecut de GO! Primesti 200 de BISTARI!" << std::endl;
-		this->totalMoney += 200;
-	}
 	currentPosition %= 40;
 	/*
 		call of tiles[position??].doEffect(this);
