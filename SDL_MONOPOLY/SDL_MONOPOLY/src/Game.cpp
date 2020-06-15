@@ -118,7 +118,8 @@ Game::Game(int width, int height,std::vector<std::string>&playerNames):tiles(40)
 		currentPlayerLabel->updateXY(5, 5);
 		// This outputs "Current player: "
 
-		
+		currentPlayerSprite = new Sprite("assets/car.bmp", 6, 6, 122, 15);
+		currentPlayerSprite->setScale(width, height);
 
 
 		/* These constants represent the values for the next buttons
@@ -294,7 +295,7 @@ Dice* Game::getDice() {
 								 dice->setBlocked(true); //Set the dice block so while the current player is moving nobody can run the dice;
 							 }
 							 else {
-								 players[turn]->setRemainingSteps( 40 );
+								 players[turn]->setRemainingSteps(dice->getFirstDieValue() + dice->getSecondDieValue());
 
 								 /*			DEBUG
 								 /**/
@@ -465,10 +466,16 @@ Dice* Game::getDice() {
 	 menu->update();
 	 dice->update();
 
-	 if(currentPlayerSprite)
-		delete currentPlayerSprite;
-	 currentPlayerSprite = new Sprite(players[turn]->getSprite()->getPath(), 6, 6, 122, 15);
-	 currentPlayerSprite->setScale(this->getScreenW(), this->getScreenH());
+	 
+	 if (currentPlayerSprite != NULL) {
+		 if (strcmp(currentPlayerSprite->getPath(), players[turn]->getSprite()->getPath()))
+		 {
+			 delete currentPlayerSprite;
+			 currentPlayerSprite = new Sprite(players[turn]->getSprite()->getPath(), 6, 6, 122, 15);
+			 currentPlayerSprite->setScale(this->getScreenW(), this->getScreenH());
+		 }
+			
+	 }
 	 // This is where we'll have current player's icon displayed
 
 	 UserAnimator::update();
