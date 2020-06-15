@@ -22,6 +22,8 @@ void StationProperty::mortgage(Player* currentPlayer) {
 				/*If it is an improved property, The player must destroy all the houses and hotels form the same colored tiles
 				*/
 				mortgaged = true;
+				std::string message = "You have sold " + this->getName();
+				UserAnimator::popUpMessage(message);
 				owner->receiveMoney(mortgageVal);
 				Game::setMortgagePressed(false);
 			}
