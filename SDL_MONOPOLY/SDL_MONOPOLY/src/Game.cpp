@@ -340,7 +340,12 @@ Dice* Game::getDice() {
 					 //}
 					 else if (buttons[2]->getSprite()->isClicked()) {
 
-						 if (!(players[turn]->getFlag() == BUYER_TRADE || players[turn]->getFlag() == OWNER_TRADE)) {
+						if (players[turn]->getRemainingSteps() != 0) {
+							std::string msg = "You must wait to finish moving to be able to do that!";
+							UserAnimator::popUpMessage(msg);
+							}
+
+						else if (!(players[turn]->getFlag() == BUYER_TRADE || players[turn]->getFlag() == OWNER_TRADE)) {
 							 lastTurnToPressBuy = turn;
 							 turn++;
 							 turn %= players.size();

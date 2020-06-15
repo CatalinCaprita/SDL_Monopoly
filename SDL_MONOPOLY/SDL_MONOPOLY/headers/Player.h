@@ -18,6 +18,7 @@ public:
 	void print();
 	bool finishedMoving();
 	void setRemainingSteps(int steps = 0, int direction = 1);
+	int getRemainingSteps() { return this->remainingSteps; }
 	void setSpriteScale(int, int);
 	int getCurrentPosition();
 
