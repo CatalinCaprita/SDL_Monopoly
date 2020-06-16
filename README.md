@@ -2,14 +2,14 @@
 
 ## Summary
 
-*Project for the Software Development course project.
-*Uses C++ and SDL2 library, as well as SDL2_ttf for fonts
-*Only used for programming practice and demonstration purposes.
+* Project for the Software Development course project.
+* Uses C++ and SDL2 library, as well as SDL2_ttf for fonts
+* Only used for programming practice and demonstration purposes.
 
 ## Documentation + video presentation (in romanian)
 
-*[Documentation](https://github.com/CatalinCaprita/SDL_Monopoly/docs/MDS_documentation.pdf)
-*[Video presentation](https://youtu.be/PJMsQYXqKQQ)
+* [Documentation](https://github.com/CatalinCaprita/SDL_Monopoly/docs/MDS_documentation.pdf)
+* [Video presentation](https://youtu.be/PJMsQYXqKQQ)
 
 ## Members of the Project
 
