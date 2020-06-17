@@ -1,0 +1,33 @@
+﻿  AbstractProperty.cpp
+  Button.cpp
+  CommandTile.cpp
+  Corner.cpp
+  Dice.cpp
+  Game.cpp
+  GameStateManager.cpp
+  HouseProperty.cpp
+  main.cpp
+  Menu.cpp
+  Page.cpp
+  Player.cpp
+  Prompt.cpp
+  Sprite.cpp
+  StartUpState.cpp
+  StationProperty.cpp
+C:\Users\Alen\Desktop\SDL_Monopoly\MonopolyGame\MonopolyGame\src\StationProperty.cpp(35,8): warning C4101: 'answer': unreferenced local variable
+C:\Users\Alen\Desktop\SDL_Monopoly\MonopolyGame\MonopolyGame\src\StationProperty.cpp(65,11): warning C4129: '(': unrecognized character escape sequence
+  TextBox.cpp
+  TextureMaker.cpp
+  Tile.cpp
+  UILabel.cpp
+  Compiling...
+  UserAnimator.cpp
+  UtilityProperty.cpp
+C:\Users\Alen\Desktop\SDL_Monopoly\MonopolyGame\MonopolyGame\src\UtilityProperty.cpp(19,11): warning C4129: '(': unrecognized character escape sequence
+LINK : warning LNK4075: ignoring '/INCREMENTAL' due to '/LTCG' specification
+  Generating code
+  0 of 1532 functions ( 0.0%) were compiled, the rest were copied from previous compilation.
+    0 functions were new in current compilation
+    0 functions had inline decision re-evaluated but remain unchanged
+  Finished generating code
+  MonopolyGame.vcxproj -> C:\Users\Alen\Desktop\SDL_Monopoly\MonopolyGame\MonopolyGame\Release\MonopolyGame.exe
