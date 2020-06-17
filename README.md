@@ -8,7 +8,7 @@
 
 ## Documentation + video presentation (in romanian)
 
-* [Documentation](https://github.com/CatalinCaprita/SDL_Monopoly/docs/MDS_documentation.pdf)
+* [Documentation](docs/MDS_documentation.pdf)
 * [Video presentation](https://youtu.be/PJMsQYXqKQQ)
 
 ## Members of the Project
